@@ -13,10 +13,16 @@ import time
 import os
 ROOT_DOMAIN= "http://www.dmoz.org/"
 DATA_PATH = settings.get('DATA_PATH')
+LANGS = {'Espa%C3%B1ol': 'es',
+	 u'Español': 'es',
+	'English': 'en',
+	}
 def find_lang(url):
-	m = re.match(r'.*/World/(?P<lang>\S+)/.*', url)
+	m = re.match(r'.*/World/(?P<lang>[^/]+)/.*', url)
+	l = 'English'
 	if m and m.groups('lang'):
-		return m.groups('lang')[0]
+		l= m.groups('lang')[0]
+	return LANGS.get(l, 'en')
 
 class DmozSpider(BaseSpider):
     domain_name = 'dmoz.org'
@@ -50,7 +56,7 @@ class DmozSpider(BaseSpider):
 			#self.log('%s info: %s, %s' % (response.url, title, link))
 			f = lambda r, desc = description, name = title: self.parse_item(r,
 					 name = name[0],
-					 lang = 'es' if u'World/Español' in unicode(response.url) else 'en', 
+					 lang = find_lang(response.url), 
 					 category = str(response.url).replace(ROOT_DOMAIN, '').replace('World/', ''),
 					 desc = desc[0] if len(desc) else '')
 			#rlist += [Request(link[0], callback= f),]
