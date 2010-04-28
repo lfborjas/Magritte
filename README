@@ -1,0 +1,8 @@
+Sistema de recomendación de documentos en un contexto académico
+
+Filosofías de diseño:
+---------------------
+
+1. Dado el tamaño de las bases de datos necesarias para el funcionamiento del mismo, éste funcionará como un servicio web cuya interfaz programática de interacción (API) serán las urls definidas en service.urls; en caso de ser considerado necesario, para pruebas y evaluación, se crearán algunas urls muy básicas definidas en el archivo principal.
+
+2. El sistema anfitrión sólo debe preocuparse por enviar la información y mostrar los resultados, toda la lógica será manejada por el servicio. 

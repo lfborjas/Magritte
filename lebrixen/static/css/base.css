@@ -1,0 +1,582 @@
+/* 
+    Document   : base
+    Created on : 09-19-2009, 05:15:01 PM
+    Author     : fernando
+    Description:
+        Purpose of the stylesheet follows.
+*/ /* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+root {
+	display: block;
+}
+
+body {
+	background: #ffffff;
+	font-family: arial, sans-serif;
+	font-size: 85%;
+}
+
+#main_links {
+	
+}
+
+#apps_links {
+	float: left;
+	width: 40%;
+}
+
+#apps_links ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#apps_links ul li {
+	float: left;
+	padding-left: 10px;
+}
+
+#system_links {
+	width: 60%;
+	float: right;
+}
+
+#system_links ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#system_links ul li {
+	float: right;
+	padding-left: 10px;
+        cursor: pointer;
+}
+
+
+#system_links ul li a{
+    color:#5B80B2;
+    text-decoration:none;
+}
+
+
+
+#main_branding {
+	height: 59px;
+	clear: both;
+	border-top-style: solid;
+	border-top-color: #f0f0f0;
+}
+
+#branding_logo {
+	background-image:
+		url('http://www.google.com/a/cpanel/escolarea.com/images/logo.gif');
+	float: left;
+	width: 143px;
+	height: 59px;
+}
+
+#branding_logo a {
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-decoration: none;
+}
+
+#branding_right {
+	height: 59px;
+}
+
+#content {
+	clear: both;
+}
+
+#content_left {
+	background-color: #ffffff;
+	float: left;
+	width: 15%;
+}
+
+#content_center {
+	background-color: #ffffff;
+	float: left;
+	width: 70%;
+	border-top: 20px solid #c3d9ff;
+	border-left: 10px solid #c3d9ff;
+	border-right: 10px solid #c3d9ff;
+	border-bottom: 5px solid #c3d9ff;
+}
+
+#content_right {
+	background-color: #ffffff;
+	float: right;
+	width: 25%;
+}
+
+#main_footer {
+	clear: both;
+}
+
+#powered_by {
+    /*
+	background:
+		url('http://code.google.com/appengine/images/appengine-noborder-120x30.gif')
+		no-repeat center center;
+	*/
+	width: 120px;
+	height: 30px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/*Style for the =main_navigation list:*/
+#main_nav,#secondary_nav { /*background: #aaf;*/
+	float: left;
+	width: 100%;
+}
+
+#main_nav ul,#secondary_nav ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#main_nav ul a,#secondary_nav ul a {
+	display: block;
+	height: 20px;
+	line-height: 20px;
+	color: #000;
+	text-decoration: none;
+	background: #fff;
+	text-indent: 50px;
+}
+
+#home_nav #main_nav .home a,#calendar_nav #main_nav .calendar a,#courses_nav #main_nav .courses a
+	{
+	background: #C3D9FF;
+	color: #fff;
+	cursor: default;
+}
+
+/*#main_nav li.first a{
+	height: 40px;
+	line-height: 40px;
+}
+
+#main_nav a:hover, .selected a{
+	//background-position: right bottom;
+	background-color: #c3d9ff;
+}*/
+#main_nav li,#secondary_nav li {
+	display: inline;
+}
+
+/*=Nav_Bar: Style for the main navigation bar*/
+#nav_bar ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	width: 100%;
+	float: left;
+	background: #fcaf17;
+}
+
+#nav_bar li {
+	float: left;
+}
+
+#nav_bar ul a {
+	display: block;
+	float: left;
+	padding: 0 3em;
+	height: 20px;
+	line-height: 20px;
+	background: url(/static/images/unselected-bullet.gif) no-repeat 0 50%;
+	text-decoration: none;
+	color: #fff;
+}
+
+#nav_bar ul .first a {
+	background: none;
+}
+
+/*Mark the last as visited*/
+#nav_bar ul .last a {
+	background: #f7941e url(/static/images/selected-bullet.gif) no-repeat 0
+		50%;
+	color: #000;
+	cursor: default;
+}
+
+#nav_bar ul a:hover {
+	background: #f7941e url(/static/images/selected-bullet.gif) no-repeat 0
+		50%;
+	color: #fff;
+}
+
+#nav_bar ul .last a:hover {
+	color: #000;
+}
+
+#nav_bar ul .first a:hover {
+	background: #f7941e;
+	color: #fff;
+}
+
+/*=Secondary nav specifics: */
+#secondary_nav a:hover,.selected a {
+	background: #f7941e;
+	color: #fff;
+}
+
+#secondary_nav #dashboard #security_nav .dashboard a,#secondary_nav #roles #security_nav .roles a,#secondary_nav #capabilities #security_nav .capabilities a,#secondary_nav #assign_roles #security_nav .assign_roles a
+	{
+	background: #fcaf17;
+	color: #000;
+	cursor: default;
+}
+
+/*=Table layout*/
+	/*The listTable is intended for tables that will show a list of objects, as in a table that shows stuff from the db*/
+.listTable {
+	border-collapse: collapse;
+	border: 1px solid #666;
+	empty-cells: show;
+	width: 100%;
+}
+
+.listTable th,.listTable td {
+	padding: 0.1em 1em;
+}
+
+.listTable caption {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin: 1em 0;
+}
+
+.listTable thead {
+	background: #ccc url(/static/images/bar.gif) repeat-x left center;
+	border-top: 1px solid #a5a5a5;
+	border-bottom: 1px solid #a5a5a5;
+}
+
+.listTable th {
+	font-weight: normal;
+	text-align: center;
+}
+
+.listTable td {
+	border-right: 1px solid #ccc;
+}
+
+.listTable tr:nth-child(odd) {
+	background-color: #edf5ff;
+}
+
+/*For compatibility with browsers that don't support CSS3:*/
+.odd {
+	background-color: #edf5ff;
+}
+
+.listTable tr:hover {
+	background-color: #336699;
+	color: #fff;
+}
+
+.listTable thead tr:hover {
+	background-color: transparent;
+	color: inherit;
+}
+
+/*=Forms */
+form p {
+	position: relative;
+	width: 100%;
+}
+
+label {
+	float: left;
+	width: 10em;
+}
+
+label .field_error {
+	position: absolute;
+	margin-left: 11em;
+	left: 200px;
+	font-weight: bold;
+	color: #760000;
+	padding-left: 18px;
+	background: url(/static/images/error.png) no-repeat left top;
+}
+
+* html .field_error {
+	width: 10em;
+}
+
+.field_error ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+input[type="text"] {
+	width: 200px;
+}
+
+input[type="radio"] {
+	float: left;
+	margin-right: 1em;
+}
+
+textarea {
+	width: 520px;
+	height: 50px;
+}
+
+input[type="text"],textarea {
+	border-top: 2px solid #999;
+	border-left: 2px solid #999;
+	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+}
+
+input:focus,textarea:focus {
+	background: #ffc;
+}
+
+.required {
+	font-size: 0.75em;
+	color: #760000;
+}
+
+#form_container{	
+	margin: auto;	
+}
+
+ul.errorlist {
+	margin:0;
+	padding: 0;
+}
+
+.errorlist li {
+	background: url(/static/images/error.png) no-repeat left top;
+	color: #f33;
+	display: block;
+	font-size: 10px;
+	margin: 0 0 3px;
+	padding: 4px 5px;
+	padding-left: 18px;
+}
+
+.help_text{
+	font-size: 15px;
+	color: #505050;
+}
+/*Class for rounded corner simple boxes*/
+.box {
+	background: #fcaf17 url(/static/images/box_bottom.gif) no-repeat left
+		bottom;
+	width: 240px;
+	margin: 20px auto 20px auto;
+	text-align: center;
+	/*padding-top: 2em;*/ /*padding-bottom: 2em;*/
+}
+
+.box h4 {
+	background: url(/static/images/box_top.gif) no-repeat left top;
+	background-color: transparent;
+	/*float: left;*/
+	padding: 10px;
+	margin: 0;
+
+}
+
+.box a {
+	display: block;
+	background-color: transparent;
+	color: #000;
+	text-decoration: none;
+	margin: 0;
+	padding: 10px;
+}
+
+
+.box:hover{
+	background-color:#f7941e;
+}
+
+/*COPIADO DEL CSS DEL ADMIN DE DJANGO*/
+a:link,a:visited {
+	color: #5B80B2;
+	text-decoration: none;
+}
+
+.calendarbox,.clockbox {
+	background: white none repeat scroll 0 0;
+	font-size: 11px;
+	margin: 5px auto;
+	position: relative;
+	text-align: center;
+	width: 16em;
+}
+
+.clockbox {
+	width: auto;
+}
+
+.calendar {
+	margin: 0;
+	padding: 0;
+}
+
+.calendar table {
+	background: white none repeat scroll 0 0;
+	border-collapse: collapse;
+	margin: 0;
+	padding: 0;
+	width: 99%;
+}
+
+.calendar caption,.calendarbox h2 {
+	border-top: medium none;
+	font-size: 11px;
+	margin: 0;
+	text-align: center;
+}
+
+.calendar th {
+	background: #E1E1E1 url(/media/img/admin/nav-bg.gif) repeat-x scroll 0 50%;
+	border-bottom: 1px solid #DDDDDD;
+	color: #666666;
+	font-size: 10px;
+	padding: 2px 3px;
+	text-align: center;
+}
+
+.calendar td {
+	border-bottom: medium none;
+	border-top: 1px solid #EEEEEE;
+	font-size: 11px;
+	padding: 0;
+	text-align: center;
+}
+
+.calendar td.selected a {
+	background: #C9DBED none repeat scroll 0 0;
+}
+
+.calendar td.nonday {
+	background: #EFEFEF none repeat scroll 0 0;
+}
+
+.calendar td.today a {
+	background: #FFFFCC none repeat scroll 0 0;
+}
+
+.calendar td a,.timelist a {
+	color: #444444;
+	display: block;
+	font-weight: bold;
+	padding: 4px;
+	text-decoration: none;
+}
+
+.calendar td a:hover,.timelist a:hover {
+	background: #5B80B2 none repeat scroll 0 0;
+	color: white;
+}
+
+.calendar td a:active,.timelist a:active {
+	background: #003366 none repeat scroll 0 0;
+	color: white;
+}
+
+.calendarnav {
+	color: #CCCCCC;
+	font-size: 10px;
+	margin: 0;
+	padding: 1px 3px;
+	text-align: center;
+}
+
+.calendarnav a:link,#calendarnav a:visited,#calendarnav a:hover {
+	color: #999999;
+}
+
+.calendar-shortcuts {
+	background: white none repeat scroll 0 0;
+	border-top: 1px solid #EEEEEE;
+	color: #CCCCCC;
+	font-size: 10px;
+	line-height: 11px;
+	padding: 3px 0 4px;
+}
+
+.calendarbox .calendarnav-previous,.calendarbox .calendarnav-next {
+	background: #C9DBED url(/media/img/admin/default-bg.gif) repeat-x scroll
+		left bottom;
+	color: white;
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 1px 4px 2px;
+	position: absolute;
+}
+
+.calendarnav-previous:hover,.calendarnav-next:hover {
+	background: #003366 none repeat scroll 0 0;
+}
+
+.calendarnav-previous {
+	left: 0;
+	top: 0;
+}
+
+.calendarnav-next {
+	right: 0;
+	top: 0;
+}
+
+.calendar-cancel {
+	background: #E1E1E1 url(/media/img/admin/nav-bg.gif) repeat-x scroll 0 50%;
+	border-top: 1px solid #DDDDDD;
+	font-size: 10px;
+	margin: 0 !important;
+	padding: 0;
+}
+
+.calendar-cancel a {
+	color: #999999;
+	padding: 2px;
+}
+
+/*Specifics*/
+#left_box{	
+	float: left;
+	
+}
+#right_box{
+	float: right;
+}
+
+#basic_actions{
+	width: 70%;
+	margin:auto;
+}
+
+#basic_actions h3{
+    font-size:xx-large;
+    font-style:oblique;
+    text-align:center;
+    color: #d7df21;
+
+}
+
+#basic_actions h4{
+    font-size:x-large;
+
+}
+

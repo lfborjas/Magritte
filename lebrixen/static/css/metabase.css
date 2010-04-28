@@ -1,0 +1,15 @@
+@import "base.css";
+#content_left{
+	width: 10%;
+	float: left;
+}
+
+#main_content{
+	padding: 0 0;
+	width: 85%;	
+	float: right;
+}
+
+#content_center{
+	width: 97%;	
+}
