@@ -12,7 +12,7 @@ from scrapy.http import Request
 import time
 import os
 ROOT_DOMAIN= "http://www.dmoz.org/"
-ROOT_PATH = os.path.join(settings.get('ROOT_PATH'),'spiders')
+DATA_PATH = settings.get('DATA_PATH')
 def find_lang(url):
 	m = re.match(r'.*/World/(?P<lang>\S+)/.*', url)
 	if m and m.groups('lang'):
@@ -21,10 +21,10 @@ def find_lang(url):
 class DmozSpider(BaseSpider):
     domain_name = 'dmoz.org'
 
-    if settings.get('IS_TEST'):
-	urls = open(os.path.join(ROOT_PATH, 'test_topic_urls'), 'r')
+    if settings.get('IS_TEST', False):
+	urls = open(os.path.join(DATA_PATH, 'test_topic_urls'), 'r')
     else:
-	urls = open(os.path.join(ROOT_PATH, 'topics_urls'), 'r')
+	urls = open(os.path.join(DATA_PATH, 'topics_urls'), 'r')
 
     def start_requests(self):
 	for url in self.urls:
@@ -50,8 +50,8 @@ class DmozSpider(BaseSpider):
 			#self.log('%s info: %s, %s' % (response.url, title, link))
 			f = lambda r, desc = description, name = title: self.parse_item(r,
 					 name = name[0],
-					 lang = 'es' if u'World/Español' in str(response.url) else 'en', 
-					 category = str(response.url).replace(ROOT_DOMAIN, ''),
+					 lang = 'es' if u'World/Español' in unicode(response.url) else 'en', 
+					 category = str(response.url).replace(ROOT_DOMAIN, '').replace('World/', ''),
 					 desc = desc[0] if len(desc) else '')
 			#rlist += [Request(link[0], callback= f),]
 			yield Request(link[0], callback= f)

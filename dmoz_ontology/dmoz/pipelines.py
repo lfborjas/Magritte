@@ -13,12 +13,15 @@ try:
 except:
 	import simplejson as json
 
-ROOT_PATH = settings.get("ROOT_PATH")
+DATA_PATH = settings.get("DATA_PATH")
+HOME = os.environ.get('HOME')
 MAX_FILENAME_LENGTH = 4096
 import codecs
 
-if not ROOT_PATH:
-	raise NotConfigured('A root path MUST be provided in settings!')
+if not DATA_PATH:
+	raise NotConfigured('A data path MUST be provided in settings!')
+if not HOME:
+	raise NotConfigured('Missing environment variable $HOME')
 
 class DmozPipeline(object):
 	def __init__(self):
@@ -29,10 +32,10 @@ class DmozPipeline(object):
 		   place in the ontology
 	        """
         	#the path is of the form: cat/subcat/leaf
-	        filedir = os.path.join(ROOT_PATH,'Top',item['category'])	
+	        filedir = os.path.join(DATA_PATH,'Top',item['category'])	
 		#Store the contents in files apart (to optimize the json loadings)
-		pdfdir = os.path.join(ROOT_PATH,'PDF')	 
-		htmldir = os.path.join(ROOT_PATH,'HTML')	 
+		pdfdir = os.path.join(DATA_PATH,'PDF')	 
+		htmldir = os.path.join(DATA_PATH,'HTML')	 
 		if not os.path.isdir(pdfdir):
 			os.makedirs(pdfdir)
 		if not os.path.isdir(htmldir):
@@ -53,7 +56,7 @@ class DmozPipeline(object):
 			temp = codecs.open(content_str, 'w', 'utf-8')
 		temp.write(item['content'])
 		temp.close()	
-		item['content'] = content_str
+		item['content'] = content_str.replace(HOME, '$HOME')
 			
 		if not os.path.isdir(filedir):
 			os.makedirs(filedir)

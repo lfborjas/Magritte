@@ -30,6 +30,7 @@ except ImportError:
 	os.system('easy_install Scrapy')
 
 print "Adding the temp.html file to the topics urls"
-os.system('echo %s >> %s' % ("file://%s/temp.html" % hier, "%s/spiders/test_topic_urls" % hier))
+data_path = os.path.join(os.environ['HOME'], 'Magritte', 'data')
+os.system('echo %s >> %s' % ("file://%s/temp.html" % data_path, "%s/test_topic_urls" % data_path))
 
 print "All set, ready to crawl!"

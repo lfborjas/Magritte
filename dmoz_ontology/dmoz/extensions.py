@@ -11,8 +11,8 @@ class EmailInClosing(object):
 	
 	def engine_closed(self):
 		script = os.path.join(settings.get('ROOT_PATH'), 'asciitree.py')		
-		result = os.path.join(settings.get('ROOT_PATH'), 'dirtree.txt')
-		dirtree = os.path.join(settings.get('ROOT_PATH'), 'Top')
+		result = os.path.join(settings.get('DATA_PATH'), 'dirtree.txt')
+		dirtree = os.path.join(settings.get('DATA_PATH'), 'Top')
 		os.system("%s -f %s > %s" % (script, dirtree, result))
 		attached_file = open(result, 'r')
 		#get the total size of the corpus (could take a while...)

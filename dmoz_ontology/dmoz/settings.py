@@ -22,12 +22,12 @@ USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
 ITEM_PIPELINES = ['dmoz.pipelines.DmozPipeline',]
 
 
-EXPORT_FORMAT = 'json'
-EXPORT_FILE = 'en_Science-scraped_items.py'
-EXPORT_EMPTY = True
+#EXPORT_FORMAT = 'json'
+#EXPORT_FILE = 'en_Science-scraped_items.py'
+#EXPORT_EMPTY = True
 
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
-
+DATA_PATH = os.path.join(os.environ['HOME'], 'Magritte', 'data')
 EXTENSIONS = {'dmoz.extensions.EmailInClosing':0,}
 
 #MAIL_HOST = 'localhost'
