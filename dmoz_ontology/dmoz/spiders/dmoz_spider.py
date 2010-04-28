@@ -11,6 +11,7 @@ from scrapy.conf import settings
 from scrapy.http import Request
 import time
 import os
+from urllib import url2pathname
 ROOT_DOMAIN= "http://www.dmoz.org/"
 DATA_PATH = settings.get('DATA_PATH')
 LANGS = {'Espa%C3%B1ol': 'es',
@@ -23,6 +24,10 @@ def find_lang(url):
 	if m and m.groups('lang'):
 		l= m.groups('lang')[0]
 	return LANGS.get(l, 'en')
+
+def url2categorypath(url):
+	""" Convert a url to a suitable dmoz category path"""
+	return unicode(url2pathname(url), 'utf-8').replace(ROOT_DOMAIN, '').replace('World/', '')
 
 class DmozSpider(BaseSpider):
     domain_name = 'dmoz.org'
@@ -57,7 +62,7 @@ class DmozSpider(BaseSpider):
 			f = lambda r, desc = description, name = title: self.parse_item(r,
 					 name = name[0],
 					 lang = find_lang(response.url), 
-					 category = str(response.url).replace(ROOT_DOMAIN, '').replace('World/', ''),
+					 category =url2categorypath(response.url), 
 					 desc = desc[0] if len(desc) else '')
 			#rlist += [Request(link[0], callback= f),]
 			yield Request(link[0], callback= f)
