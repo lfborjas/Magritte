@@ -1,1 +1,1 @@
-ERROR: '/media/Datos/Lebrixen/lebrixen-1.0.0/crawlers/dmoz/dmoz/Top' is not a directory
++-Top/

@@ -21,11 +21,13 @@ class EmailInClosing(object):
 			stats = os.popen('du -sh %s' % dirtree).read()
 		except:
 			pass
-		mailer = MailSender()
-		mailer.send(to = ['lfborjas@unitec.edu', 'luis.borjas@escolarea.com', 'lfborjas@hotmail.com'],
-			   subject = "The training corpus has been downloaded",
-			   body = "Crawling ended at %s, the corpus length is %s Attached is the structure"\
-				   % (time.asctime(), stats),
-			   attachs = [('structure', 'text/plain', attached_file)])
-		attached_file.close()
+		finally:
+			mailer = MailSender()
+			content = "Crawling ended at %s, the corpus length is %s Attached is the structure"\
+				   %(time.asctime(), stats)
+			mailer.send(to = ['lfborjas@unitec.edu', 'luis.borjas@escolarea.com', 'lfborjas@hotmail.com'],
+				   subject = "The training corpus has been downloaded",
+				   body =content ,
+				   attachs = [('structure', 'text/plain', attached_file)])
+			attached_file.close()
 
