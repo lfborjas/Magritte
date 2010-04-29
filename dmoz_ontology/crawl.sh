@@ -1,2 +1,2 @@
 #!/bin/bash
-$PWD/scrapy-ctl.py crawl dmoz.org --logfile=log --loglevel=WARNING &
+$PWD/scrapy-ctl.py crawl dmoz.org --logfile=crawl.log --loglevel=INFO &
