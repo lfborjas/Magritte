@@ -36,3 +36,5 @@ EXTENSIONS = {'dmoz.extensions.EmailInClosing':0,}
 IS_TEST = True 
 
 SPIDER_MIDDLEWARES = {'scrapy.contrib.spidermiddleware.offsite.OffsiteMiddleware': None,}
+
+SCHEDULER_ORDER = 'DFO'
