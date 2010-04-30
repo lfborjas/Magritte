@@ -1,5 +1,8 @@
 #utility functions to support the web service
-import simplejson as json
+try:
+	import json
+except:
+	import simplejson as json
 from django.http import HttpResponse
 from topia.termextract import extract
 from django.utils.html import strip_tags
