@@ -13,7 +13,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = 'lebrixen'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'lebrixen'             # Not used with sqlite3.
 DATABASE_PASSWORD = '1f0581d8c9709208def8a96b5a960de4'         # Not used with sqlite3.
@@ -135,6 +135,10 @@ UPDATE_INDEX_INTERVAL = 10*60
 
 #cf: http://code.google.com/p/djapian/wiki/Stemming
 DJAPIAN_STEMMING_LANG = "multi"
+
+#central repository for the data
+DATA_PATH = os.path.join(os.environ['HOME'], 'Magritte', 'data')
+ONTOLOGY_FILE = os.path.join(DATA_PATH, '2010-03-04_science_sub-structure.rdf.u8')
 
 try:
     from local_settings import *
