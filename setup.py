@@ -6,4 +6,6 @@ requires =[ 'django>=1.1.1',
 	    'elementsoap>=0.6-20071224',
 	    'scrapy',
 	    'pyPDF',	
+	    'South>=0.6',
+	    'djapian'
 ]
