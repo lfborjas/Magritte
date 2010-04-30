@@ -5,7 +5,11 @@ Last-Update: 01/12/2009
 """
 
 import httplib, urllib, re
-import simplejson as json
+try:
+	import json
+except:
+	import simplejson as json
+
 from StringIO import StringIO
 
 PARAMS_XML = """
