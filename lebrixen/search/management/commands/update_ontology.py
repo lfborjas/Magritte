@@ -69,7 +69,8 @@ class UpdateOntology(BaseCommand):
                                 topic.findall('{%s}narrow2' % ROOT_SPEC)
             else:
                 print "Though in database, the topic %s can't be found in the RDF" % category.topic_id
-            
+            #all of the subtopics:
+            #[tree.find('{%s}Topic[@{%s}id="%s"]' % (ROOT_SPEC, r,n.get('{%s}resource' % r))) for n in narrows]
             for sub_category in narrow_topics:
                 id = sub_category.get('{%s}resource' % r)
                 try:
