@@ -19,4 +19,4 @@ SOUTH_AUTO_FREEZE_APP = True
 if DATABASE_ENGINE == 'mysql':
     DATABASE_STORAGE_ENGINE= "InnoDB"
 
-
+ONTOLOGY_FILE = os.path.join(DATA_PATH, '20100430ScienceTest.xml')

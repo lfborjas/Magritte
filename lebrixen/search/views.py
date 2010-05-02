@@ -4,7 +4,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 try:
     import libjson2 as jsonlib
 except ImportError:
-    import simplejson as jsonlib
+    import json as jsonlib
+from search.models import DocumentSurrogate
+from django.core.serializers import serialize
 
 def search_docs(request):
     """Search documents and return a json with the result set"""
@@ -16,10 +18,11 @@ def search_docs(request):
     lang = request.REQUEST.get('hl') or 'en'
     
     #search:
-    search_results = DocumentIndexer.search(query, lang).prefetch()
+    indexer = DocumentSurrogate.indexer
+    search_results = indexer.search(query, lang).prefetch()
     
     #serialize:
-    return HttpResponse(jsonlib.dumps(search_results, ensure_ascii=False), mimetype="")
+    return HttpResponse(jsonlib.dumps([hit for hit in search_results], ensure_ascii = False), mimetype="application/json")
     
     
         

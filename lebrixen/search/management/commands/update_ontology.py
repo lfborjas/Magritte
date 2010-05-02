@@ -9,6 +9,7 @@ from search.models import DmozCategory
 from utilities import create_or_update
 from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
+import traceback
 
 ROOT_SPEC = u"http://dmoz.org/rdf/"
 r = u"http://www.w3.org/TR/RDF/"
@@ -16,7 +17,7 @@ d = u"http://purl.org/dc/elements/1.0/"
 ROOT_DOMAIN = u"http://www.dmoz.org"
 DESIRED_LANGS = [u'spanish',]
 
-class UpdateOntology(BaseCommand):
+class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
                   make_option('--file', dest='ontology_file', default=settings.ONTOLOGY_FILE,                    
                     help='Which ontology file to use'),
@@ -32,10 +33,10 @@ class UpdateOntology(BaseCommand):
         #create an entry for all the topics:
         for topic in topics:
             attributes={
-                        'id' : topic.get('{%s}id' % r),
+                        'topic_id' : topic.get('{%s}id' % r),
                         'title' : topic.find('{%s}Title' % d).text,
-                        'code' : topic.find('{%s}catid'%ROOT_SPEC).text,
-                        'last_update' : topic.find('{%s}lastUpdate'%ROOT_SPEC).text,
+                        'dmoz_code' : topic.find('{%s}catid'%ROOT_SPEC).text,
+                        'last_updated' : topic.find('{%s}lastUpdate'%ROOT_SPEC).text,
                         'description' : topic.find('{%s}Description'%d).text,
                         'es_alt' : "", 
             }
@@ -48,8 +49,8 @@ class UpdateOntology(BaseCommand):
                 attributes.update({'es_alt': es_alt})
             #create or update the category:
             try:        
-                category = create_or_update(attributes, {'topic_id': attributes['id']}, DmozCategory)
-            except Exception, e:
+                category = create_or_update(attributes, {'topic_id': attributes['topic_id']}, DmozCategory)
+            except Exception, e:                              
                 raise CommandError(e.message)
     
     def set_parents(self, tree):
