@@ -108,7 +108,7 @@ class Command(BaseCommand):
                 attrs = {'title':info.get('name',''),
                          'origin':info.get('url',''),
                          'summary':info.get('description',''),                         
-                         'added': datetime.strftime(datetime.strptime(info.get('retrieved_on', time.asctime()), '%a %B %d %H:%M:%S %Y'),\
+                         'added': datetime.strftime(datetime.strptime(info.get('retrieved_on', time.asctime()), '%a %b %d %H:%M:%S %Y'),\
                                                      '%Y-%m-%d %H:%M:%S'),
                          'type':info.get('type', 'html'),     
                          'text':'',
