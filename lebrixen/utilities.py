@@ -26,7 +26,7 @@ def update_or_create(attrs, filter_attrs, model):
         obj = model.objects.create(**attrs)
     return obj
 
-def create_or_update(init_attrs, filter_attrs, model):
+def create_or_update(init_attrs, filter_attrs, model, do_update=True):
     """
         Found in http://blog.roseman.org.uk/2010/03/9/easy-create-or-update/
         Creates a model instance or updates it. As its name states, use it if create
@@ -35,19 +35,21 @@ def create_or_update(init_attrs, filter_attrs, model):
             init_attrs: a dictionary of the attributes to initialize the instance
             filter_attrs: a dictionary of the attributes which will filter the queryset
             model: the class of the model to instantiate
+            do_update: whether to actually update or just pass
         Returns:
             the created/updated object, already saved
     """
     try:
         obj = model.objects.get(**filter_attrs)
-        obj.update(**init_attrs)
+        if do_update:
+            obj.update(**init_attrs)
         return obj      
     except MultipleObjectsReturned:
         #undesirable exception...
         raise
         #obj = model.objects.filter(**filter_attrs)
         #obj.update(**init_attrs)
-        return obj        
+        #return obj        
     except model.DoesNotExist:
         return model.objects.create(**init_attrs)
      
