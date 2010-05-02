@@ -96,7 +96,7 @@ class Command(BaseCommand):
                     raise CommandError('Exception "%s" while json-decoding file %s' % (e.message, filename))
                 #get the category:
                 try:
-                    cat = DmozCategory.objects.get(Q(topic_id='Top/%s'%info['category']) | Q(es_alt='Top/%s'%info['category']))
+                    cat = DmozCategory.objects.get(Q(topic_id='Top/%s'%info['category'][:-1]) | Q(es_alt='Top/%s'%info['category'][:-1]))
                 except MultipleObjectsReturned:
                     print "There are multiple entries for category Top/%s !" %info['category']
                     cat = None
