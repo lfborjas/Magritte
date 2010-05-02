@@ -18,9 +18,12 @@ from django.core.exceptions import MultipleObjectsReturned
 import time
 import subprocess
 from BeautifulSoup import BeautifulSoup, Comment
+from django.db.models import Q
 from HTMLParser import HTMLParser 
 IGNORED_TAGS = ['script', 'style', 'applet', '!DOCTYPE']
-
+SYS_DATE_FORMAT = "%a %B %d %H:%M:%S %Y"
+DB_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+from datetime import datetime
 parser = HTMLParser()
 
 def gettextonly(soup):
@@ -70,6 +73,7 @@ def cleanup(filename):
     else:
         print "Unknown type for file %s" %filename
         return ""
+    
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -92,7 +96,7 @@ class Command(BaseCommand):
                     raise CommandError('Exception "%s" while json-decoding file %s' % (e.message, filename))
                 #get the category:
                 try:
-                    cat = DmozCategory.objects.get(topic_id='Top/%s'%info['category'])
+                    cat = DmozCategory.objects.get(Q(topic_id='Top/%s'%info['category']) | Q(es_alt='Top/%s'%info['category']))
                 except MultipleObjectsReturned:
                     print "There are multiple entries for category Top/%s !" %info['category']
                     cat = None
@@ -103,8 +107,9 @@ class Command(BaseCommand):
                 #create
                 attrs = {'title':info.get('name',''),
                          'origin':info.get('url',''),
-                         'summary':info.get('description',''),
-                         'added':info.get('retrieved_on', time.asctime()),
+                         'summary':info.get('description',''),                         
+                         'added': datetime.strftime(datetime.strptime(info.get('retrieved_on', time.asctime()), '%a %B %d %H:%M:%S %Y'),\
+                                                     '%Y-%m-%d %H:%M:%S'),
                          'type':info.get('type', 'html'),     
                          'text':'',
                          'lang': info.get('lang', 'en'),                                                                 

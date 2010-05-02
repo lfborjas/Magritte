@@ -39,8 +39,8 @@ def create_or_update(init_attrs, filter_attrs, model, do_update=True):
         Returns:
             the created/updated object, already saved
     """
-    try:
-        obj = model.objects.get(**filter_attrs)
+    try:      
+        obj = model.objects.get(**filter_attrs)       
         if do_update:
             obj.update(**init_attrs)
         return obj      
