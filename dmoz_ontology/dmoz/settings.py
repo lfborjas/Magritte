@@ -33,7 +33,7 @@ EXTENSIONS = {'dmoz.extensions.EmailInClosing':0,}
 #MAIL_HOST = 'localhost'
 #MAIL_FROM = 'scrapy@localhost.com'
 
-IS_TEST = False 
+IS_TEST = True 
 
 SPIDER_MIDDLEWARES = {'scrapy.contrib.spidermiddleware.offsite.OffsiteMiddleware': None,}
 

@@ -33,7 +33,7 @@ class DmozSpider(BaseSpider):
     domain_name = 'dmoz.org'
 
     if settings.get('IS_TEST', False):
-	urls = open(os.path.join(DATA_PATH, 'test_topic_urls'), 'r')
+	urls = open(os.path.join(DATA_PATH, 'dev_topics_urls'), 'r')
     else:
 	urls = open(os.path.join(DATA_PATH, 'topics_urls'), 'r')
 
