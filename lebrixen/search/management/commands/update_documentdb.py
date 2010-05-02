@@ -51,7 +51,7 @@ def cleanup(filename):
             if os.path.exists(txtfile):
                 return open(txtfile, 'r').read()
             else:
-                print "pdftotext succeed, but somehow %s can't be found..." % txtfile
+                print "pdftotext succeeded, but somehow %s can't be found..." % txtfile
         else:
             print "Error converting file %s to plain text" % filename
             return ""
@@ -104,7 +104,7 @@ class Command(BaseCommand):
                 attrs = {'title':info.get('name',''),
                          'origin':info.get('url',''),
                          'summary':info.get('description',''),
-                         'added':info.get('retrieved_on', time.asctime),
+                         'added':info.get('retrieved_on', time.asctime()),
                          'type':info.get('type', 'html'),     
                          'text':'',
                          'lang': info.get('lang', 'en'),                                                                 
@@ -123,7 +123,8 @@ class Command(BaseCommand):
                 try:
                     create_or_update(attrs,{'origin': attrs['origin']},DocumentSurrogate, False)
                 except Exception, e:
-                    raise CommandError("Exception %s while parsing file %s" % (e.message,filename))
+                    raise CommandError("Exception %s while saving file %s to db" % (e.message,filename))
                 c += 1
                 
         print "Added %s documents to the database" % c
+        
