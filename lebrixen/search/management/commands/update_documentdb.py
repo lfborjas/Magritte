@@ -17,6 +17,30 @@ import traceback
 from django.core.exceptions import MultipleObjectsReturned
 import time
 import subprocess
+from BeautifulSoup import BeautifulSoup, Comment
+from HTMLParser import HTMLParser 
+IGNORED_TAGS = ['script', 'style', 'applet', '!DOCTYPE']
+
+parser = HTMLParser()
+
+def gettextonly(soup):
+    """Recursively gather the text in a page.
+      Found in the book 'Programming Collective Intelligence' by Toby Seagaran"""
+    v=soup.string
+    if v==None:
+        c=soup.contents
+        resulttext=''
+        for t in c:
+            subtext=gettextonly(t).strip()
+            try:
+                subtext = parser.unescape(subtext)
+            except:
+                print "Error scaping some html text..."
+            if subtext:
+                resulttext+=subtext+'\n'
+        return resulttext
+    else:
+        return v.strip()
 
 def cleanup(filename):
     """Takes a filename and, depending on it's being a pdf or an html page, returns relevant raw text"""
@@ -33,7 +57,16 @@ def cleanup(filename):
             return ""
         
     elif 'HTML' in filename:
-        pass        
+        #first, create the soup and remove nasty stuff (comments, inline js and css, etc)
+        f = open(filename, 'r')
+        soup=BeautifulSoup(f.read())
+        f.close()
+        #remove comments, inline js and css:
+        comments = soup.findAll(text=lambda text:isinstance(text, Comment))\
+         + soup.findAll(name=IGNORED_TAGS)
+        [comment.extract() for comment in comments]        
+        return gettextonly(soup) 
+    
     else:
         print "Unknown type for file %s" %filename
         return ""
