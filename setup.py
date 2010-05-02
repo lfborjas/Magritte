@@ -5,5 +5,7 @@ requires =[ 'django>=1.1.1',
 	    'BeautifulSoup>=3.0.8',
 	    'elementsoap>=0.6-20071224',
 	    'scrapy',	    
-        'jsonlib2',	
+            'jsonlib2',	
+	    'South>=0.6',
+	    'djapian',
 ]
