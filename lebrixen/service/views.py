@@ -11,11 +11,12 @@ def get_terms(request):
     """Given an ajax request, return, in a json, the index terms"""
     context = request.REQUEST.get('context')
     lang = request.REQUEST.get('lang', 'en')
-    service = request.REQUEST.get('service', 'yahoo')    
-    service = service if service in WEB_SERVICES.keys() else 'yahoo'
+    service = request.REQUEST.get('service')    
+    service = service if service in WEB_SERVICES.keys() or not service else 'yahoo'
+    use_service = bool(service)    
     
     if context:        
-        terms = build_query(context, language=lang, web_service=service)
+        terms = build_query(context, language=lang, use_web_service=use_service, web_service=service)
     else:
         terms = ""
         

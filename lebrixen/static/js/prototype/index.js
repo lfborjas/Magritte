@@ -8,7 +8,7 @@ var diff = 0;
 
 function extractTerms(){
 	$.get('/getTerms/',
-			{context: $('#id_content').val(),lang: $('#id_lang').val()},
+			{context: $('#id_content').val(),lang: $('#id_lang').val(), service:$('#id_service').val()},
 			function(data){
 				if(data){
 					$('#terms').val(data.terms);
