@@ -7,7 +7,7 @@ class DocumentSurrogate(models.Model):
                ('html', 'Hypertext Markup Language File (html)'),
                )
     title = models.CharField(max_length=255)
-    origin = models.URLField(blank = True, default="")
+    origin = models.URLField(blank = True, default="", max_length=512)
     summary = models.TextField(blank = True, default="")
     text = models.TextField(blank = True, default="")
     added = models.DateTimeField(null=True, default=asctime)
