@@ -1,0 +1,16 @@
+{%extends "base.html"%}
+{#{%load i18n%}#}
+{%block stylesheets%}
+	<link rel="stylesheet" type="text/css" href="/static/css/prototype.css" media="screen" />S
+{%endblock%}
+{%block content%}
+	<div id="planning-area">
+		{{form}}
+	</div>
+	<div id ="results-area">
+		<div id ="terms-container">
+			<textarea rows="20" cols="20" id="terms"></textarea>
+		</div>
+		<div id="docs-container"><ul id="docs"></ul></div>
+	</div>
+{%endblock%}

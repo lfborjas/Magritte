@@ -9,6 +9,9 @@ from djapian import load_indexes
 load_indexes()
 
 urlpatterns = patterns('',
+                       (r'^$', 'prototype.views.index'),
+                       (r'^getTerms/$', 'service.views.get_terms'),
+                       (r'^search/', include('search.urls')),
     # Example:
     # (r'^lebrixen/', include('lebrixen.foo.urls')),
 

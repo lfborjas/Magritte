@@ -74,13 +74,13 @@ MIDDLEWARE_CLASSES = (
     #'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = 'lebrixen.urls'
+ROOT_URLCONF = 'urls'#ROOT_URLCONF = 'lebrixen.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(ROOT_PATH, 'templates')
+    # Don't forget to use absolute paths, not relative paths.    
+    os.path.join(ROOT_PATH, 'prototype','templates'),
 )
 
 INSTALLED_APPS = (
