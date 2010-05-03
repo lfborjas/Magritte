@@ -2,7 +2,7 @@ var lastContext = "";
 var lastLength = 0;
 var triggerWords = 2;
 var spaceBarCode = 32;
-var wordsDiff = 5; //the word count interval in which to trigger the event
+var wordsDiff = 2; //the word count interval in which to trigger the event
 var diff = 0;
 //var words = 0;
 

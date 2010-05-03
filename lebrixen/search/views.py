@@ -1,5 +1,4 @@
 # Create your views here.
-from search.index import DocumentIndexer
 from django.http import HttpResponse, HttpResponseBadRequest
 try:
     import libjson2 as jsonlib
@@ -15,7 +14,7 @@ def do_search(query, lang):
     logging.debug('Using indexer %s' % indexer)    
     search_results = indexer.search(query).prefetch()
     logging.debug('ResultSet %s' % search_results)
-    search_results._stemming_lang=lang    
+    #search_results._stemming_lang=lang    
     #serialize:
     return jsonlib.dumps([{'id': hit.instance.pk,
                            'title': hit.instance.title,
