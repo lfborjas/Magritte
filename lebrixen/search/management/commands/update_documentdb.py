@@ -25,6 +25,13 @@ SYS_DATE_FORMAT = "%a %B %d %H:%M:%S %Y"
 DB_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 from datetime import datetime
 parser = HTMLParser()
+import logging
+logging.basicConfig(
+        level = logging.DEBUG,
+        format = '%(asctime)s %(levelname)s %(message)s',
+        filename = 'doc_update.log',
+        filemode = 'w'
+    )
 
 def gettextonly(soup):
     """Recursively gather the text in a page.
@@ -38,7 +45,7 @@ def gettextonly(soup):
             try:
                 subtext = parser.unescape(subtext)
             except:
-                print "Error scaping some html text..."
+                logging.error("Error parsing html file", exc_info = True)
             if subtext:
                 resulttext+=subtext+'\n'
         return resulttext
@@ -54,24 +61,32 @@ def cleanup(filename):
             if os.path.exists(txtfile):
                 return open(txtfile, 'r').read()
             else:
-                print "pdftotext succeeded, but somehow %s can't be found..." % txtfile
+                logging.error( "pdftotext succeeded, but somehow %s can't be found..." % txtfile, exc_info = True)
+                return ""
         else:
-            print "Error converting file %s to plain text" % filename
+            logging.error( "Error converting file %s to plain text" % filename, exc_info = True)
             return ""
         
     elif 'HTML' in filename:
         #first, create the soup and remove nasty stuff (comments, inline js and css, etc)
-        f = open(filename, 'r')
-        soup=BeautifulSoup(f.read())
-        f.close()
+        try:
+            f = open(filename, 'r')
+            soup=BeautifulSoup(f.read())
+            f.close()
+        except:
+            logging.error("Error parsing file %s as html" %filename, exc_info=True)
         #remove comments, inline js and css:
-        comments = soup.findAll(text=lambda text:isinstance(text, Comment))\
-         + soup.findAll(name=IGNORED_TAGS)
-        [comment.extract() for comment in comments]        
-        return gettextonly(soup) 
-    
+        try:        
+            comments = soup.findAll(text=lambda text:isinstance(text, Comment))\
+            + soup.findAll(name=IGNORED_TAGS)
+            [comment.extract() for comment in comments]
+            txt = gettextonly(soup)       
+            return txt
+        except:
+            logging.error("Error cleaning html in file %s" %filename, exc_info=True)
+            return ""
     else:
-        print "Unknown type for file %s" %filename
+        logging.error( "Unknown type for file %s" %filename)
         return ""
     
 
@@ -85,31 +100,39 @@ class Command(BaseCommand):
     
     def handle(self, dir=os.path.join(settings.DATA_PATH, 'Top'), *args, **options):
         c = 0
+        p = 0
         for dirpath, dirnames, filenames in os.walk(dir):
             for filename in filenames:
                 try:
                     f = open(os.path.join(dirpath, filename), 'r')
                     info = json.load(f)
                     f.close()
-                except Exception as e:
-                    traceback.print_exc()
-                    raise CommandError('Exception "%s" while json-decoding file %s' % (e.message, filename))
+                except Exception as e:                    
+                    logging.error('Exception "%s" while json-decoding file %s' % (e.message, filename), exc_info = True)
                 #get the category:
                 try:
                     cat = DmozCategory.objects.get(Q(topic_id='Top/%s'%info['category'][:-1]) | Q(es_alt='Top/%s'%info['category'][:-1]))
                 except MultipleObjectsReturned:
-                    print "There are multiple entries for category Top/%s !" %info['category']
+                    logging.error("There are multiple entries for category Top/%s !" %info['category'])
                     cat = None
                 except DmozCategory.DoesNotExist:
-                    print "There is no such category: Top/%s !" %info['category']
+                    logging.error("There is no such category: Top/%s !" %info['category'])
                     cat = None
                 
                 #create
+                date_added = None
+                try:
+                    date_added = datetime.strftime(datetime.strptime(info.get('retrieved_on', time.asctime()), '%a %b %d %H:%M:%S %Y'),\
+                                                     '%Y-%m-%d %H:%M:%S')
+                except:
+                    logging.error("Error parsing date for file %s"%filename)
+                    date_added = datetime.strftime(datetime.strptime(time.asctime(), '%a %b %d %H:%M:%S %Y'),\
+                                                     '%Y-%m-%d %H:%M:%S')
+                    
                 attrs = {'title':info.get('name',''),
                          'origin':info.get('url',''),
                          'summary':info.get('description',''),                         
-                         'added': datetime.strftime(datetime.strptime(info.get('retrieved_on', time.asctime()), '%a %b %d %H:%M:%S %Y'),\
-                                                     '%Y-%m-%d %H:%M:%S'),
+                         'added': date_added,
                          'type':info.get('type', 'html'),     
                          'text':'',
                          'lang': info.get('lang', 'en'),                                                                 
@@ -123,13 +146,17 @@ class Command(BaseCommand):
                     content = cleanup(info['content'].replace('$HOME', os.environ['HOME']))
                     if content:
                         attrs.update({'text':content})                    
+                    else:
+                        logging.info("No content could be parsed from file %s" %filename)
                 else:
-                    print "Document surrogate %s has no content!" % filename
+                    logging.info("Document surrogate %s has no content!" % filename)
                 try:
                     create_or_update(attrs,{'origin': attrs['origin']},DocumentSurrogate, False)
-                except Exception, e:
-                    raise CommandError("Exception %s while saving file %s to db" % (e.message,filename))
-                c += 1
+                    if 'text' in attrs and attrs['text']:
+                        c +=1
+                except Exception:
+                    logging.error("Exception while saving file %s to db" % filename, exc_info=True)
+                p += 1
                 
-        print "Added %s documents to the database" % c
+        logging.info( "Parsed %s documents \n And added %s documents to the database" % (p,c))
         
