@@ -1,12 +1,12 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from djapian import load_indexes
+import djapian
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
 #load the djapian indexes:
-load_indexes()
+djapian.load_indexes()
 
 urlpatterns = patterns('',
                        (r'^$', 'prototype.views.index'),

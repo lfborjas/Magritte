@@ -11,8 +11,9 @@ function extractTerms(){
 			{context: $('#id_content').val(),lang: $('#id_lang').val(), service:$('#id_service').val()},
 			function(data){
 				if(data){
-					$('#terms').val(data.terms);
+					$('#terms').val(data.terms);					
 					$('#terms').effect('highlight');
+					$('#terms').trigger('change');
 				}
 			},
 			'json'
@@ -37,7 +38,22 @@ function detectContextChange(e){
 	   }
 }
 
+function doQuery(e){
+	$.get('/search/',
+			{q: $('#terms').val(), hl: $('#id_lang').val()},
+			function(data){
+				$.each(data, function(index, hit){					
+					$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
+									   '<a target="_blank" href="'+hit.url+'"><strong>'+hit.title+'</strong></a>'+									    
+									   '<p>'+hit.summary+'</p>'+									   
+									 '</li>');
+					$('#docs').effect('highlight');
+				});
+			},
+			'json')
+}
 $(document).ready(function() {
 	/*When the words in the content area reach a treshold, call the extract terms event*/
    $('#id_content').keyup(detectContextChange);
+   $('#terms').change(doQuery);
 });

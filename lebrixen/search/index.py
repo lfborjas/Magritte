@@ -4,6 +4,7 @@ from search.models import DocumentSurrogate
 
 class DocumentIndexer(Indexer):
     fields = ['title', 'summary', 'text']
+    #TODO: add the date tag, to do an order_by and stuff    
     tags = [
             ('title', 'title', 3),
             ('summary', 'summary',2),
