@@ -50,7 +50,7 @@ function doQuery(){
 				if(!data){
 					$('#docs-title').hide();
 				}else{
-					$('#docs-title').show();
+					$('#docs-title').show().append(" ("+data.length+")");
 				}
 				$.each(data, function(index, hit){					
 					$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+

@@ -1,5 +1,6 @@
 {%extends "base.html"%}
 {#{%load i18n%}#}
+{%block title%}Prototipo de recomendación{%endblock%}
 {%block stylesheets%}
 	<link rel="stylesheet" type="text/css" href="/static/css/prototype.css" media="screen" />
 {%endblock%}
@@ -8,8 +9,8 @@
 {%endblock%}
 {%block content%}
 	<div id="branding">
-		<h1>Recommender Prototype</h1>
-		<p>Created to show how the automatic term extraction and search work.</p>
+		<h1>Protipo de recomendación</h1>
+		<p>Sólo para mostrar cómo funcionan la extracción automática y la búsqueda</p>
 	</div>
 	<div id="content-center">
 		<div id="planning-area">
@@ -17,10 +18,10 @@
 		</div>
 		<div id ="results-area">
 			<div id ="terms-container">	
-				<h2 id="terms-title">Terms Extracted</h2>		
+				<h2 id="terms-title">Términos clave extraídos</h2>		
 				<textarea rows="4" cols="20" id="terms" readonly="readonly"></textarea>
 			</div>
-			<h2 id="docs-title">Recommended Documents</h2>
+			<h2 id="docs-title">Documentos Recomendados</h2>
 			<div id="docs-container">						
 			</div>
 		</div>
