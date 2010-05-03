@@ -7,14 +7,20 @@
 	<script type="text/javascript" src="/static/js/prototype/index.js" ></script>
 {%endblock%}
 {%block content%}
-	<div id="planning-area">
-		{{form}}
+	<div id="branding">
+		<h1>Recommender Prototype</h1>
+		<p>Created to show how the automatic term extraction and search work.</p>
 	</div>
-	<div id ="results-area">
-		<div id ="terms-container">			
-			<textarea rows="4" cols="20" id="terms" readonly="readonly"></textarea>
+	<div id="content-center">
+		<div id="planning-area">
+			{{form}}
 		</div>
-		<div id="docs-container">			
+		<div id ="results-area">
+			<div id ="terms-container">			
+				<textarea rows="4" cols="20" id="terms" readonly="readonly"></textarea>
+			</div>
+			<div id="docs-container">			
+			</div>
 		</div>
 	</div>
 {%endblock%}
