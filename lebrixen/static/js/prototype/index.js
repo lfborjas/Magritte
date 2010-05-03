@@ -7,18 +7,20 @@ var diff = 0;
 //var words = 0;
 
 function extractTerms(){
-	$.get('/getTerms/',
-			{context: $('#id_content').val(),lang: $('#id_lang').val(), service:$('#id_service').val()},
-			function(data){
-				if(data){
-					$('#terms').val(data.terms);					
-					$('#terms').effect('highlight');
-					//$('#terms').trigger('change');
-					doQuery();
-				}
-			},
-			'json'
-			);
+	if($('#id_content').val()){
+		$.get('/getTerms/',
+				{context: $('#id_content').val(),lang: $('#id_lang').val(), service:$('#id_service').val()},
+				function(data){
+					if(data){
+						$('#terms').val(data.terms);					
+						$('#terms').effect('highlight');
+						//$('#terms').trigger('change');
+						doQuery();
+					}
+				},
+				'json'
+		);
+	}
 }
 
 /*Be as lazy as possible in context detection, but determine it efectively*/
@@ -58,5 +60,6 @@ $(document).ready(function() {
 	/*When the words in the content area reach a treshold, call the extract terms event*/
    $('#id_content').keyup(detectContextChange);
    //$('#terms').change(doQuery);
+   $('#id_service').change(extractTerms);
    return false;
 });
