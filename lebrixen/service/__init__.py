@@ -158,7 +158,9 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
             retval += [t['name'] for t in res.entities] if hasattr(res, 'entities') else []
             return retval
         else:
-            raise WebServiceException(service, 'No topics or entities found')
+            #raise WebServiceException(service, 'No topics or entities found')
+            logging.info("OpenCalais didn't return topics|entities for %s" %text)
+            return ["",]
     elif service == 'extractor':
         #use the python interface
         logging.debug('using the extractor interface with key %s' % apikey)
@@ -177,16 +179,17 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
 
     #2. Try to call the service:
     resp = None
-    try:
-        logging.debug('requesting %s' % WEB_SERVICES[service]+'?%s'%urlencode(query))
+    logging.debug('requesting %s' % WEB_SERVICES[service]+'?%s'%urlencode(query))
+    try:        
         resp_url = urlopen(WEB_SERVICES[service], urlencode(query))
         resp = resp_url.read()
-        logging.debug( "%s returned %s" % (service, resp))
+        #this causes the exception...
+        logging.debug( u"%s returned %s" % (service, resp))        
     except Exception as e:
         #TODO: retry in timeouts and stuff
         logging.debug('Error in request: %s' % e)
         pass
-
+            
     #3. Process the response:    
     if resp:
         result = ''

@@ -7,13 +7,14 @@ except ImportError:
 from search.models import DocumentSurrogate
 from django.core.serializers import serialize
 import logging
+import xapian
 
 def do_search(query, lang):
     """Abstract the search mechanism from the view"""
     indexer = DocumentSurrogate.indexer
-    logging.debug('Using indexer %s' % indexer)    
+    logging.debug('Using indexer %s' % indexer)     
     search_results = indexer.search(query).prefetch()
-    logging.debug('ResultSet %s' % search_results)
+    logging.debug('ResultSet %s for query %s' % (search_results, query))
     #search_results._stemming_lang=lang    
     #serialize:
     return jsonlib.dumps([{'id': hit.instance.pk,
