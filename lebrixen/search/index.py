@@ -1,5 +1,5 @@
 from djapian import space, Indexer, CompositeIndexer
-
+import logging
 from search.models import DocumentSurrogate
 
 class DocumentIndexer(Indexer):
@@ -12,3 +12,8 @@ class DocumentIndexer(Indexer):
             ]
 
 space.add_index(DocumentSurrogate, DocumentIndexer, attach_as='indexer')
+
+try:
+    DocumentSurrogate.indexer.update()
+except Exception, e:
+    logging.error(e.message)

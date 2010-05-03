@@ -12,7 +12,7 @@ import logging
 def do_search(query, lang):
     """Abstract the search mechanism from the view"""
     indexer = DocumentSurrogate.indexer
-    logging.debug('Using indexer %s' % indexer)
+    logging.debug('Using indexer %s' % indexer)    
     search_results = indexer.search(query).prefetch()
     logging.debug('ResultSet %s' % search_results)
     search_results._stemming_lang=lang    
@@ -34,7 +34,7 @@ def search_docs(request):
     #the language defaults to english
     lang = request.REQUEST.get('hl') or 'en'
     
-    #search: assume the results are already json encoded
+    #search: assume the results are already json encoded    
     results = do_search(query, lang)    
     return HttpResponse(results, mimetype="application/json")
     
