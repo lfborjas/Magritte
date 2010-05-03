@@ -1,0 +1,17 @@
+#planning-area{
+	float: left;
+	width: 60%;
+}
+
+#results-area{
+	float: right;
+	width: 37%;	
+}
+
+#id_content{
+	width: 100%;
+}
+
+#terms{
+	display: none;
+}
