@@ -63,7 +63,7 @@ class Command(BaseCommand):
         for category in categories:
             #get the topic in the tree which pertains to this topic:
             #NEEDS ELEMENT TREE 1.3
-            topic = tree.find("{%s}Topic[@{%s}id='%s']" % (ROOT_SPEC, r,category.topic_id))
+            topic = tree.find('{%s}Topic[@{%s}id="%s"]' % (ROOT_SPEC, r,category.topic_id))
             narrow_topics = []
             if topic:
                 narrow_topics = topic.findall('{%s}narrow' % ROOT_SPEC)+topic.findall('{%s}narrow1' % ROOT_SPEC) +\
