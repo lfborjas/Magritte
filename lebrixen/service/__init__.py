@@ -238,13 +238,20 @@ def build_query(text, extra_query='', language='', use_web_service = False, web_
         #currently, there's a bug in the topia software which initializes incorrectly if
         #another tagger is passed in the constructor
         extractor = extract.TermExtractor()
+        #tweak the extractor filter:
+        extractor.filter = extract.permissiveFilter
         #extract terms from the text:
-        query_terms = extractor(text)
+        query_tuples = extractor(text)
+        #the extractor returns tuples, we only need strings:
+        logging.debug("Topia term extractor suggested: %s" % query_tuples)
+        query_terms = [e[0] for e in query_tuples]
     else:
         #if not in english, use a webservice to get the terms:
         query_terms = web_extract_terms(text, extra_query, service=web_service)
 
-    return extra_query + u' '.join(query_terms) 
+    return extra_query + u' '.join(query_terms)
+
+     
 
 
         
