@@ -15,7 +15,7 @@ body{
 	width: 100%;
 }
 
-#terms, #docs{
+#terms, #docs, #terms-title, #docs-title{
 	display: none;
 }
 
@@ -65,4 +65,8 @@ label {
 #docs-container p{
 	color: #8e846b;
 	font-style: italic;
+}
+
+#terms-title, #docs-title{
+	color: #fece2f;
 }

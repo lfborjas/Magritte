@@ -11,7 +11,8 @@ function extractTerms(){
 		$.get('/getTerms/',
 				{context: $('#id_content').val(),lang: $('#id_lang').val(), service:$('#id_service').val()},
 				function(data){
-					if(data){
+					if(data){					
+						$('#terms-title').show();						
 						$('#terms').val(data.terms);					
 						$('#terms').effect('highlight');
 						//$('#terms').trigger('change');
@@ -46,6 +47,11 @@ function doQuery(){
 			{q: $('#terms').val(), hl: $('#id_lang').val()},
 			function(data){
 				$('#docs-container').html("");
+				if(!data){
+					$('#docs-title').hide();
+				}else{
+					$('#docs-title').show();
+				}
 				$.each(data, function(index, hit){					
 					$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
 									   '<a target="_blank" href="'+hit.url+'"><strong>'+hit.title+'</strong></a>'+									    
