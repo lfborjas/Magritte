@@ -43,8 +43,8 @@ function doQuery(){
 	$.get('/search/',
 			{q: $('#terms').val(), hl: $('#id_lang').val()},
 			function(data){
-				$.each(data, function(index, hit){
-					$('#docs-container').html("");
+				$('#docs-container').html("");
+				$.each(data, function(index, hit){					
 					$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
 									   '<a target="_blank" href="'+hit.url+'"><strong>'+hit.title+'</strong></a>'+									    
 									   '<p>'+hit.summary+'</p>'+									   
