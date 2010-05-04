@@ -55,7 +55,11 @@ def gettextonly(soup):
 def cleanup(filename):
     """Takes a filename and, depending on it's being a pdf or an html page, returns relevant raw text"""
     if 'PDF' in filename:
-        retcode = subprocess.call(['pdftotext', filename])
+        try:
+            retcode = subprocess.call(['pdftotext', filename])
+        except:
+            logging.error("Error calling pdftotext", exc_info = True)
+            retcode = 1
         if retcode == 0:
             txtfile = filename.replace('pdf', 'txt')
             if os.path.exists(txtfile):
@@ -75,16 +79,17 @@ def cleanup(filename):
             f.close()
         except:
             logging.error("Error parsing file %s as html" %filename, exc_info=True)
-        #remove comments, inline js and css:
-        try:        
-            comments = soup.findAll(text=lambda text:isinstance(text, Comment))\
-            + soup.findAll(name=IGNORED_TAGS)
-            [comment.extract() for comment in comments]
-            txt = gettextonly(soup)       
-            return txt
-        except:
-            logging.error("Error cleaning html in file %s" %filename, exc_info=True)
             return ""
+        else:            
+            try:        
+                comments = soup.findAll(text=lambda text:isinstance(text, Comment))\
+                + soup.findAll(name=IGNORED_TAGS)
+                [comment.extract() for comment in comments]
+                txt = gettextonly(soup)       
+                return txt
+            except:
+                logging.error("Error cleaning html in file %s" %filename, exc_info=True)
+                return ""
     else:
         logging.error( "Unknown type for file %s" %filename)
         return ""
@@ -139,7 +144,7 @@ class Command(BaseCommand):
                          }
                 if cat:
                     attrs.update({'category_id': cat.pk})
-                    
+                                    
                 #get the contents from a file:
                 #THIS ONE USES A LOOOT OF MEMORY!
                 if info.get('content'):
@@ -159,4 +164,19 @@ class Command(BaseCommand):
                 p += 1
                 
         logging.info( "Parsed %s documents \n And added %s documents to the database" % (p,c))
+        logging.info("Now, trying to index them...")
+        try:
+            subprocess.call(['%s/manage.py' % os.environ['PWD'], 'index', '--rebuild'])
+        except:
+            logging.error("Error indexing the files", exc_info = True)
+        finally:
+            logging.info("Files loaded and indexed!")
+        try:
+            import smtplib
+            mailer = smtplib.SMTP()
+            mailer.connect()
+            mailer.sendmail('root@localhost', 'lfborjas@unitec.edu',
+                             "Parsed %s documents \n And added %s documents to the database" % (p,c))
+        except:
+            logging.info("Could not send mail... :(")
         
