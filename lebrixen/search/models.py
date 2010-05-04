@@ -6,8 +6,8 @@ class DocumentSurrogate(models.Model):
                ('pdf', 'Portable Document Format (pdf)'),
                ('html', 'Hypertext Markup Language File (html)'),
                )
-    title = models.CharField(max_length=255)
-    origin = models.URLField(blank = True, default="", max_length=512)
+    title = models.CharField(max_length=255, db_index = True)
+    origin = models.URLField(blank = True, default="", max_length=512, db_index = True)
     summary = models.TextField(blank = True, default="")
     text = models.TextField(blank = True, default="")
     added = models.DateTimeField(null=True, default=asctime)
