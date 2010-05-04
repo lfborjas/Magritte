@@ -164,4 +164,19 @@ class Command(BaseCommand):
                 p += 1
                 
         logging.info( "Parsed %s documents \n And added %s documents to the database" % (p,c))
+        logging.info("Now, trying to index them...")
+        try:
+            subprocess.call(['%s/manage.py' % os.environ['PWD'], 'index', '--rebuild'])
+        except:
+            logging.error("Error indexing the files", exc_info = True)
+        finally:
+            logging.info("Files loaded and indexed!")
+        try:
+            import smtplib
+            mailer = smtplib.SMTP()
+            mailer.connect()
+            mailer.sendmail('root@localhost', 'lfborjas@unitec.edu',
+                             "Parsed %s documents \n And added %s documents to the database" % (p,c))
+        except:
+            logging.info("Could not send mail... :(")
         
