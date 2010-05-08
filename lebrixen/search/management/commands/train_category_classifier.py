@@ -16,7 +16,7 @@ class Command(NoArgsCommand):
     
     def handle_noargs(self, **options):
         #instance the xappy indexer connection
-        i_connection = xappy.IndexerConnection(settings.CATEGORY_CLASIFFIER_DATA)
+        i_connection = xappy.IndexerConnection(settings.CATEGORY_CLASSIFIER_DATA)
         #determine the fields for indexing:
         i_connection.add_field_action('description', xappy.FieldActions.INDEX_FREETEXT, weight=2, language='en', nopos=True)
         i_connection.add_field_action('en_text', xappy.FieldActions.INDEX_FREETEXT, language='en', nopos=True)
@@ -31,7 +31,7 @@ class Command(NoArgsCommand):
         for category in categories:
             logging.debug("Processing category %s" %category.topic_id)
             u_doc = xappy.UnprocessedDocument()
-            u_doc.fields.append(xappy.Field('category_id',category.pk))
+            u_doc.fields.append(xappy.Field('category_id',str(category.pk)))
             u_doc.fields.append(xappy.Field('category_title',category.topic_id))
             u_doc.fields.append(xappy.Field('description', strip_tags(category.description)))
             #add each document to the corresponding text of the category
