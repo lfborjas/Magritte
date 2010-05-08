@@ -138,7 +138,7 @@ DATA_PATH = os.path.join(os.environ['HOME'], 'Magritte', 'data')
 ONTOLOGY_FILE = os.path.join(DATA_PATH, '2010-03-04_science_sub-structure.rdf.u8')
 #settings for djapian:
 DJAPIAN_DATABASE_PATH = os.path.join(DATA_PATH, 'djapian_spaces')
-
+CATEGORY_CLASSIFIER_DATA = os.path.join(DATA_PATH, 'category_classifier_data')
 try:
     from local_settings import *
 except:

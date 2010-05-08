@@ -1,5 +1,8 @@
 from django.db import models
 from time import asctime
+from django.conf import settings
+import xappy
+import logging
 # Create your models here.
 class DocumentSurrogate(models.Model):
     DOCTYPES =(
@@ -29,3 +32,28 @@ class DmozCategory(models.Model):
     description = models.TextField(null = True)
     parent = models.ForeignKey('self', null = True)
     es_alt = models.CharField(max_length = 320, blank = True, default = "") #the alternate in spanish
+    
+    @classmethod
+    def get_for_query(cls, query, lang='en'):
+        """Given a query, find out to which categories it most probably belongs to"""
+        
+        #cf. http://xappy.org/docs/0.5/introduction.html
+        
+        s_conn = xappy.SearchConnection(settings.CATEGORY_CLASSIFIER_DATA)
+        #TODO: use a setting for this:
+        lang = lang if lang in ['en', 'es'] else 'en'
+        #query = s_conn.spell_correct(query, allow=['%s_text'%lang,])
+        xapian_query = s_conn.query_field('%s_text' % lang, query)
+        results = s_conn.search(xapian_query, 0, 10) #only search the best matches
+        rval = []
+        logging.debug("Categories matching %s" % query)
+        for result in results:            
+            logging.debug("Category: %s, relevance: %s" % (result.data['category_title'], result.rank))
+            rval += [{'category_id': result.data['category_id'],
+                      'category_title': result.data['category_title'],
+                      'relevance': result.rank},]
+        if not rval:
+            logging.debug("No categories match query %s" % query)
+            #TODO: try correcting spelling ?
+        s_conn.close()    
+        return rval
