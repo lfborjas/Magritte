@@ -41,7 +41,8 @@ class Command(NoArgsCommand):
                                                     document.summary or ''+
                                                     document.title or ''))
                 except:
-                    logging.error("Error processing document %s" %document.title, exc_info = True)
+                    logging.error("Error processing document %s for category %s" %(document.title, category.topic_id),
+                                   exc_info = True)
                     continue
             #add the document
             i_connection.add(u_doc)
