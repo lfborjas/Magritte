@@ -92,7 +92,7 @@ INSTALLED_APPS = (
     'djapian',   
     'search',
     'service',		
-    #'profile',
+    'profile',
 )
 
 #settings for celery:
@@ -139,6 +139,9 @@ ONTOLOGY_FILE = os.path.join(DATA_PATH, '2010-03-04_science_sub-structure.rdf.u8
 #settings for djapian:
 DJAPIAN_DATABASE_PATH = os.path.join(DATA_PATH, 'djapian_spaces')
 CATEGORY_CLASSIFIER_DATA = os.path.join(DATA_PATH, 'category_classifier_data')
+
+#for AES encryption
+AES_KEY = 'f7dbe0526690458fa7d22f67c8e55747'
 try:
     from local_settings import *
 except:
