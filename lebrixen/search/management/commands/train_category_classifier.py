@@ -44,12 +44,20 @@ class Command(NoArgsCommand):
                     logging.error("Error processing document %s for category %s" %(document.title, category.topic_id),
                                    exc_info = True)
                     continue
-            #add the document
-            i_connection.add(u_doc)
-            #commit the changes to the db
-            i_connection.flush()
-            logging.debug("Done with category %s" % category.topic_id)
             
+            #add the category
+            try:
+                i_connection.add(u_doc)
+            except:
+                #use the replace method?
+                logging.error("Error adding document %s for category %s to index" % (document.title, category.topic_id),
+                              exc_info = True)
+            #commit the changes to the db
+            #i_connection.flush()
+            logging.debug("Done with category %s" % category.topic_id)
+        
+        #commit the changes to the db (I'm HOPING that it will auto-flush if too much memory is used...)
+        i_connection.flush()
         #close the connection to the xappy db:
         i_connection.close()
         logging.debug("Finished indexing categories")
