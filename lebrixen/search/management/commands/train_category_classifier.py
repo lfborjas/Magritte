@@ -56,17 +56,23 @@ class Command(NoArgsCommand):
             #i_connection.flush()
             logging.debug("Done with category %s" % category.topic_id)
         
-        #commit the changes to the db (I'm HOPING that it will auto-flush if too much memory is used...)
-        i_connection.flush()
-        #close the connection to the xappy db:
-        i_connection.close()
+        try:
+            #commit the changes to the db (I'm HOPING that it will auto-flush if too much memory is used...)
+            i_connection.flush()
+            #close the connection to the xappy db:
+            i_connection.close()
+            success = True
+        except:
+            logging.error("Exception closing database", exc_info = True)
+            success = False
+            
         logging.debug("Finished indexing categories")
         try:
             import smtplib
             mailer = smtplib.SMTP()
             mailer.connect()
             mailer.sendmail('root@localhost', 'lfborjas@unitec.edu',
-                             'Finished indexing categories')
+                             'Finished indexing categories' if success else 'Error indexing categories!')
         except:
             logging.error("Could not send mail", exc_info = True)
                 
