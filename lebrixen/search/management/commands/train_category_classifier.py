@@ -27,7 +27,7 @@ class Command(NoArgsCommand):
         i_connection.add_field_action('category_title', xappy.FieldActions.STORE_CONTENT)
                 
         #for every category, get the documents that belong to it:
-        categories = DmozCategory.objects.all()
+        categories = DmozCategory.objects.iterator()
         for category in categories:
             logging.debug("Processing category %s" %category.topic_id)
             u_doc = xappy.UnprocessedDocument()
@@ -35,7 +35,7 @@ class Command(NoArgsCommand):
             u_doc.fields.append(xappy.Field('category_title',category.topic_id))
             u_doc.fields.append(xappy.Field('description', strip_tags(category.description)))
             #add each document to the corresponding text of the category
-            for document in category.documentsurrogate_set.all(): #instead of all, an exclude(text='') ?
+            for document in category.documentsurrogate_set.iterator(): #instead of all, an exclude(text='') ?
                 try:
                     u_doc.fields.append(xappy.Field('%s_text' % (document.lang or 'en'), document.text or '' + 
                                                     document.summary or ''+

@@ -19,7 +19,7 @@ class Command(NoArgsCommand):
         maxcount = max(docs, key=lambda x: x['ccount'])['ccount']
         
         #set the utility of the categories relative to that size
-        categories = DmozCategory.objects.all().iterator()
+        categories = DmozCategory.objects.iterator()
         for category in categories: 
             category_docs = category.documentsurrogate_set.count()
             category.weight = 1 / (maxcount / category_docs) if category_docs else 0
