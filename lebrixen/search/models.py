@@ -53,11 +53,11 @@ class DmozCategory(models.Model):
         rval = {}
         logging.debug("Categories matching %s" % query)
         for result in results:            
-            logging.debug("Category: %s, relevance: %s" % (result.data['category_title'], result.rank))
+            logging.debug("Category: %s, relevance: %s, id: %s" % (result.data['category_title'], result.rank, result.data['category_id']))
             #rval += [{'category_id': result.data['category_id'],
             #          'category_title': result.data['category_title'],
             #          'relevance': result.rank},]
-            rval.update({int(result.data['category_id']): result.rank})
+            rval.update({int(result.data['category_id'][0]): result.rank})
         
         s_conn.close()
         if not rval:
@@ -67,10 +67,11 @@ class DmozCategory(models.Model):
         
         #get the categories and set their weight relative to the query:
         categories = cls.objects.filter(pk__in = rval.keys())
-        [setattr(category, 'relative_weight', rval[category.pk] * category.weight) for category in categories]
+        [setattr(category, 'relative_weight', (rval[category.pk]+1) * category.weight) for category in categories]
         #for category in categories:
         #    category.relative_weight = rval[category.pk] * category.weight
          
         return categories
              
-        
+    def __unicode__(self):
+        return u"%s (%s)" %(self.title, self.topic_id)    
