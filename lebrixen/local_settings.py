@@ -1,7 +1,7 @@
 #settings only for lfborjas-laptop:
 import os
 from settings import MIDDLEWARE_CLASSES, INSTALLED_APPS, DATA_PATH, DATABASE_ENGINE
-DEBUG = True
+DEBUG = False
 #in development, I use a sqlite db:
 #DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 #DATABASE_NAME = os.path.join(DATA_PATH,'lebrixen')             # Or path to database file if using sqlite3.
