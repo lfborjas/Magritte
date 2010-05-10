@@ -22,7 +22,7 @@ class Command(NoArgsCommand):
         categories = DmozCategory.objects.iterator()
         for category in categories: 
             category_docs = category.documentsurrogate_set.count()
-            category.weight = 1 / (maxcount / category_docs) if category_docs else 0
+            category.weight = 1 / (maxcount / category_docs) if category_docs else 1/maxcount
             category.save()
 
         
