@@ -57,7 +57,7 @@ class DmozCategory(models.Model):
             #rval += [{'category_id': result.data['category_id'],
             #          'category_title': result.data['category_title'],
             #          'relevance': result.rank},]
-            rval.update({int(result.data['category_id'][0]): result.weigth})
+            rval.update({int(result.data['category_id'][0]): result.weight})
         
         s_conn.close()
         if not rval:
