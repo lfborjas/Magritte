@@ -16,6 +16,8 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         #get the maximum number of documents any category has
         docs = DocumentSurrogate.objects.values('category').annotate(ccount=Count('category')).iterator()
+        #docs me da info de la cantidad de docs por categoría, así que puedo trabajar con esto... (y quizá un
+        #iterador en las categorías
         maxcount = max(docs, key=lambda x: x['ccount'])['ccount']
         
         #set the utility of the categories relative to that size

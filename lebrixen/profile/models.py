@@ -47,7 +47,7 @@ class ClientApp(models.Model):
     
 class ClientUser(models.Model):
     app = models.ForeignKey(ClientApp)
-    clientId = models.CharField(max_length = 320)
+    clientId = models.CharField(max_length = 320) #the unique id in the app's db
     clientName = models.CharField(max_length=320, blank = True, default="")
     info = models.TextField(blank = True, default = "")
     
@@ -55,3 +55,8 @@ class ClientPreference(models.Model):
     user = models.ForeignKey(ClientUser)
     category = models.ForeignKey(Category)
     score = models.FloatField()
+    
+class ClientSession(models.Model):
+    user = models.ForeignKey(ClientUser)
+    date = models.DateField(auto_now_add = True)
+    documents = models.CommaSeparatedIntegerField(max_length = 255)
