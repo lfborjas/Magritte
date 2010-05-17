@@ -28,11 +28,13 @@ class Command(NoArgsCommand):
             for sc in sub_categories:
                 #if it has no documents, count the category as a document
                 s += sc.documentsurrogate_set.count() or 1            
-            
+            #logging.debug("Category %s has %s documents" % (category.topic_id, s))
             for sc in sub_categories:
                 sub_docs = sc.documentsurrogate_set.count()
                 #give a minimum non-zero weight if this category has no documents:
-                sc.weight = sub_docs / s if sub_docs else 1 / s
+                #sc.weight = sub_docs / s if sub_docs else 1 / s
+                #logging.debug("From a total of %s, category %s has %s documents (%s percent)" % (s, sc.topic_id, sub_docs, sub_docs/s*100))
+                sc.weight = 1 - sub_docs / s 
                 sc.save()
             c += 1
         
