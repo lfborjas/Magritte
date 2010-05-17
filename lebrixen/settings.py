@@ -3,7 +3,7 @@ import os
 import logging
 #import socket
 # Django settings for lebrixen project.
-DEBUG = True
+DEBUG = False 
 TEMPLATE_DEBUG = DEBUG
 DEFAULT_CHARSET = 'utf-8'
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -123,7 +123,7 @@ else:
     logging.basicConfig(
         level = logging.INFO,
         format = '%(asctime)s %(levelname)s %(message)s',
-        filename = '/tmp/lebrixen.log',
+        filename = 'lebrixen.log',
         filemode = 'w'
     )
 
