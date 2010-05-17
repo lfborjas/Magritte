@@ -28,6 +28,7 @@ class Command(NoArgsCommand):
                 
         #for every category, get the documents that belong to it:
         categories = DmozCategory.objects.iterator()
+        c = 0
         for category in categories:
             logging.debug("Processing category %s" %category.topic_id)
             u_doc = xappy.UnprocessedDocument()
@@ -40,20 +41,28 @@ class Command(NoArgsCommand):
                     u_doc.fields.append(xappy.Field('%s_text' % (document.lang or 'en'), document.text or '' + 
                                                     document.summary or ''+
                                                     document.title or ''))
+                    c += 1
                 except:
                     logging.error("Error processing document %s for category %s" %(document.title, category.topic_id),
                                    exc_info = True)
                     continue
             
             #add the category
-            try:
+            try:                
                 i_connection.add(u_doc)
             except:
                 #use the replace method?
                 logging.error("Error adding document %s for category %s to index" % (document.title, category.topic_id),
                               exc_info = True)
             #commit the changes to the db
-            #i_connection.flush()
+            if c > 10000:
+                logging.debug("Flushing %s changes" % c)
+                c = 0
+                try:                
+                    i_connection.flush()                    
+                except:
+                    logging.error("Error flushing mid-indexing changes to db", exc_info = True)
+                    pass
             logging.debug("Done with category %s" % category.topic_id)
         
         try:

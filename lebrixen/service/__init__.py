@@ -1,8 +1,8 @@
 #utility functions to support the web service
 try:
-	import json
+    import json
 except:
-	import simplejson as json
+    import simplejson as json
 from django.http import HttpResponse
 from topia.termextract import extract
 from django.utils.html import strip_tags
@@ -16,6 +16,7 @@ from django.utils.encoding import smart_unicode
 import re, htmlentitydefs
 from calais import Calais
 from extractor import ExtractorService
+import validate_jsonp
 
 #some more listed here: http://en.wikipedia.org/wiki/Term_extraction
 #and here: http://maui-indexer.blogspot.com/2009/07/useful-web-resources-related-to.html
@@ -255,7 +256,34 @@ def build_query(text, extra_query='', language='', use_web_service = False, web_
     return extra_query + u' '.join(query_terms)
 
      
-
+def jsonp_view(v):
+    """Decorator, make a function return a jsonp compatible result
+	
+	    Given a regular view, find a callback in it's request and return
+        the result value wrapped in the callback function. 
+		
+		Args:
+			A regular django view that returns a json string
+		
+		Returns:
+			An HttpResponse with the same body as the original, but wrapped
+			in a call to the callback function
+     """
+     
+    def jsonp_transform(request, *args, **kwargs):
+        response = v(request, *args, **kwargs)
+        assert isinstance(response, HttpResponse), "The function MUST return an HttpResponse object"
+        if 'callback' in request.REQUEST:
+            cb = request.REQUEST['callback']
+            response['Content-type'] = 'application/json'
+            if not validate_jsonp.is_valid_jsonp_callback_value(cb):
+                raise Exception('%s is not a valid jsonp callback identifier' % cb)
+            response.content = u"%s(%s)" % (cb, response.content)
+            return response
+        else:
+            return response
+    
+    return jsonp_transform
 
         
 

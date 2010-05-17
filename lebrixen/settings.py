@@ -121,7 +121,7 @@ if DEBUG:
     )
 else:
     logging.basicConfig(
-        level = logging.INFO,
+        level = logging.DEBUG,
         format = '%(asctime)s %(levelname)s %(message)s',
         filename = 'lebrixen.log',
         filemode = 'w'
