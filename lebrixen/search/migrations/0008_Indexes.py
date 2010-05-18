@@ -1,26 +1,34 @@
-
+# encoding: utf-8
+import datetime
 from south.db import db
+from south.v2 import SchemaMigration
 from django.db import models
-from search.models import *
 
-class Migration:
+class Migration(SchemaMigration):
     
     def forwards(self, orm):
-        
-        # Adding field 'DocumentSurrogate.type'
-        db.add_column('search_documentsurrogate', 'type', orm['search.documentsurrogate:type'])
-        
+        try: 
+            # Adding index on 'DocumentSurrogate', fields ['origin']
+            db.create_index('search_documentsurrogate', ['origin'])
+
+            # Adding index on 'DocumentSurrogate', fields ['title']
+            db.create_index('search_documentsurrogate', ['title'])
+	except:
+	    pass
     
     
     def backwards(self, orm):
         
-        # Deleting field 'DocumentSurrogate.type'
-        db.delete_column('search_documentsurrogate', 'type')
-        
+        # Removing index on 'DocumentSurrogate', fields ['origin']
+        db.delete_index('search_documentsurrogate', ['origin'])
+
+        # Removing index on 'DocumentSurrogate', fields ['title']
+        db.delete_index('search_documentsurrogate', ['title'])
     
     
     models = {
         'search.dmozcategory': {
+            'Meta': {'object_name': 'DmozCategory'},
             'description': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'dmoz_code': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
             'es_alt': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '320', 'blank': 'True'}),
@@ -31,14 +39,15 @@ class Migration:
             'topic_id': ('django.db.models.fields.CharField', [], {'max_length': '320', 'db_index': 'True'})
         },
         'search.documentsurrogate': {
-            'added': ('django.db.models.fields.DateTimeField', [], {'default': "'Sun May  2 01:07:57 2010'", 'null': 'True'}),
+            'Meta': {'object_name': 'DocumentSurrogate'},
+            'added': ('django.db.models.fields.DateTimeField', [], {'default': "'Tue May  4 11:29:16 2010'", 'null': 'True'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['search.DmozCategory']", 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lang': ('django.db.models.fields.CharField', [], {'default': "'en'", 'max_length': '10'}),
-            'origin': ('django.db.models.fields.URLField', [], {'default': "''", 'max_length': '200', 'blank': 'True'}),
+            'origin': ('django.db.models.fields.URLField', [], {'default': "''", 'max_length': '512', 'db_index': 'True', 'blank': 'True'}),
             'summary': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             'text': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
             'type': ('django.db.models.fields.CharField', [], {'max_length': '10'})
         }
     }
