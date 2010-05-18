@@ -126,9 +126,10 @@ else:
     logging.basicConfig(
         level = logging.DEBUG,
         format = '%(asctime)s %(levelname)s %(message)s',
-        filename = 'lebrixen_%s.log' % date.today(),
+        filename = os.path.join(ROOT_PATH , 'lebrixen_%s.log' % date.today()),
         filemode = 'a'
-    )
+   )
+
 
 #how much time to wait before the index is rebuilt (in seconds)
 UPDATE_INDEX_INTERVAL = 10*60
@@ -137,7 +138,7 @@ UPDATE_INDEX_INTERVAL = 10*60
 DJAPIAN_STEMMING_LANG = "multi"
 
 #central repository for the data
-DATA_PATH = os.path.join(os.environ['HOME'], 'Magritte', 'data')
+DATA_PATH = os.path.join(os.environ.get('HOME', '/home/norman'), 'Magritte', 'data')
 ONTOLOGY_FILE = os.path.join(DATA_PATH, '2010-03-04_science_sub-structure.rdf.u8')
 #settings for djapian:
 DJAPIAN_DATABASE_PATH = os.path.join(DATA_PATH, 'djapian_spaces')

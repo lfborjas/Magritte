@@ -6,7 +6,7 @@ import djapian
 # admin.autodiscover()
 
 #load the djapian indexes:
-djapian.load_indexes()
+#djapian.load_indexes()
 
 urlpatterns = patterns('',
                        (r'^$', 'prototype.views.index'),
