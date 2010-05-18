@@ -9,7 +9,7 @@ from django.core.serializers import serialize
 import logging
 import xapian
 
-def do_search(query, lang):
+def do_search(query, lang='en'):
     """Abstract the search mechanism from the view"""
     indexer = DocumentSurrogate.indexer
     logging.debug('Using indexer %s' % indexer)     
