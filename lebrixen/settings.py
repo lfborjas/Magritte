@@ -9,7 +9,7 @@ TEMPLATE_DEBUG = DEBUG
 DEFAULT_CHARSET = 'utf-8'
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 ADMINS = (
-     ('Luis Borjas', 'luis.borjas@escolarea.com'),
+     ('Luis Felipe Borjas', 'lfborjas@unitec.edu'),
 )
 
 MANAGERS = ADMINS
