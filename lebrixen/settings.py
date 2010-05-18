@@ -83,6 +83,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.    
     os.path.join(ROOT_PATH, 'prototype','templates'),
+    os.path.join(ROOT_PATH, 'service','templates'),
 )
 
 INSTALLED_APPS = (
@@ -144,10 +145,6 @@ CATEGORY_CLASSIFIER_DATA = os.path.join(DATA_PATH, 'category_classifier_data')
 
 #for AES encryption
 AES_KEY = 'f7dbe0526690458fa7d22f67c8e55747'
-
-#for REST requests:
-APP_ID = 'appId'
-APP_USER = 'appUser'
 
 try:
     from local_settings import *

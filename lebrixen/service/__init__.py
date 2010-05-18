@@ -272,7 +272,7 @@ def jsonp_view(v):
      
     def jsonp_transform(request, *args, **kwargs):
         response = v(request, *args, **kwargs)
-        assert isinstance(response, HttpResponse), "The function MUST return an HttpResponse object"
+        #assert isinstance(response, HttpResponse), "The function MUST return an HttpResponse object"
         if 'callback' in request.REQUEST:
             cb = request.REQUEST['callback']
             response['Content-type'] = 'application/json'

@@ -33,18 +33,19 @@ class ClientApp(models.Model):
                      
         id=decripter.decrypt(token.decode('hex'))
         
-        if id_only:
-            return id
-                           
+                                  
         try:            
             app = cls.objects.get(pk=id)
-            return app            
+            if id_only:
+                return app.pk
+            else:
+                return app            
         except MultipleObjectsReturned:
             logging.error("Multiple apps match the token %s !" % token)
-            return None
+            raise
         except cls.DoesNotExist:
             logging.error("No app matches the token %s" % token)
-            return None
+            raise
 
         
     
