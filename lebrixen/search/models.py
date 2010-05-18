@@ -68,7 +68,7 @@ class DmozCategory(models.Model):
         
         #get the categories and set their weight relative to the query:
         categories = cls.objects.filter(pk__in = rval.keys())
-        [setattr(category, 'relative_weight', (rval[category.pk]) * category.weight) for category in categories]
+        #[setattr(category, 'relative_weight', (rval[category.pk]) * category.weight) for category in categories]
         #for category in categories:
         #    category.relative_weight = rval[category.pk] * category.weight
          
