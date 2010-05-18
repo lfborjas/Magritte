@@ -64,3 +64,4 @@ class ClientSession(models.Model):
     user = models.ForeignKey(ClientUser, related_name = 'sessions')
     date = models.DateField(auto_now_add = True)
     documents = models.CommaSeparatedIntegerField(max_length = 255)
+    context = models.TextField(blank = True, default = "")    
