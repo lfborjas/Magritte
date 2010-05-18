@@ -60,7 +60,7 @@ function doQuery(){
 					$('#docs').effect('highlight');
 				});
 			},
-			'json')
+			'json');
 }
 $(document).ready(function() {
 	/*When the words in the content area reach a treshold, call the extract terms event*/
