@@ -1,6 +1,7 @@
 #encoding=UTF-8
 import os
 import logging
+from datetime import date
 #import socket
 # Django settings for lebrixen project.
 DEBUG = False 
@@ -72,6 +73,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     #'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'profile.middleware.ProfileMiddleware',
 )
 
 ROOT_URLCONF = 'urls'#ROOT_URLCONF = 'lebrixen.urls'
@@ -81,6 +83,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.    
     os.path.join(ROOT_PATH, 'prototype','templates'),
+    os.path.join(ROOT_PATH, 'service','templates'),
 )
 
 INSTALLED_APPS = (
@@ -123,8 +126,8 @@ else:
     logging.basicConfig(
         level = logging.DEBUG,
         format = '%(asctime)s %(levelname)s %(message)s',
-        filename = 'lebrixen.log',
-        filemode = 'w'
+        filename = 'lebrixen_%s.log' % date.today(),
+        filemode = 'a'
     )
 
 #how much time to wait before the index is rebuilt (in seconds)
@@ -142,6 +145,7 @@ CATEGORY_CLASSIFIER_DATA = os.path.join(DATA_PATH, 'category_classifier_data')
 
 #for AES encryption
 AES_KEY = 'f7dbe0526690458fa7d22f67c8e55747'
+
 try:
     from local_settings import *
 except:

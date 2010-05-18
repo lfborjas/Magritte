@@ -21,7 +21,7 @@ class ClientApp(models.Model):
         return encripter.encrypt(plaintext).encode('hex')
     
     @classmethod
-    def get_for_token(cls, token):
+    def get_for_token(cls, token, id_only=False):
         decripter=AES.new(settings.AES_KEY)
         if len(token)%16: 
             raise BadToken        
@@ -32,16 +32,20 @@ class ClientApp(models.Model):
             raise BadToken
                      
         id=decripter.decrypt(token.decode('hex'))
-                           
-        try:
+        
+                                  
+        try:            
             app = cls.objects.get(pk=id)
-            return app
+            if id_only:
+                return app.pk
+            else:
+                return app            
         except MultipleObjectsReturned:
             logging.error("Multiple apps match the token %s !" % token)
-            return None
+            raise
         except cls.DoesNotExist:
             logging.error("No app matches the token %s" % token)
-            return None
+            raise
 
         
     
@@ -52,11 +56,11 @@ class ClientUser(models.Model):
     info = models.TextField(blank = True, default = "")
     
 class ClientPreference(models.Model):
-    user = models.ForeignKey(ClientUser)
+    user = models.ForeignKey(ClientUser, related_name='preferences')
     category = models.ForeignKey(Category)
     score = models.FloatField()
     
 class ClientSession(models.Model):
-    user = models.ForeignKey(ClientUser)
+    user = models.ForeignKey(ClientUser, related_name = 'sessions')
     date = models.DateField(auto_now_add = True)
     documents = models.CommaSeparatedIntegerField(max_length = 255)
