@@ -13,7 +13,7 @@ def do_search(query, lang='en'):
     """Abstract the search mechanism from the view"""
     indexer = DocumentSurrogate.indexer
     logging.debug('Using indexer %s' % indexer)     
-    search_results = indexer.search(query).prefetch()
+    search_results = indexer.search(query).prefetch()[:20]
     logging.debug('ResultSet %s for query %s' % (search_results, query))
     #search_results._stemming_lang=lang    
     #serialize:
