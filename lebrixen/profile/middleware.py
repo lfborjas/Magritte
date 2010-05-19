@@ -5,6 +5,7 @@ Created on 17/05/2010
 '''
 
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
+EXEMPT_URLS = ['/',]
 
 class LazyProfile(object):
     def __init__(self, app_id):
@@ -23,6 +24,8 @@ class ProfileMiddleware(object):
     def process_request(self, request):
         assert hasattr(request, 'session'),\
          "The profile middleware requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'."
+        if request.path in EXEMPT_URLS:
+            return None
         from profile import APP_ID, APP_KEY
         from profile.models import ClientApp
         #try to respect REST:, if they provide the appId again, it must be that they like doing queries all the time:        

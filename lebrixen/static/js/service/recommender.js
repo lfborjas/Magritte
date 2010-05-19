@@ -6,9 +6,10 @@
 if(!window.RECOMMENDER){
 	RECOMMENDER = {
 			/*The urls to diverse service calls*/
-			_service_root: "http://lebrixen.com",
+			//_service_root: "http://lebrixen.com",
+			_service_root: "http://localhost:8000/",
 			//initial call url:
-			_init_call: "api/startSession",
+			_init_call: RECOMMENDER._service_root+"api/startSession/?callback=?",
 			
 			/*Internal data*/
 			_lastContext: "",
@@ -17,9 +18,42 @@ if(!window.RECOMMENDER){
 			_wordsDiff: 0,
 			_diff: 0,
 			
+			_defaults: {
+					appId: '0a0c8647baf451dc081429aa9815d476',
+					appUser: 'testUser'
+			  },
+			  
+			_options: {},
+			
 			/*Interface data*/
 			
 			/*Web service call functions*/
+			
+			/*Set the options and make the initial call			
+			init: function(options){
+				//make the plugin's options a deep copy of the union of the defaults and options 
+				$.extend(true, RECOMMENDER._options, RECOMMENDER._defaults, options);
+				
+				//Append the recommender bar to the host's body and bind it's events
+				$.getJSON(RECOMMENDER._init_call,
+						{appId: RECOMMENDER._options.appId, appUser: RECOMMENDER._options.appUser},
+						function(data){
+							$('body').append(data.recommender_bar);
+							//to toggle the bar
+							$(".trigger").click(function(){
+								$(".panel").toggle("fast");
+								//$(this).toggleClass("active");
+								return false;
+						});
+				});
+
+				//Set the host's components events
+				$('#id_content').keyup(RECOMMENDER.detectContextChange);
+				//$('#terms').change(doQuery);
+				$('#id_service').change(RECOMMENDER.extractTerms);     
+				return false;
+			},//end of init definition
+			*/
 			extractTerms: function(){
 				if($('#id_content').val()){
 					$.get('/getTerms/',
@@ -83,17 +117,9 @@ if(!window.RECOMMENDER){
 	}//end of namespace RECOMMENDER
 }
 
-$(document).ready(function() {
-	/*When the words in the content area reach a treshold, call the extract terms event*/
-   $('#id_content').keyup(RECOMMENDER.detectContextChange);
-   //$('#terms').change(doQuery);
-   $('#id_service').change(RECOMMENDER.extractTerms);
+
+/*$(document).ready(function() {
+
    
-   //to toggle the bar
-   $(".trigger").click(function(){
-		$(".panel").toggle("fast");
-		//$(this).toggleClass("active");
-		return false;
-	});
-   return false;
 });
+*/
