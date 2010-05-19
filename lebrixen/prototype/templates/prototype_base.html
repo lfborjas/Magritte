@@ -3,9 +3,10 @@
 {%block title%}Prototipo de recomendación{%endblock%}
 {%block stylesheets%}
 	<link rel="stylesheet" type="text/css" href="/static/css/prototype.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="/static/css/service/recommender.css" media="screen" />
 {%endblock%}
 {%block scripts%}
-	<script type="text/javascript" src="/static/js/prototype/recommender.js" ></script>
+	<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
 {%endblock%}
 {%block content%}
 	<div id="branding">
@@ -15,15 +16,7 @@
 	<div id="content-center">
 		<div id="planning-area">
 			{{form}}
-		</div>
-		<div id ="results-area">
-			<div id ="terms-container">	
-				<h2 id="terms-title">Términos clave extraídos</h2>		
-				<textarea rows="4" cols="20" id="terms" readonly="readonly"></textarea>
-			</div>
-			<h2 id="docs-title">Documentos Recomendados</h2>
-			<div id="docs-container">						
-			</div>
-		</div>
+		</div>		
 	</div>
+	{%include "recommender_bar.html"%}
 {%endblock%}

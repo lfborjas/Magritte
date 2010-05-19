@@ -84,5 +84,12 @@ $(document).ready(function() {
    $('#id_content').keyup(RECOMMENDER.detectContextChange);
    //$('#terms').change(doQuery);
    $('#id_service').change(RECOMMENDER.extractTerms);
+   
+   //to toggle the bar
+   $(".trigger").click(function(){
+		$(".panel").toggle("fast");
+		$(this).toggleClass("active");
+		return false;
+	});
    return false;
 });
