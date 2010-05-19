@@ -1,3 +1,4 @@
+import logging
 #the private user id 
 PROFILE_KEY = '_profile_user'
 #the app token
@@ -21,11 +22,15 @@ def get_profile(request, app_id):
        However, calls *could* be REST-ful, because both this method and the middleware ignore
        the session if the user provides the stateless required parameteres ('appId' and 'appUser') 
     """
-    from profile.models import ClientUser
+    from profile.models import ClientUser, ClientApp    
     #if the profile id comes, take it as a reset of context (a new user or course is being profiled)    
-    if PROFILE_ID in request.REQUEST:
+    if PROFILE_ID in request.REQUEST:        
         #If the external id is provided, get or create a user instance
-        u , created= ClientUser.objects.get_or_create(clientId = request.REQUEST[PROFILE_ID], app_id = app_id)
+        try:
+            u , created= ClientUser.objects.get_or_create(clientId = request.REQUEST[PROFILE_ID], app = ClientApp.objects.get(pk=app_id))
+        except:
+            logging.debug("error retrieving", exc_info=True)
+        
         if created:
             #Try to fill the other info
             changed = False
@@ -38,7 +43,7 @@ def get_profile(request, app_id):
             if changed:
                 u.save()
         #Once retrieved by app and app-specific id, store the pk in session for faster retrieval in future calls
-        request.session[PROFILE_KEY] = u.pk
+        request.session[PROFILE_KEY] = u.pk        
         return u
     
     #if it is not a reset, then it must already be in the session        

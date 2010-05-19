@@ -4,12 +4,13 @@
  * Notes: the token for the default app is 0a0c8647baf451dc081429aa9815d476
  */
 if(!window.RECOMMENDER){
+	var _service_root="http://localhost:8000/";
 	RECOMMENDER = {
 			/*The urls to diverse service calls*/
 			//_service_root: "http://lebrixen.com",
-			_service_root: "http://localhost:8000/",
+			//_service_root: "http://localhost:8000/",
 			//initial call url:
-			_init_call: RECOMMENDER._service_root+"api/startSession/?callback=?",
+			_init_call: _service_root+"api/startSession/?callback=?",
 			
 			/*Internal data*/
 			_lastContext: "",
@@ -20,7 +21,7 @@ if(!window.RECOMMENDER){
 			
 			_defaults: {
 					appId: '0a0c8647baf451dc081429aa9815d476',
-					appUser: 'testUser'
+					appUser: 'testUser',
 			  },
 			  
 			_options: {},
@@ -29,9 +30,9 @@ if(!window.RECOMMENDER){
 			
 			/*Web service call functions*/
 			
-			/*Set the options and make the initial call			
+			/*Set the options and make the initial call*/			
 			init: function(options){
-				//make the plugin's options a deep copy of the union of the defaults and options 
+				//make the plugin's options a deep copy of the union of the defaults and options				
 				$.extend(true, RECOMMENDER._options, RECOMMENDER._defaults, options);
 				
 				//Append the recommender bar to the host's body and bind it's events
@@ -44,16 +45,16 @@ if(!window.RECOMMENDER){
 								$(".panel").toggle("fast");
 								//$(this).toggleClass("active");
 								return false;
-						});
+							});
 				});
 
 				//Set the host's components events
 				$('#id_content').keyup(RECOMMENDER.detectContextChange);
 				//$('#terms').change(doQuery);
 				$('#id_service').change(RECOMMENDER.extractTerms);     
-				return false;
+				//return false;
 			},//end of init definition
-			*/
+			
 			extractTerms: function(){
 				if($('#id_content').val()){
 					$.get('/getTerms/',
@@ -118,8 +119,4 @@ if(!window.RECOMMENDER){
 }
 
 
-/*$(document).ready(function() {
 
-   
-});
-*/

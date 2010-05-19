@@ -5,18 +5,21 @@ Created on 17/05/2010
 '''
 
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
-EXEMPT_URLS = ['/',]
+import re
+import logging
+
+API_URLS = r'^/api/.*$'
 
 class LazyProfile(object):
     def __init__(self, app_id):
+        logging.debug("creating lazy profile")
         self.app_id = app_id
     
     def __get__(self, request, obj_type=None):
-        #Set the cached profile if it doesn't already exist (that is, only query once):
+        #Set the cached profile if it doesn't already exist (that is, only query once):        
         if not hasattr(request, '_cached_profile'):
-            from profile import get_profile
-            request._cached_profile = get_profile(request, self.app_id)
-                
+            from profile import get_profile            
+            request._cached_profile = get_profile(request, self.app_id)               
         return request._cached_profile
 
 
@@ -24,7 +27,8 @@ class ProfileMiddleware(object):
     def process_request(self, request):
         assert hasattr(request, 'session'),\
          "The profile middleware requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'."
-        if request.path in EXEMPT_URLS:
+        m = re.match(API_URLS, request.path)
+        if not m:            
             return None
         from profile import APP_ID, APP_KEY
         from profile.models import ClientApp
@@ -39,4 +43,5 @@ class ProfileMiddleware(object):
             return HttpResponseBadRequest("An app token must have been provided in a call to startSession or in this request")
             
         request.__class__.profile = LazyProfile(request.session[APP_KEY])
+        
         return None

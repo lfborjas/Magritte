@@ -9,7 +9,11 @@
 
 	<script type="text/javascript" src="/static/js/jquery-ui-1.8.1.custom.min.js" ></script>
 	<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
-	
+	<script>
+		$(document).ready(function() {
+			RECOMMENDER.init();   	
+		});
+	</script>
 {%endblock%}
 {%block content%}
 	<div id="branding">
