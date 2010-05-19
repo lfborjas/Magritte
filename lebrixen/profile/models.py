@@ -58,10 +58,10 @@ class ClientUser(models.Model):
 class ClientPreference(models.Model):
     user = models.ForeignKey(ClientUser, related_name='preferences')
     category = models.ForeignKey(Category)
-    score = models.FloatField()
+    score = models.FloatField(null=True, blank=True, default = 0.0)
     
 class ClientSession(models.Model):
     user = models.ForeignKey(ClientUser, related_name = 'sessions')
     date = models.DateField(auto_now_add = True)
-    documents = models.CommaSeparatedIntegerField(max_length = 255)
+    documents = models.CommaSeparatedIntegerField(max_length = 255, blank=True, default="")
     context = models.TextField(blank = True, default = "")    

@@ -37,9 +37,9 @@ class DmozCategory(models.Model):
     
     #def _get_relative_weight(self, rank):
     #    return self.weight * rank
-        
+
     @classmethod
-    def get_for_query(cls, query, lang='en'):
+    def get_for_query(cls, query, lang='en', as_dict=False):
         """Given a query, find out to which categories it most probably belongs to, 
            with the weights relative to the query calculated"""
         
@@ -75,4 +75,12 @@ class DmozCategory(models.Model):
         return categories
              
     def __unicode__(self):
-        return u"%s (%s)" %(self.title, self.topic_id)    
+        return u"%s (%s)" %(self.title, self.topic_id)
+        
+    def get_parents(self):
+        parent = self.parent
+        while parent:
+            p= parent
+            parent = p.parent
+            yield p
+                
