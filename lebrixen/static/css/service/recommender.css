@@ -1,6 +1,7 @@
 .panel {
 position: fixed;
-/*top: 50px;*/
+top: 0;
+bottom: 0;
 right: 0;
 display: none;
 background: #000000;
@@ -14,7 +15,7 @@ height: 100%;
 }
 
 a.trigger{
-position: absolute;
+position: fixed;
 text-decoration: none;
 top: 80px; right: 0;
 font-size: 16px;
@@ -39,7 +40,7 @@ background-color:#222222;
 
 a.active{
 height: 60px;	
-background:#333333 url(/static/images/book.png) no-repeat top;
+background:#fcaf17 url(/static/images/book.png) no-repeat top;
 filter: alpha(opacity=100);
 opacity: 1;
 }

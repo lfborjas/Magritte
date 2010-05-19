@@ -70,8 +70,12 @@ if(!window.RECOMMENDER){
 												   '<a target="_blank" href="'+hit.url+'"><strong>'+hit.title+'</strong></a>'+									    
 												   '<p>'+hit.summary+'</p>'+									   
 												 '</li>');
-								$('#docs').effect('highlight');
+								
 							});
+							$('#docs').effect('highlight');
+							if(!$('.trigger').hasClass('active'))
+								$('.trigger').addClass("active");
+							$('.trigger').effect("pulsate", {times:5}, 2000);
 						},
 						'json');
 			},//end of doQuery definition
@@ -88,7 +92,7 @@ $(document).ready(function() {
    //to toggle the bar
    $(".trigger").click(function(){
 		$(".panel").toggle("fast");
-		$(this).toggleClass("active");
+		//$(this).toggleClass("active");
 		return false;
 	});
    return false;
