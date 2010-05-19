@@ -39,7 +39,7 @@ class DmozCategory(models.Model):
     #    return self.weight * rank
 
     @classmethod
-    def get_for_query(cls, query, lang='en', as_dict=False):
+    def get_for_query(cls, query, lang='en', as_dict=False, max_results = 5):
         """Given a query, find out to which categories it most probably belongs to, 
            with the weights relative to the query calculated"""
         
@@ -50,7 +50,7 @@ class DmozCategory(models.Model):
         lang = lang if lang in ['en', 'es'] else 'en'
         #query = s_conn.spell_correct(query, allow=['%s_text'%lang,])
         xapian_query = s_conn.query_field('%s_text' % lang, query)
-        results = s_conn.search(xapian_query, 0, 5) #only search the best matches
+        results = s_conn.search(xapian_query, 0, max_results) #only search the best matches
         rval = {}
         logging.debug("Categories matching %s" % query)
         for result in results:            
