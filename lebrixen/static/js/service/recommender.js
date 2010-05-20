@@ -11,6 +11,7 @@ if(!window.RECOMMENDER){
 			//_service_root: "http://localhost:8000/",
 			//initial call url:
 			_init_call: _service_root+"api/startSession/?callback=?",
+			_get_recommendations_call: _service_root+"api/getRecommendations/?callback=?",
 			
 			/*Internal data*/
 			_lastContext: "",
@@ -22,6 +23,8 @@ if(!window.RECOMMENDER){
 			_defaults: {
 					appId: '0a0c8647baf451dc081429aa9815d476',
 					appUser: 'testUser',
+					content: '#id_content',
+					lang: 'en',
 			  },
 			  
 			_options: {},
@@ -49,30 +52,11 @@ if(!window.RECOMMENDER){
 				});
 
 				//Set the host's components events
-				$('#id_content').keyup(RECOMMENDER.detectContextChange);
-				//$('#terms').change(doQuery);
-				$('#id_service').change(RECOMMENDER.extractTerms);     
+				$('#id_content').keyup(RECOMMENDER.detectContextChange);				   
 				//return false;
 			},//end of init definition
 			
-			extractTerms: function(){
-				if($('#id_content').val()){
-					$.get('/getTerms/',
-							{context: $('#id_content').val(),lang: $('#id_lang').val(), service:$('#id_service').val()},
-							function(data){
-								if(data){					
-									$('#terms-title').show();						
-									$('#terms').val(data.terms);					
-									$('#terms').effect('highlight');
-									//$('#terms').trigger('change');
-									RECOMMENDER.doQuery();
-								}
-							},
-							'json'
-					);
-				}
-			}, //end of extractTerms definition
-			
+				
 			detectContextChange: function(e){
 				   if(e.which == 32){ RECOMMENDER._diff ++;}
 					
@@ -85,22 +69,25 @@ if(!window.RECOMMENDER){
 						   RECOMMENDER._lastLength = wordcount;
 						   RECOMMENDER._diff = 0;
 						   //call the extraction method:
-						   RECOMMENDER.extractTerms();
+						   RECOMMENDER.doQuery();
 					   }
 				   }					
 			},//end of detectContextChange definition
 			
 			doQuery: function(){
-				$.get('/search/',
-						{q: $('#terms').val(), hl: $('#id_lang').val()},
+				$.post(RECOMMENDER._get_recommendations_call,
+						{content: $(RECOMMENDER._options.content).val(), lang : RECOMMENDER._options.lang},
 						function(data){
 							$('#docs-container').html("");
-							if(!data){
+							if(!data.results){
 								$('#docs-title').hide();
 							}else{
-								$('#docs-title').show().text("Documentos Recomendados ("+data.length+")");
+								$('#terms-title').show();						
+								$('#terms').val(data.terms);					
+								$('#terms').effect('highlight');
+								$('#docs-title').show().text("Documentos Recomendados ("+data.results.length+")");
 							}
-							$.each(data, function(index, hit){					
+							$.each(data.results, function(index, hit){					
 								$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
 												   '<a target="_blank" href="'+hit.url+'"><strong>'+hit.title+'</strong></a>'+									    
 												   '<p>'+hit.summary+'</p>'+									   
@@ -112,7 +99,7 @@ if(!window.RECOMMENDER){
 								$('.trigger').addClass("active");
 							$('.trigger').effect("pulsate", {times:5}, 2000);
 						},
-						'json');
+						'jsonp');
 			},//end of doQuery definition
 			
 	}//end of namespace RECOMMENDER

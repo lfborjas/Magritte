@@ -1,10 +1,14 @@
 # Create your views here.
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
-from service import build_query, WEB_SERVICES, jsonp_view
+from service import build_query, WEB_SERVICES, jsonp_view, re_rank
+from search.views import do_search 
 try:
+    import jsonlib2 as json
+except ImportError:
     import json
 except ImportError:
     import django.utils.simplejson as json
+    
 import logging
 from django.template.loader import render_to_string
 
@@ -46,4 +50,27 @@ def start_session(request):
                              mimetype="application/json")
     else:
         return HttpResponseServerError("Oops, somehow we couldn't get the profile!")
-        
+
+@jsonp_view
+def get_recommendations(request):
+    if not 'content' in request.REQUEST:
+        return HttpResponseBadRequest("No content provided")
+    #get the terms
+    context = request.REQUEST['content']
+    lang = request.REQUEST.get('lang', 'en')
+    service = request.REQUEST.get('service', '')    
+    service = service if service in WEB_SERVICES.keys() or not service else 'yahoo'
+    use_service = bool(service)    
+    
+    terms = build_query(context, language=lang, use_web_service=use_service, web_service=service)
+     
+    #do the search
+    results = do_search(terms, lang=lang)
+    #re-rank
+    if hasattr(request, 'profile'):
+        results=re_rank(request.profile, results)
+    else:
+        return HttpResponseBadRequest("No profile found")
+    #return    
+    return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms)}, ensure_ascii=False, encoding='utf-8'),
+                         mimetype="application/json")

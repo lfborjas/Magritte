@@ -12,18 +12,18 @@ import xapian
 def do_search(query, lang='en'):
     """Abstract the search mechanism from the view"""
     indexer = DocumentSurrogate.indexer
-    logging.debug('Using indexer %s' % indexer)     
+    #logging.debug('Using indexer %s' % indexer)     
     search_results = indexer.search(query).prefetch()[:20]
-    logging.debug('ResultSet %s for query %s' % (search_results, query))
+    #logging.debug('ResultSet %s for query %s' % (search_results, query))
     #search_results._stemming_lang=lang    
     #serialize:
-    return jsonlib.dumps([{'id': hit.instance.pk,
-                           'title': hit.instance.title,
-                           'summary': hit.instance.summary,
+    return [{'id': hit.instance.pk,
+                           'title': unicode(hit.instance.title),
+                           'summary': unicode(hit.instance.summary),
                            'url': hit.instance.origin,
                            'match': hit.percent,
-                           'rank': hit.rank, } for hit in search_results],
-                           ensure_ascii=False)
+                           'rank': hit.rank, } for hit in search_results]
+                           
 
 def search_docs(request):
     """Search documents and return a json with the result set"""
@@ -36,7 +36,7 @@ def search_docs(request):
     
     #search: assume the results are already json encoded    
     results = do_search(query, lang)    
-    return HttpResponse(results, mimetype="application/json")
+    return HttpResponse(jsonlib.dumps(results, ensure_ascii=False), mimetype="application/json")
     
     
     

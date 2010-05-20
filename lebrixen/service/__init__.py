@@ -17,6 +17,7 @@ import re, htmlentitydefs
 from calais import Calais
 from extractor import ExtractorService
 import validate_jsonp
+from django.utils.encoding import smart_unicode
 
 #some more listed here: http://en.wikipedia.org/wiki/Term_extraction
 #and here: http://maui-indexer.blogspot.com/2009/07/useful-web-resources-related-to.html
@@ -273,18 +274,21 @@ def jsonp_view(v):
     def jsonp_transform(request, *args, **kwargs):
         response = v(request, *args, **kwargs)
         #assert isinstance(response, HttpResponse), "The function MUST return an HttpResponse object"
-        if 'callback' in request.REQUEST:
+        if 'callback' in request.REQUEST and response.status_code == 200:
             cb = request.REQUEST['callback']
             response['Content-type'] = 'application/json'
             if not validate_jsonp.is_valid_jsonp_callback_value(cb):
                 raise Exception('%s is not a valid jsonp callback identifier' % cb)
-            response.content = u"%s(%s)" % (cb, response.content)
+            response.content = (u'%s(%s)' % (cb, response.content.decode('utf-8')))
+            
             return response
         else:
             return response
     
     return jsonp_transform
 
-        
+def re_rank(profile, results):
+    """Based on the profile preferences, re-rank the results"""
+    return results        
 
 
