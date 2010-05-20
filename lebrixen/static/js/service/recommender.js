@@ -81,7 +81,7 @@ if(!window.RECOMMENDER){
 				 * dunno how to solve it (a jsonp CAN'T be synchronous, so it's
 				 * no case setting async to false in $.ajax*/
 				$.getJSON(RECOMMENDER._final_call,
-						{context: $('#terms').val(), docs: RECOMMENDER._feedback}						
+						$.param({context: $('#terms').val(), docs: RECOMMENDER._feedback}, true)						
 						);
 				return false;
 			},//end of the end session definition
