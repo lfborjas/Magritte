@@ -48,3 +48,26 @@ opacity: 1;
 /*a.active.trigger {
 background:#222222 url(images/minus.png) 85% 55% no-repeat;
 }*/
+#lebrixen-average-rel-slider.ui-state-disabled{
+	opacity: 1 !important;
+}
+
+#lebrixen-average-rel-slider.ui-slider-horizontal{
+	height: 1.2em !important;
+}
+
+#lebrixen-average-rel-slider .ui-slider-handle{
+	opacity: 0 !important;
+}
+
+.panel h2{
+	font-size: 1.2em;
+}
+
+#lebrixen-hide-panel{
+	text-decoration: none;
+	color: #fcaf17;
+	display:block;
+	padding: 10px 10px 5px 25px;
+	font-weight: bold;
+}

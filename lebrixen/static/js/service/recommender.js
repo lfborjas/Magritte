@@ -56,12 +56,40 @@ if(!window.RECOMMENDER){
 						{appId: RECOMMENDER._options.appId, appUser: RECOMMENDER._options.appUser},
 						function(data){
 							$('body').append(data.recommender_bar);
-							//to toggle the bar
+							//to toggle the bar open
 							$(".trigger").click(function(){
 								$(".panel").toggle("fast");
+								$(this).hide();
 								//$(this).toggleClass("active");
 								return false;
 							});
+							//to close the bar:
+							$("#lebrixen-hide-panel").click(function(e){
+								e.preventDefault();
+								$(".panel").toggle("fast");
+								$('.trigger').show();
+								return false;
+							})
+							//set the slider:
+							$('#lebrixen-average-rel-slider').slider({
+								disabled: true,
+								range: "min",
+								min: 0,
+								change: function(event, ui){
+									//var v = parseInt(ui.value);
+									v = ui.value;
+									$('#lebrixen-average-rel-title').text("Relevancia promedio:"+v+"%");
+									if(v < 30){
+										$('#lebrixen-average-rel-slider .ui-widget-header').css('background', '#ff3333');
+									}else if(v >= 30 && v < 60){
+										$('#lebrixen-average-rel-slider .ui-widget-header').css('background', '#ffff33');
+									}else{
+										$('#lebrixen-average-rel-slider .ui-widget-header').css('background', '#66ff00');
+									}
+								}//end of slider change
+							});//end of slider setting
+							//BUT hide it till is time to show it!
+							$("#lebrixen-average-rel-slider").hide();
 				});
 
 				//Set the host's components events
@@ -100,6 +128,7 @@ if(!window.RECOMMENDER){
 				$.post(RECOMMENDER._get_recommendations_call,
 						{content: $(RECOMMENDER._options.content).val(), lang : RECOMMENDER._options.lang},
 						function(data){
+							var cnt = 0;
 							$('#docs-container').html("");
 							if(!data.results){
 								$('#docs-title').hide();
@@ -107,19 +136,28 @@ if(!window.RECOMMENDER){
 								$('#terms-title').show();						
 								$('#terms').val(data.terms);					
 								$('#terms').effect('highlight');
-								$('#docs-title').show().text("Documentos Recomendados ("+data.results.length+")");
+								$('#docs-title').show().text("Recomendaciones ("+data.results.length+")");
 							}
 							$.each(data.results, function(index, hit){					
 								$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
 												   '<a target="_blank" href="'+hit.url+'"><strong>'+hit.title+'</strong></a>'+									    
 												   '<p>'+hit.summary+'</p>'+									   
 												 '</li>');
-								
+								cnt += hit.percent;
 							});
+							//set the slider:
+							$("#lebrixen-average-rel-slider").show();
+							if(data.results){
+								$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
+							}else{
+								$("#lebrixen-average-rel-slider").slider('value', cnt);
+							}
 							$('#docs').effect('highlight');
-							if(!$('.trigger').hasClass('active'))
-								$('.trigger').addClass("active");
-							$('.trigger').effect("pulsate", {times:5}, 2000);
+							if($('.trigger').is(':visible')){
+								if(!$('.trigger').hasClass('active'))
+									$('.trigger').addClass("active");
+								$('.trigger').effect("pulsate", {times:5}, 2000);
+							}
 						},
 						'jsonp');
 			},//end of doQuery definition
