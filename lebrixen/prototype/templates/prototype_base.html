@@ -11,7 +11,10 @@
 	<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
 	<script>
 		$(document).ready(function() {
-			RECOMMENDER.init();   	
+			RECOMMENDER.init({
+				data_form: '#planning-form',
+				data_submit: '#planning-submit'
+			});   	
 		});
 	</script>
 {%endblock%}
@@ -22,7 +25,10 @@
 	</div>
 	<div id="content-center">
 		<div id="planning-area">
+		<form id="planning-form" action="#" method="post">
 			{{form}}
+			<input type="submit" id="planning-submit" value="Save and exit"/>
+		</form>
 		</div>		
 	</div>
 	{#{%include "recommender_bar.html"%}#}
