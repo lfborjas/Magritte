@@ -27,7 +27,7 @@ if(!window.RECOMMENDER){
 					appUser: 'testUser',
 					content: '#id_content',
 					lang: 'en',
-					trigger: null, //the element that triggers the host's form submission, must NOT have an event handler
+					data_submit: null, //the element that triggers the host's form submission, must NOT have an event handler
 					data_form: null, //the form where the host's data lives
 					feedback_mode: "follow", //if select, the docs will be jquery selectables and appended to the container
 											 //if follow, following a link will be considered feedback
@@ -138,14 +138,22 @@ if(!window.RECOMMENDER){
 				$('#id_content').keyup(RECOMMENDER.detectContextChange);				   
 				
 				//Call the user trigger or default to the window unloading
-				if(!RECOMMENDER._options.trigger){
+				if(!RECOMMENDER._options.data_submit){
 					$(window).unload(RECOMMENDER.endSession);
 				}else{
-					$(RECOMMENDER._options.trigger).click(function(event){
+					$(RECOMMENDER._options.data_submit).click(function(event){
 							event.preventDefault();
-							RECOMMENDER.endSession();
-							$(RECOMMENDER._options.data_form).submit();
-					});
+							$.getJSON(RECOMMENDER._final_call,
+									//cf: http://api.jquery.com/jQuery.param/
+									$.param({context: $('#terms').val(), docs: RECOMMENDER._feedback}, true),
+									function(){
+										//force sync: only submit when the function returns
+										$(RECOMMENDER._options.data_form).submit();
+										return false;
+									}//end of final call callback
+							);
+							
+					});//end of data_submit click binding
 				}
 				
 				//return false;
