@@ -29,7 +29,7 @@ def get_profile(request, app_id):
         try:
             u , created= ClientUser.objects.get_or_create(clientId = request.REQUEST[PROFILE_ID], app = ClientApp.objects.get(pk=app_id))
         except:
-            logging.debug("error retrieving", exc_info=True)
+            logging.error("error retrieving", exc_info=True)
         
         if created:
             #Try to fill the other info

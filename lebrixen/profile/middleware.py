@@ -11,8 +11,7 @@ import logging
 API_URLS = r'^/api/.*$'
 
 class LazyProfile(object):
-    def __init__(self, app_id):
-        logging.debug("creating lazy profile")
+    def __init__(self, app_id):        
         self.app_id = app_id
     
     def __get__(self, request, obj_type=None):

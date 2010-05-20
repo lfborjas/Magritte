@@ -74,3 +74,9 @@ def get_recommendations(request):
     #return    
     return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms)}, ensure_ascii=False, encoding='utf-8'),
                          mimetype="application/json")
+
+@jsonp_view
+def end_session(request):
+    """When a user's session ends, push a task on the queue to evolve his profile"""
+    logging.debug("Session closed for %s" % request.profile)
+    return HttpResponse(json.dumps(True), mimetype="application/json")

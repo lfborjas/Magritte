@@ -12,6 +12,7 @@ if(!window.RECOMMENDER){
 			//initial call url:
 			_init_call: _service_root+"api/startSession/?callback=?",
 			_get_recommendations_call: _service_root+"api/getRecommendations/?callback=?",
+			_final_call: _service_root+"api/endSession/?callback=?",
 			
 			/*Internal data*/
 			_lastContext: "",
@@ -33,7 +34,19 @@ if(!window.RECOMMENDER){
 			
 			/*Web service call functions*/
 			
-			/*Set the options and make the initial call*/			
+			/**Send the context and the documents to the service to evolve the profile*/
+			endSession: function(event){
+				/*This is asynchronous, so the server might not find the caller,
+				 * dunno how to solve it (a jsonp CAN'T be synchronous, so it's
+				 * no case setting async to false in $.ajax*/
+				$.get(RECOMMENDER._final_call,
+						{context: $('#terms').val()},
+						'jsonp'
+						);
+				return false;
+			},//end of the end session definition
+			
+			/**Set the options and make the initial call*/			
 			init: function(options){
 				//make the plugin's options a deep copy of the union of the defaults and options				
 				$.extend(true, RECOMMENDER._options, RECOMMENDER._defaults, options);
@@ -53,10 +66,18 @@ if(!window.RECOMMENDER){
 
 				//Set the host's components events
 				$('#id_content').keyup(RECOMMENDER.detectContextChange);				   
+				
+				//Call the user trigger or default to the window unloading
+				if(!RECOMMENDER._options.trigger){
+					$(window).unload(RECOMMENDER.endSession);
+				}else{
+					$(RECOMMENDER._options.trigger).click(RECOMMENDER.endSession);
+				}
+				
 				//return false;
 			},//end of init definition
 			
-				
+			/**Determine when to make new recommendations*/	
 			detectContextChange: function(e){
 				   if(e.which == 32){ RECOMMENDER._diff ++;}
 					
@@ -74,6 +95,7 @@ if(!window.RECOMMENDER){
 				   }					
 			},//end of detectContextChange definition
 			
+			/**Get the actual recommendations*/
 			doQuery: function(){
 				$.post(RECOMMENDER._get_recommendations_call,
 						{content: $(RECOMMENDER._options.content).val(), lang : RECOMMENDER._options.lang},

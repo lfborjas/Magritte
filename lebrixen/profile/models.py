@@ -47,13 +47,17 @@ class ClientApp(models.Model):
             logging.error("No app matches the token %s" % token)
             raise
 
-        
+    def __unicode__(self):
+        return self.url    
     
 class ClientUser(models.Model):
     app = models.ForeignKey(ClientApp)
     clientId = models.CharField(max_length = 320) #the unique id in the app's db
     clientName = models.CharField(max_length=320, blank = True, default="")
     info = models.TextField(blank = True, default = "")
+    
+    def __unicode__(self):
+        return u"%s of %s" % (self.clientId, self.app)
     
 class ClientPreference(models.Model):
     user = models.ForeignKey(ClientUser, related_name='preferences')
