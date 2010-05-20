@@ -24,7 +24,7 @@ def _interest_score(profile, concept):
         return 1.0
 
 @task
-def update_profile(profile, context, lang='en'):
+def update_profile(profile, context, docs, lang='en'):
     """Update a profile with a spreading activation algorithm: determine the concepts in which the user might be interested, 
        save the session and update the activation values, proceeding then to update the profile itself
        
@@ -32,8 +32,10 @@ def update_profile(profile, context, lang='en'):
            profile: the client user
            context: the last context terms and the documents which the user found interesting                     
     """
+    #build the context list:
+    #context = context + list(DocumentSurrogate.)
     
-    #STEP 0: build the concepts set
+    #STEP 0: build the concepts set    
     CON = []
     for d in context:
         #if it is a stored document, just add it's category
