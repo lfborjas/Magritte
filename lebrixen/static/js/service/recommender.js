@@ -27,11 +27,13 @@ if(!window.RECOMMENDER){
 					appUser: 'testUser',
 					content: '#id_content',
 					lang: 'en',
-					trigger: null,
+					trigger: null, //the element that triggers the host's form submission, must NOT have an event handler
+					data_form: null, //the form where the host's data lives
 					feedback_mode: "follow", //if select, the docs will be jquery selectables and appended to the container
 											 //if follow, following a link will be considered feedback
 					feedback_container: null, //where to send the selected, only valid if mode is 'select'
 					feedback_element: "<li></li>", //how to append to the container, defaults to list element
+					
 			  },
 			  
 			_options: {},
@@ -139,7 +141,11 @@ if(!window.RECOMMENDER){
 				if(!RECOMMENDER._options.trigger){
 					$(window).unload(RECOMMENDER.endSession);
 				}else{
-					$(RECOMMENDER._options.trigger).click(RECOMMENDER.endSession);
+					$(RECOMMENDER._options.trigger).click(function(event){
+							event.preventDefault();
+							RECOMMENDER.endSession();
+							$(RECOMMENDER._options.data_form).submit();
+					});
 				}
 				
 				//return false;
