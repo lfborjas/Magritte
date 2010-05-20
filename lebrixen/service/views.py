@@ -78,5 +78,6 @@ def get_recommendations(request):
 @jsonp_view
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""
-    logging.debug("Session closed for %s" % request.profile)
+    logging.debug("Session closed for %s, %s, %s" % (request.profile, request.REQUEST['context'], request.REQUEST['docs']))
+    
     return HttpResponse(json.dumps(True), mimetype="application/json")

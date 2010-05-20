@@ -20,12 +20,18 @@ if(!window.RECOMMENDER){
 			_triggerWords: 2,
 			_wordsDiff: 0,
 			_diff: 0,
+			_feedback: [],
 			
 			_defaults: {
 					appId: '0a0c8647baf451dc081429aa9815d476',
 					appUser: 'testUser',
 					content: '#id_content',
 					lang: 'en',
+					trigger: null,
+					feedback_mode: "follow", //if select, the docs will be jquery selectables and appended to the container
+											 //if follow, following a link will be considered feedback
+					feedback_container: null, //where to send the selected, only valid if mode is 'select'
+					feedback_element: "<li></li>", //how to append to the container, defaults to list element
 			  },
 			  
 			_options: {},
@@ -33,15 +39,47 @@ if(!window.RECOMMENDER){
 			/*Interface data*/
 			
 			/*Web service call functions*/
+			/**Give feedback: depending on the mode set. The element must always be jquery of a '.result'*/
+			giveFeedback: function(element){
+				//let's assume that if select, the event target is the entire result:
+				if(RECOMMENDER._options.feedback_mode == "select"){
+					$(RECOMMENDER._options.feedback_container).append(RECOMMENDER._options.feedback_element)
+															  .addClass("recommendation-"+element.attr('id'))
+															  .append(element.find('a').clone());
+					
+				}
+				//if follow, only add it				
+				RECOMMENDER._feedback.push(parseInt(element.attr('id').split('_').pop()));
+			},
+			
+			_bind_feedback: function(element){
+				if(RECOMMENDER._options.feedback_mode == "select"){
+					$(element).click(function(event){
+						giveFeedback(event);
+						window.open($(event.target).find(a).attr('href'), '_blank');
+					});
+					//disable the links in the element:
+					$(element).find('a').click(function(event){
+						event.preventDefault();
+						//let daddy do the clicking
+						$(event.target).parent().trigger('click');
+					});					
+				}else{
+					$(element+' a').click(function(event){						
+						event.preventDefault();						
+						RECOMMENDER.giveFeedback($(event.target).parent().parent());
+						window.open($(event.target).parent().attr('href'), '_blank');
+					});					
+				}
+			},
 			
 			/**Send the context and the documents to the service to evolve the profile*/
 			endSession: function(event){
 				/*This is asynchronous, so the server might not find the caller,
 				 * dunno how to solve it (a jsonp CAN'T be synchronous, so it's
 				 * no case setting async to false in $.ajax*/
-				$.get(RECOMMENDER._final_call,
-						{context: $('#terms').val()},
-						'jsonp'
+				$.getJSON(RECOMMENDER._final_call,
+						{context: $('#terms').val(), docs: RECOMMENDER._feedback}						
 						);
 				return false;
 			},//end of the end session definition
@@ -90,6 +128,8 @@ if(!window.RECOMMENDER){
 							});//end of slider setting
 							//BUT hide it till is time to show it!
 							$("#lebrixen-average-rel-slider").hide();
+												
+							
 				});
 
 				//Set the host's components events
@@ -148,6 +188,7 @@ if(!window.RECOMMENDER){
 							//set the slider:
 							$("#lebrixen-average-rel-slider").show();
 							if(data.results){
+								RECOMMENDER._bind_feedback('.result');
 								$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
 							}else{
 								$("#lebrixen-average-rel-slider").slider('value', cnt);
