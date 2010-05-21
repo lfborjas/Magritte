@@ -19,7 +19,7 @@ from calais import Calais
 from extractor import ExtractorService
 import validate_jsonp
 from django.utils.encoding import smart_unicode
-
+from django.core.exceptions import ObjectDoesNotExist
 #some more listed here: http://en.wikipedia.org/wiki/Term_extraction
 #and here: http://maui-indexer.blogspot.com/2009/07/useful-web-resources-related-to.html
 #and here: http://stackoverflow.com/questions/1100549/term-extraction-generatings-tags-out-of-text
@@ -290,12 +290,12 @@ def jsonp_view(v):
 
 PENALTY = 0.3 #as recommended in Daoud2008
 def re_rank(profile, results):
-    """Based on the profile preferences, re-rank the results"""
+    """Based on the profile preferences, re-rank the results"""    
     for result in results:
         interest_score = 0.0
         try:
             interest_score = profile.preferences.get(category__pk=result['category']).score
-        except DoesNotExist:
+        except ObjectDoesNotExist:
             interest_score = 0.0 #though Daoud searches for the best match, I need speed, so if it's not there, just zero it
         #The first term is the original score, attenuated by the penalty constant
         #the second is the contextual score (the user preference), boosted by the penalty inverse

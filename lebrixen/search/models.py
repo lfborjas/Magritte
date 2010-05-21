@@ -19,7 +19,7 @@ class DocumentSurrogate(models.Model):
     category = models.ForeignKey('DmozCategory', null = True)
     type = models.CharField(max_length=10, choices=DOCTYPES)
     def __unicode__(self):
-        return self.title + self.summary
+        return self.title #+ self.summary
     
     def get_stemming_lang(self):
         return self.lang

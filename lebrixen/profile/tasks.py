@@ -24,7 +24,7 @@ def _interest_score(profile, concept):
         return 0.0
 
 @task
-def update_profile(profile, context, docs, lang='en'):
+def update_profile(profile, context, docs, lang='en', **kwargs):
     """Update a profile with a spreading activation algorithm: determine the concepts in which the user might be interested, 
        save the session and update the activation values, proceeding then to update the profile itself
        
@@ -38,6 +38,8 @@ def update_profile(profile, context, docs, lang='en'):
     
     #STEP 0: build the concepts set and set their activation values:    
     CON = {}      
+    if not hasattr(context, '__iter__'):
+        context = [context,]
     #Populate the concepts list with a dictionary of the form {concept: similarity}    
     for d in context:             
         CON.update(DmozCategory.get_for_query(d, lang, as_dict=True))
@@ -69,14 +71,16 @@ def update_profile(profile, context, docs, lang='en'):
             preference.score = DECAY*preference.score + (1-DECAY)*CON[ctg]
         preference.save()
         #add the preference to the set of existing ones:
-        existing_preferences += ctg
+        existing_preferences += [ctg,] 
             
     #determine which preferences to add to the profile:
     to_add = set(CON.keys()) - set(existing_preferences)
     for newcat in to_add:
         #pref = ClientPreference(category=DmozCategory.objects.get(pk=c), score=CON[newcat], user=profile)
-        new_pref = ClientPreference(category_id=newcat, score=CON[newcat], user=profile)
-        new_pref.save()    
+        #DO NOT store zero weighted preferences:
+        if CON[newcat]:
+            new_pref = ClientPreference(category_id=newcat, score=CON[newcat], user=profile)
+            new_pref.save()    
     
     return True
                 

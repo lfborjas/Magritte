@@ -64,6 +64,9 @@ class ClientPreference(models.Model):
     category = models.ForeignKey(Category)
     score = models.FloatField(null=True, blank=True, default = 0.0)
     
+    def __unicode__(self):
+        return u"%s:%s=%s" % (self.user, self.category, self.score)
+    
 class ClientSession(models.Model):
     user = models.ForeignKey(ClientUser, related_name = 'sessions')
     date = models.DateField(auto_now_add = True)
