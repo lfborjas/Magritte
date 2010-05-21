@@ -11,6 +11,7 @@ except ImportError:
     
 import logging
 from django.template.loader import render_to_string
+from profile.tasks import update_profile 
 
 def get_terms(request):
     """Given an ajax request, return, in a json, the index terms"""
@@ -78,7 +79,8 @@ def get_recommendations(request):
 @jsonp_view
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""
-    #update_profile.delay(profile, context, docs)
-    logging.debug("Session closed for %s, %s, %s" % (request.profile, request.REQUEST['context'], request.REQUEST.getlist('docs')))
-    
+    update_profile.delay(request.profile,
+                         request.REQUEST.get('context', []),
+                         request.REQUEST.getlist('docs'),
+                         request.REQUEST.get('lang', 'en'))       
     return HttpResponse(json.dumps(True), mimetype="application/json")

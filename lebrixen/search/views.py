@@ -21,7 +21,8 @@ def do_search(query, lang='en'):
                            'title': unicode(hit.instance.title),
                            'summary': unicode(hit.instance.summary),
                            'url': hit.instance.origin,                           
-                           'percent': hit.percent, } for hit in search_results]
+                           'percent': hit.percent,
+                           'category': hit.instance.category.pk} for hit in search_results]
                            
 
 def search_docs(request):

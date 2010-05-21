@@ -1,3 +1,4 @@
+from __future__ import division
 #utility functions to support the web service
 try:
     import json
@@ -287,8 +288,22 @@ def jsonp_view(v):
     
     return jsonp_transform
 
+PENALTY = 0.3 #as recommended in Daoud2008
 def re_rank(profile, results):
     """Based on the profile preferences, re-rank the results"""
-    return results        
+    for result in results:
+        interest_score = 0.0
+        try:
+            interest_score = profile.preferences.get(category__pk=result['category']).score
+        except DoesNotExist:
+            interest_score = 0.0 #though Daoud searches for the best match, I need speed, so if it's not there, just zero it
+        #The first term is the original score, attenuated by the penalty constant
+        #the second is the contextual score (the user preference), boosted by the penalty inverse
+        #thus, it gives preference to those results with a non-zero interest score.
+        #Though the original paper is more lax in the contextual score, I assume that only past preferred categories are worth boosting
+        result['weight'] = PENALTY * (result['percent']/100) + (1-PENALTY)*interest_score
+        
+    #re-order them     
+    return sorted(results, key= lambda x: x['weight'])        
 
 

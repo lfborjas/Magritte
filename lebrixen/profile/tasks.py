@@ -13,7 +13,7 @@ from celery.decorators import task
 #from heapq import heappush, heappop, heapify
 
 #decay factor between sessions
-DECAY = 0.5 # the Daoud work recommended 0.2, but that's far too harsh
+DECAY = 0.2 
 
 def _interest_score(profile, concept):
     """Determine the interest score in the given profile for the given concept"""

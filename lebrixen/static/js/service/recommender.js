@@ -143,6 +143,8 @@ if(!window.RECOMMENDER){
 					$(window).unload(RECOMMENDER.endSession);
 				}else{
 					$(RECOMMENDER._options.data_submit).click(function(event){
+							//disable the button, for those impatient users that over-submit stuff
+							$(event.target).attr('disabled', 'disabled');
 							event.preventDefault();
 							$.getJSON(RECOMMENDER._final_call,
 									//cf: http://api.jquery.com/jQuery.param/
