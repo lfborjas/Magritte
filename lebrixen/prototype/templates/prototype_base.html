@@ -14,6 +14,10 @@
 			RECOMMENDER.init({
 				data_form: '#planning-form',
 				data_submit: '#planning-submit'
+				feedback: {
+					mode: "select",
+					container: "#resources",
+				}
 			});   	
 		});
 	</script>
@@ -29,6 +33,8 @@
 			{{form}}
 			<input type="submit" id="planning-submit" value="Save and exit"/>
 		</form>
+		<h2 class="resources-title">Referencias: </h2>
+		<ul id="resources"></ul>
 		</div>		
 	</div>
 	{#{%include "recommender_bar.html"%}#}

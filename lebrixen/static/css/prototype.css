@@ -36,3 +36,19 @@ label {
 	color:#939598;
 }
 
+#resources{
+	list-style-type: none;
+	display: block;
+}
+
+#resources li{
+	background:#fcaf17;	 
+}
+
+#resources li a{
+	color: white;	
+}
+
+#resources-title{
+	color: #817865;
+}
