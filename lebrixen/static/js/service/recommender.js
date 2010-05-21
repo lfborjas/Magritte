@@ -29,10 +29,11 @@ if(!window.RECOMMENDER){
 					lang: 'en',
 					data_submit: null, //the element that triggers the host's form submission, must NOT have an event handler
 					data_form: null, //the form where the host's data lives
-					feedback_mode: "follow", //if select, the docs will be jquery selectables and appended to the container
-											 //if follow, following a link will be considered feedback
-					feedback_container: null, //where to send the selected, only valid if mode is 'select'
-					feedback_element: "<li></li>", //how to append to the container, defaults to list element
+					feedback: {
+						mode: "follow", //if select, the docs will be jquery selectables and appended to the container
+						container: null,//where to send the selected, only valid if mode is 'select'
+						element: "<li></li>",//how to append to the container, defaults to list element
+					},			 
 					
 			  },
 			  
@@ -44,30 +45,22 @@ if(!window.RECOMMENDER){
 			/**Give feedback: depending on the mode set. The element must always be jquery of a '.result'*/
 			giveFeedback: function(element){
 				//let's assume that if select, the event target is the entire result:
-				if(RECOMMENDER._options.feedback_mode == "select"){
-					$(RECOMMENDER._options.feedback_container).append(RECOMMENDER._options.feedback_element)
-															  .addClass("recommendation-"+element.attr('id'))
-															  .append(element.find('a').clone());
-					
+				if(RECOMMENDER._options.feedback.mode == "select"){
+					$(RECOMMENDER._options.feedback.container).append(RECOMMENDER._options.feedback.element)															  
+															  .append(element.parent().find('a.lebrixen-resource').clone());					
 				}
 				//if follow, only add it				
 				RECOMMENDER._feedback.push(parseInt(element.attr('id').split('_').pop()));
 			},
 			
 			_bind_feedback: function(element){
-				if(RECOMMENDER._options.feedback_mode == "select"){
-					$(element).click(function(event){
-						giveFeedback(event);
-						window.open($(event.target).find(a).attr('href'), '_blank');
-					});
-					//disable the links in the element:
-					$(element).find('a').click(function(event){
+				if(RECOMMENDER._options.feedback.mode == "select"){					
+					$(element).find('.lebrixen-feedback-action').show().click(function(event){
 						event.preventDefault();
-						//let daddy do the clicking
-						$(event.target).parent().trigger('click');
-					});					
+						giveFeedback($(event.target));						
+					});										
 				}else{
-					$(element+' a').click(function(event){						
+					$(element+' a.lebrixen-resource').click(function(event){						
 						event.preventDefault();						
 						RECOMMENDER.giveFeedback($(event.target).parent().parent());
 						window.open($(event.target).parent().attr('href'), '_blank');
@@ -196,17 +189,32 @@ if(!window.RECOMMENDER){
 								$('#terms').val(data.terms);					
 								$('#terms').effect('highlight');
 								$('#docs-title').show().text("Recomendaciones ("+data.results.length+")");
-							}
-							$.each(data.results, function(index, hit){					
+							}							
+							var smry=[];
+							$.each(data.results, function(index, hit){
+								smry = hit.summary.split(' ');
 								$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
-												   '<a target="_blank" href="'+hit.url+'"><strong>'+hit.title+'</strong></a>'+									    
-												   '<p>'+hit.summary+'</p>'+									   
-												 '</li>');
+												   '<a class="lebrixen-feedback-action" id="fdbk_'+hit.id+
+												   '" title="Add to resources" href="#" style="display:none;">Add</a>'+												   
+												   '<div id="lebrixen-result-content_'+hit.id+'">'+
+												   '<a class="lebrixen-resource" target="_blank" href="'+hit.url+'"><strong>'+
+												   hit.title+'</strong></a>'+
+												   '<p><span class="summary_hint">'+smry.slice(0, 10).join(' ')+
+												   '...</span><span class="summary_body" style="display:none;">'+
+												   smry.slice(11).join(' ')+'<span></p></div>'+
+												 '</div>');
 								cnt += hit.percent;
-							});
+							});					
+							
 							//set the slider:
 							$("#lebrixen-average-rel-slider").show();
 							if(data.results){
+								//behavior for the results:
+								$('.result').hover(function(e){
+									$(e.target).find('.summary_body').show();
+								}, function(e){
+									$(e.target).find('.summary_body').hide();
+								});
 								RECOMMENDER._bind_feedback('.result');
 								$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
 							}else{
@@ -216,7 +224,7 @@ if(!window.RECOMMENDER){
 							if($('.trigger').is(':visible')){
 								if(!$('.trigger').hasClass('active'))
 									$('.trigger').addClass("active");
-								$('.trigger').effect("pulsate", {times:5}, 2000);
+								$('.trigger').effect("pulsate", {times:5}, 1000);
 							}
 						},
 						'jsonp');
