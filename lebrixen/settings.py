@@ -4,7 +4,7 @@ import logging
 from datetime import date
 #import socket
 # Django settings for lebrixen project.
-DEBUG = True 
+DEBUG = False 
 TEMPLATE_DEBUG = DEBUG
 DEFAULT_CHARSET = 'utf-8'
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -116,21 +116,6 @@ WEB_SERVICES_KEYS = {
     'extractor':  'e840cbe5-2d29-4ab2-b6a9-18746a61c125',
 }
 
-#set up the logging facility:
-if DEBUG:
-    logging.basicConfig(
-        level = logging.DEBUG,
-        format = '%(asctime)s %(levelname)s %(message)s',
-    )
-else:
-    logging.basicConfig(
-        level = logging.DEBUG,
-        format = '%(asctime)s %(levelname)s %(message)s',
-        filename = os.path.join(ROOT_PATH , 'lebrixen_%s.log' % date.today()),
-        filemode = 'a'
-   )
-
-
 #how much time to wait before the index is rebuilt (in seconds)
 UPDATE_INDEX_INTERVAL = 10*60
 
@@ -152,3 +137,16 @@ try:
 except:
     pass
 
+#set up the logging facility:
+if DEBUG:
+    logging.basicConfig(
+        level = logging.DEBUG,
+        format = '%(asctime)s %(levelname)s %(message)s',
+    )
+else:
+    logging.basicConfig(
+        level = logging.DEBUG,
+        format = '%(asctime)s %(levelname)s %(message)s',
+        filename = os.path.join(ROOT_PATH , 'lebrixen_%s.log' % date.today()),
+        filemode = 'a'
+   )
