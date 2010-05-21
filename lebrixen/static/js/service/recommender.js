@@ -196,7 +196,7 @@ if(!window.RECOMMENDER){
 								$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
 												   '<a class="lebrixen-feedback-action" id="fdbk_'+hit.id+
 												   '" title="Add to resources" href="#" style="display:none;">Add</a>'+												   
-												   '<div id="lebrixen-result-content_'+hit.id+'">'+
+												   '<div id="content_'+hit.id+'" class="lebrixen-result-content">'+
 												   '<a class="lebrixen-resource" target="_blank" href="'+hit.url+'"><strong>'+
 												   hit.title+'</strong></a>'+
 												   '<p><span class="summary_hint">'+smry.slice(0, 10).join(' ')+

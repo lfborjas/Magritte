@@ -12,10 +12,6 @@ body{
 	width: 100%;
 }
 
-#terms, #docs, #terms-title, #docs-title{
-	display: none;
-}
-
 #branding h1{
 	font-size: xx-large;
 	color: #494437;
@@ -40,30 +36,3 @@ label {
 	color:#939598;
 }
 
-#terms{
-	background-color: #feeebd;
-	color: #1f1f1f;
-	font-size: 1.2em;
-	border-color: #8e846b;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	width: 100%;
-}
-
-#docs-container{
-	height: 300px;
-	overflow: auto;	 
-}
-
-#docs-container a{	
-	color: #0074c7;
-}
-
-#docs-container p{
-	color: #8e846b;
-	font-style: italic;
-}
-
-#terms-title, #docs-title, #lebrixen-average-rel-title{
-	color: #fece2f;
-}
