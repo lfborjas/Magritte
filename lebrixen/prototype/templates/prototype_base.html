@@ -13,12 +13,13 @@
 		$(document).ready(function() {
 			RECOMMENDER.init({
 				data_form: '#planning-form',
-				data_submit: '#planning-submit'
+				data_submit: '#planning-submit',
 				feedback: {
 					mode: "select",
 					container: "#resources",
-				}
-			});   	
+				},
+			});
+			
 		});
 	</script>
 {%endblock%}
@@ -31,7 +32,7 @@
 		<div id="planning-area">
 		<form id="planning-form" action="#" method="post">
 			{{form}}
-			<input type="submit" id="planning-submit" value="Save and exit"/>
+			<input type="submit" id="planning-submit" value="Guardar y salir"/>
 		</form>
 		<h2 class="resources-title">Referencias: </h2>
 		<ul id="resources"></ul>

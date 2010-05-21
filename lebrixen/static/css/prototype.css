@@ -42,13 +42,25 @@ label {
 }
 
 #resources li{
-	background:#fcaf17;	 
+	background:#fcaf17;
+	margin-top: 6px;		 
 }
 
 #resources li a{
-	color: white;	
+	color: white;		
 }
 
-#resources-title{
-	color: #817865;
+.resources-title{
+	color: #939598;
+}
+
+#planning-submit{
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	background:#494437;
+	border:0;
+	color:#FFF;
+	cursor:pointer;
+	font-size:1.5em;
+	text-align:center;	
 }

@@ -6,7 +6,7 @@ right: 0;
 display: none;
 background: #000000;
 border:1px solid #111111;
-width: 200px;
+width: 300px;
 /*height: auto;*/
 /*padding: 30px 30px 30px 130px;*/
 filter: alpha(opacity=85);
@@ -74,6 +74,7 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 	display:block;
 	padding: 10px 10px 5px 25px;
 	font-weight: bold;
+	border: 1px solid #fcaf17;
 }
 
 #terms{
@@ -87,7 +88,7 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 }
 
 #docs-container{
-	height: 300px;
+	height: 400px;
 	overflow: auto;	 
 }
 
@@ -115,7 +116,8 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 	height: 20px;
 	width: 19px;
 	margin-right: 2px;
-	background: transparent url('/static/images/feedback.png') no-repeat;	
+	background: transparent url('/static/images/feedback.png') no-repeat;
+	text-indent: -1000px;	
 }
 
 .result .lebrixen-result-content{

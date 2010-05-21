@@ -32,8 +32,8 @@ if(!window.RECOMMENDER){
 					feedback: {
 						mode: "follow", //if select, the docs will be jquery selectables and appended to the container
 						container: null,//where to send the selected, only valid if mode is 'select'
-						element: "<li></li>",//how to append to the container, defaults to list element
-					},			 
+						element: "<li></li>"//how to append to the container, defaults to list element
+					}			 
 					
 			  },
 			  
@@ -46,8 +46,9 @@ if(!window.RECOMMENDER){
 			giveFeedback: function(element){
 				//let's assume that if select, the event target is the entire result:
 				if(RECOMMENDER._options.feedback.mode == "select"){
-					$(RECOMMENDER._options.feedback.container).append(RECOMMENDER._options.feedback.element)															  
-															  .append(element.parent().find('a.lebrixen-resource').clone());					
+					$(RECOMMENDER._options.feedback.container).append(RECOMMENDER._options.feedback.element);
+					$(RECOMMENDER._options.feedback.container).children(':last')
+					                                          .append(element.parent().find('a.lebrixen-resource').clone());					
 				}
 				//if follow, only add it				
 				RECOMMENDER._feedback.push(parseInt(element.attr('id').split('_').pop()));
@@ -57,7 +58,7 @@ if(!window.RECOMMENDER){
 				if(RECOMMENDER._options.feedback.mode == "select"){					
 					$(element).find('.lebrixen-feedback-action').show().click(function(event){
 						event.preventDefault();
-						giveFeedback($(event.target));						
+						RECOMMENDER.giveFeedback($(event.target));						
 					});										
 				}else{
 					$(element+' a.lebrixen-resource').click(function(event){						
