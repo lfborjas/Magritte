@@ -12,16 +12,16 @@ from search.models import DmozCategory, DocumentSurrogate
 from celery.decorators import task
 #from heapq import heappush, heappop, heapify
 
-#Normalization constant for the preferences vector
-K = 1
+#decay factor between sessions
+DECAY = 0.5 # the Daoud work recommended 0.2, but that's far too harsh
 
 def _interest_score(profile, concept):
     """Determine the interest score in the given profile for the given concept"""
     try:
-        p = profile.preferences.get(category=concept).values_list('score')
+        p = profile.preferences.get(category__id=concept).values_list('score')
         return p[0]
     except ClientPreference.DoesNotExist:
-        return 1.0
+        return 0.0
 
 @task
 def update_profile(profile, context, docs, lang='en'):
@@ -30,61 +30,53 @@ def update_profile(profile, context, docs, lang='en'):
        
        Args:
            profile: the client user
-           context: the last context terms and the documents which the user found interesting                     
+           context: the last context terms 
+           docs: the ids of the documents of our database the user found interesting                     
     """
     #build the context list:
     #context = context + list(DocumentSurrogate.)
     
-    #STEP 0: build the concepts set    
-    CON = []
-    for d in context:
-        #if it is a stored document, just add it's category
-        if hasattr(d, 'category'):
-            CON += d.category
-        else: #it's a query or a new document
-            CON += DmozCategory.get_for_query(d, lang)
-    #remove duplicates:
-    CON = set(CON)    
-    #STEP 1: the actual spreading algorithm
-    for d in context:              
-        #a category mapping of {pk: weight} for this document:
-        if not hasattr(d, 'category'):
-            prob_categories = DmozCategory.get_for_query(d, lang, as_dict=True)
-        
-        #determine the activation value    
-        for c in CON:
-            sim = 0
-            if hasattr(d, 'category') and c == d.category:
-                sim = 1
-            else:
-                sim = prob_categories.get(c.pk, 0.0)
-            
-            if sim:
-                c.activation = _interest_score(profile, c) * sim                
-            else:
-                c.activation = 0.0
-                                     
-            for parent in c.get_parents():
-                parent.activation = c.activation * c.weight                                                                       
-                CON.update(set([parent,]))
-                
+    #STEP 0: build the concepts set and set their activation values:    
+    CON = {}      
+    #Populate the concepts list with a dictionary of the form {concept: similarity}    
+    for d in context:             
+        CON.update(DmozCategory.get_for_query(d, lang, as_dict=True))
+    for d in DocumentSurrogate.objects.filter(pk__in=docs).values_list('category', flat=True).iterator():
+        #TODO: should I compute the document's summary similarity to its alleged category?
+        CON.update({d:1.0})
+    
+    #Spreading: add to the interest list the attenuated weight of it's ancestors:    
+    for c in CON.keys():        
+        curr_concept = c
+        parent = DmozCategory.objects.filter(pk=curr_concept).values_list('parent', flat=True)[0]
+        while parent:
+            #multiple children of a parent might be in CON, ensure that the maximum score is the one that survives
+            #by selecting the maximum each time
+            ch_weight= DmozCategory.objects.filter(pk=curr_concept).values_list('weight', flat=True)[0]                     
+            CON.update({parent: max(CON.get(parent, 0.0), CON[curr_concept] * ch_weight)})
+            curr_concept = parent
+            parent = DmozCategory.objects.filter(pk=curr_concept).values_list('parent', flat=True)[0]                    
     
     #STEP 2: Evolve the profile
-    n = 0
-    #profile_concepts = profile.preferences.values_list('category', flat=True)
-    for c in CON:
-        pref = ClientPreference.objects.get_or_create(category = c, user=profile)[0]
-        pref.score = pref.score * c.activation
-    
-    user_preferences = profile.preferences.all()
-    #get the vector length: square root of the sum of all squared elements (euclidean distance):
-    for p in user_preferences:         
-        n += p.score**2 
-    n = math.sqrt(n)
-    #normalize the vector: v/|v|
-    for p in user_preferences:
-        p.score = (p.score*K)/n
-        p.save()
+    #Use linear combination to update
+    existing_preferences = []    
+    for preference in profile.preferences.iterator():
+        #if the preference is not in this session, decay
+        ctg = preference.category.pk
+        if not ctg in CON:
+            preference.score = DECAY*preference.score
+        else: #it is, augment:
+            preference.score = DECAY*preference.score + (1-DECAY)*CON[ctg]
+        preference.save()
+        #add the preference to the set of existing ones:
+        existing_preferences += ctg
+            
+    #determine which preferences to add to the profile:
+    to_add = set(CON.keys()) - set(existing_preferences)
+    for newcat in to_add:
+        #pref = ClientPreference(category=DmozCategory.objects.get(pk=c), score=CON[newcat], user=profile)
+        new_pref = ClientPreference(category_id=newcat, score=CON[newcat], user=profile)
+        new_pref.save()    
     
     return True
                 

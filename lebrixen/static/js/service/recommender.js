@@ -81,7 +81,8 @@ if(!window.RECOMMENDER){
 				 * dunno how to solve it (a jsonp CAN'T be synchronous, so it's
 				 * no case setting async to false in $.ajax*/
 				$.getJSON(RECOMMENDER._final_call,
-						$.param({context: $('#terms').val(), docs: RECOMMENDER._feedback}, true)						
+						$.param({context: $('#terms').val(), docs: RECOMMENDER._feedback,
+							lang: RECOMMENDER._options.lang}, true)						
 						);
 				return false;
 			},//end of the end session definition
@@ -145,7 +146,9 @@ if(!window.RECOMMENDER){
 							event.preventDefault();
 							$.getJSON(RECOMMENDER._final_call,
 									//cf: http://api.jquery.com/jQuery.param/
-									$.param({context: $('#terms').val(), docs: RECOMMENDER._feedback}, true),
+									$.param({context: $('#terms').val(),
+										     docs: RECOMMENDER._feedback,
+										     lang: RECOMMENDER._options.lang}, true),
 									function(){
 										//force sync: only submit when the function returns
 										$(RECOMMENDER._options.data_form).submit();

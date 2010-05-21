@@ -65,7 +65,8 @@ class DmozCategory(models.Model):
             logging.debug("No categories match query %s" % query)
             return None
             #TODO: try correcting spelling ?
-        
+        if as_dict:
+            return rval
         #get the categories and set their weight relative to the query:
         categories = cls.objects.filter(pk__in = rval.keys())
         #[setattr(category, 'relative_weight', (rval[category.pk]) * category.weight) for category in categories]
@@ -82,5 +83,5 @@ class DmozCategory(models.Model):
         while parent:
             p= parent
             parent = p.parent
-            yield p
+            yield p.pk
                 
