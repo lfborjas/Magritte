@@ -42,8 +42,7 @@ def set_profile(request):
        This view can only be called from the same domain, if it is a jsonp call, it will fail, so, 
        that's kinda secure.        
     """
-    if hasattr(request, 'profile'):
-        logging.debug("Using profile: %s" % request.profile)
+    if hasattr(request, 'profile'):        
         graph = _get_profile_graph(request.profile)
         return HttpResponse(json.dumps({'graph_request': graph}), mimetype='application/json')
     else:

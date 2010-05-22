@@ -51,7 +51,9 @@ $(function(){
 		$.getJSON('/api/demo/setProfile/',
 				$('#tools-form').serialize(),
 				function(data){
-					alert(data.graph_request);
+					//alert(data.graph_request);
+					$('.user-info').text("Perfil actual: "+ $('#id_appUser :selected').text().replace( /^\s+|\s+$/g, '')
+										 +", usuario de "+$('#id_appId :selected').text().replace( /^\s+|\s+$/g, ''))
 					//given the request, ask for it async
 				});
 	});
