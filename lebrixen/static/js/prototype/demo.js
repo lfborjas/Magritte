@@ -1,0 +1,2 @@
+var appId="";
+var appUser="";

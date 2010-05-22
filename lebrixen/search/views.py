@@ -8,6 +8,7 @@ from search.models import DocumentSurrogate
 from django.core.serializers import serialize
 import logging
 import xapian
+from service import re_rank
 
 def do_search(query, lang='en'):
     """Abstract the search mechanism from the view"""
@@ -25,8 +26,8 @@ def do_search(query, lang='en'):
                            'category': hit.instance.category.pk} for hit in search_results]
                            
 
-def search_docs(request):
-    """Search documents and return a json with the result set"""
+def search_docs(request, re_rank = True):
+    """Search documents and return a json with the original result set and a re-ranked version"""
     if not 'q' in request.REQUEST:
         return HttpResponseBadRequest()
     
@@ -35,8 +36,10 @@ def search_docs(request):
     lang = request.REQUEST.get('hl') or 'en'
     
     #search: assume the results are already json encoded    
-    results = do_search(query, lang)    
-    return HttpResponse(jsonlib.dumps(results, ensure_ascii=False), mimetype="application/json")
+    results = do_search(query, lang)
+    reranked =  re_rank(request.profile, results)   
+    return HttpResponse(jsonlib.dumps({'results': results,
+                                       'reranked': reranked}, ensure_ascii=False), mimetype="application/json")
     
     
     

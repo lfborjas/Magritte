@@ -12,6 +12,8 @@ urlpatterns = patterns('',
                        (r'^$', 'prototype.views.index'),
                        (r'^getTerms/$', 'service.views.get_terms'),
                        (r'^search/', include('search.urls')),
+                       (r'^prototype/', include('prototype.urls')),
+                       (r'^api/demo/setProfile/$', 'prototype.views.set_profile'), #'cause only api/ prefixed calls get a profile
                        (r'^api/', include('service.urls')),
     # Example:
     # (r'^lebrixen/', include('lebrixen.foo.urls')),

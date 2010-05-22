@@ -1,0 +1,46 @@
+{%extends "base.html"%}
+{%block title%}Demostración de funcionamiento{%endblock%}
+{%block stylesheets%}
+	<link rel="stylesheet" type="text/css" href="/static/css/demo.css" media="screen" />
+{%endblock%}
+{%block scripts%}
+	<script type="text/javascript" src="/static/js/prototype/demo.js" ></script>
+{%endblock%}
+
+{%block content%}
+	<div id="branding">
+		<h1>Demostraci&oacute;n del funcionamiento</h1>
+		<p>Para ver c&oacute;mo evolucionan los perfiles y se construyen las recomendaciones</p>
+	</div>
+	<div id="content">
+			<div id="tools">
+				<form id="tools-form">
+					{{tools_form}}
+					<input type="submit" value="Mostrar" id="tools-submit" />
+				</form>
+			</div>	
+			<div id="content-center">
+				<div id="user-profile">
+					<img src='/static/images/nograph.png' />
+				</div>
+				<div id="user-simulation">
+					<form id="simulation-form">
+						{{simulation_form}}
+						<input type="submit" value="Simular" id="simulation-submit" />
+					</form>
+					<div id="simulation-unranked">
+						<ul id="unranked-results"></ul>
+					</div>
+					<div id="simulation-ranked">
+						<ul id="ranked-results"></ul>
+					</div>
+				</div>
+			</div>			
+	</div>	
+	<div id="footer">
+			<span>
+				P&Aacute;GINA DE DEMOSTRACI&Oacute;N: (con un tema deliberadamente conspicuo)
+				No es parte del producto final, en &eacute;ste se respetar&aacute; la privacidad.				 
+			</span>
+	</div>
+{%endblock%}
