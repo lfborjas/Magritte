@@ -13,13 +13,13 @@ $(function(){
 			else if(key===38){
 				element = '#tools';
 			}
-			//RIGHT=simulation unranked
+			//RIGHT=simulation ranked
 			else if(key===39){
-				element = "#simulation-unranked";
-			}
-			//DOWN = simulation ranked
-			else if(key===40){
 				element = "#simulation-ranked";
+			}
+			//DOWN = simulation unranked
+			else if(key===40){
+				element = "#simulation-unranked";
 			}
 			$(element).effect('highlight', {color: '#f6f6f6'}, 1000);
 			
@@ -35,12 +35,12 @@ $(function(){
 						$.each(data, function(index, user){
 							$('#id_appUser').append('<option value="'+user.k+'">'+user.val+'</option>');
 						});
-						$('#tools-submit').removeAttr('disabled');
+						$('#tools-submit, #simulation-submit').removeAttr('disabled');
 					},
 					'json'
 			);
 		}else{
-			$('#tools-submit').attr('disabled','disabled');
+			$('#tools-submit, #simulation-submit').attr('disabled','disabled');
 			$('#id_appUser').empty();
 		}
 	});
@@ -56,5 +56,23 @@ $(function(){
 										 +", usuario de "+$('#id_appId :selected').text().replace( /^\s+|\s+$/g, ''))
 					//given the request, ask for it async
 				});
+	});
+	
+	//simulate a query:
+	$('#simulation-form').submit(function(e){
+		e.preventDefault();
+		$.getJSON('/search/',
+				$('#simulation-form').serialize(),
+				function(data){
+					$('#simulation-unranked').prepend('<h4 class="sim-results">Sin re-ordenar</h4>');
+					$.each(data.results, function(index, unranked){						
+						$('#unranked-results').append('<li><a target="_blank" href="'+unranked.url+'">'+unranked.title+'</a></li>');
+					});
+					$('#simulation-ranked').prepend('<h4 class="sim-results">Re-ordenando</h4>');
+					$.each(data.reranked, function(index, ranked){
+						$('#ranked-results').append('<li><a target="_blank" href="'+ranked.url+'">'+ranked.title+'</a></li>');
+					});
+				}
+		);
 	});
 });

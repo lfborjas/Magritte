@@ -26,7 +26,7 @@ def do_search(query, lang='en'):
                            'category': hit.instance.category.pk} for hit in search_results]
                            
 
-def search_docs(request, re_rank = True):
+def search_docs(request, rerank = True):
     """Search documents and return a json with the original result set and a re-ranked version"""
     if not 'q' in request.REQUEST:
         return HttpResponseBadRequest()
@@ -37,7 +37,10 @@ def search_docs(request, re_rank = True):
     
     #search: assume the results are already json encoded    
     results = do_search(query, lang)
-    reranked =  re_rank(request.profile, results)   
+    if rerank:
+        reranked =  re_rank(request.profile, results)
+    else:
+        reranked = []   
     return HttpResponse(jsonlib.dumps({'results': results,
                                        'reranked': reranked}, ensure_ascii=False), mimetype="application/json")
     

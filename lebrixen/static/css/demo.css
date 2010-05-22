@@ -86,12 +86,31 @@ body{
 	background-color: #00498f;
 }
 
-#simulation-unranked, #simulation-ranked{
+#simulation-unranked{
+	float: left;
+	overflow: auto;
+	height: 350px;
+	width: 45%;
+}
+
+#simulation-ranked{
+	float: right;
+	overflow: auto;
+	height: 350px;
+	width: 45%;
+}
+
+#unranked-results, #ranked-results{
 	list-style-type: none;
 	color: #9ccdfc;
 }
-#simulation-unranked li, #simulation-ranked li{
+#unranked-results li, #ranked-results li{
 	margin-top: 4px;
+}
+
+#unranked-results li a, #ranked-results li a{
+	font-size: 1em;
+	color: #9ccdfc;
 }
 
 #footer{
@@ -112,3 +131,6 @@ body{
 	color: #98d2fb;		
 }
 
+.sim-results{
+	color: #f6f6f6;
+}

@@ -31,3 +31,5 @@ class DemoToolsForm(forms.Form):
     
 class DemoSimulationForm(forms.Form):
     q = forms.CharField(label="")
+    hl = forms.ChoiceField(label="", choices=[('en', 'English'), ('es', 'Español')])
+    
