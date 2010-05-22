@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseBadRequest
 from profile.models import ClientApp
+import logging
 
 try:
     import jsonlib2 as json
@@ -31,6 +32,8 @@ def demo(request):
 
 def _get_profile_graph(profile):
     """Get a graphical representation of a profile's graph"""
+    #only generate the graph request, I'll let the JS ask for it in google
+    #async    
     return "<img src='/static/images/nograph.png' />"
 
 def set_profile(request):
@@ -40,8 +43,9 @@ def set_profile(request):
        that's kinda secure.        
     """
     if hasattr(request, 'profile'):
+        logging.debug("Using profile: %s" % request.profile)
         graph = _get_profile_graph(request.profile)
-        return HttpResponse(json.dumps({'graph': graph}), mimetype='application/json')
+        return HttpResponse(json.dumps({'graph_request': graph}), mimetype='application/json')
     else:
         return HttpResponseBadRequest('No profile could be set')
     

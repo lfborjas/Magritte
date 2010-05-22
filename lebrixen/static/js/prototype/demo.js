@@ -43,5 +43,16 @@ $(function(){
 			$('#tools-submit').attr('disabled','disabled');
 			$('#id_appUser').empty();
 		}
-	})
+	});
+	
+	//set the appropiate profile
+	$('#tools-form').submit(function(e){
+		e.preventDefault();
+		$.getJSON('/api/demo/setProfile/',
+				$('#tools-form').serialize(),
+				function(data){
+					alert(data.graph_request);
+					//given the request, ask for it async
+				});
+	});
 });
