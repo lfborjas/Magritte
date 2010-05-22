@@ -51,5 +51,5 @@ def get_users(request):
         return HttpResponseBadRequest()
     else:
         app= ClientApp.get_for_token(request.REQUEST['appId'])
-        return HttpResponse(json.dumps([{'pk': e.pk, 'val': e.clientId} for e in app.users.iterator()], 
+        return HttpResponse(json.dumps([{'k': e.clientId, 'val': e.clientId} for e in app.users.iterator()], 
                                        ensure_ascii=False), mimetype="application/json") 

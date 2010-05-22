@@ -24,5 +24,24 @@ $(function(){
 			$(element).effect('highlight', {color: '#f6f6f6'}, 1000);
 			
 		}//if not a text or a select
-	});
+	}); // end of keybindings
+	
+	//get users of an app:
+	$('#id_appId').change(function(e){
+		if($(this).val()){
+			$.get('/prototype/getUsers/',
+					{appId: $(this).val()},
+					function(data){
+						$.each(data, function(index, user){
+							$('#id_appUser').append('<option value="'+user.k+'">'+user.val+'</option>');
+						});
+						$('#tools-submit').removeAttr('disabled');
+					},
+					'json'
+			);
+		}else{
+			$('#tools-submit').attr('disabled','disabled');
+			$('#id_appUser').empty();
+		}
+	})
 });
