@@ -63,6 +63,7 @@ body{
 #user-simulation{
 	float: right;
 	width: 55%;
+	overflow: hidden;
 }
 
 #simulation-form input{
@@ -89,14 +90,14 @@ body{
 #simulation-unranked{
 	float: left;
 	overflow: auto;
-	height: 350px;
+	height: 300px;
 	width: 45%;
 }
 
 #simulation-ranked{
 	float: right;
 	overflow: auto;
-	height: 350px;
+	height: 300px;
 	width: 45%;
 }
 
