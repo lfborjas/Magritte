@@ -14,10 +14,13 @@
 			RECOMMENDER.init({
 				data_form: '#planning-form',
 				data_submit: '#planning-submit',
-				feedback: {
-					mode: "select",
-					container: "#resources",
-				},
+				{%ifequal fm 'select'%}
+					feedback: {
+						mode: "select",
+						container: "#resources",
+					},
+				{%endifequal%}
+				appUser: "{{uid}}",
 			});
 			
 		});
