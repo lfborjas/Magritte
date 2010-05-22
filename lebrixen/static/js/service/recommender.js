@@ -10,9 +10,9 @@ if(!window.RECOMMENDER){
 			//_service_root: "http://lebrixen.com",
 			//_service_root: "http://localhost:8000/",
 			//initial call url:
-			_init_call: _service_root+"api/startSession/?callback=?",
+			_init_call: _service_root+"api/getWidget/?callback=?",
 			_get_recommendations_call: _service_root+"api/getRecommendations/?callback=?",
-			_final_call: _service_root+"api/endSession/?callback=?",
+			_final_call: _service_root+"api/updateProfile/?callback=?",
 			
 			/*Internal data*/
 			_lastContext: "",
@@ -76,7 +76,7 @@ if(!window.RECOMMENDER){
 				 * no case setting async to false in $.ajax*/
 				$.getJSON(RECOMMENDER._final_call,
 						$.param({context: $('#terms').val(), docs: RECOMMENDER._feedback,
-							lang: RECOMMENDER._options.lang}, true)						
+							lang: RECOMMENDER._options.lang, t: true}, true)						
 						);
 				return false;
 			},//end of the end session definition
@@ -144,7 +144,7 @@ if(!window.RECOMMENDER){
 									//cf: http://api.jquery.com/jQuery.param/
 									$.param({context: $('#terms').val(),
 										     docs: RECOMMENDER._feedback,
-										     lang: RECOMMENDER._options.lang}, true),
+										     lang: RECOMMENDER._options.lang, t:true}, true),
 									function(){
 										//force sync: only submit when the function returns
 										$(RECOMMENDER._options.data_form).submit();
