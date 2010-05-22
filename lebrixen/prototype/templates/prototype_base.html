@@ -12,8 +12,10 @@
 	<script>
 		$(document).ready(function() {
 			RECOMMENDER.init({
-				data_form: '#planning-form',
-				data_submit: '#planning-submit',
+				data: {
+					form: '#planning-form',
+					submit: '#planning-submit',
+				},				
 				{%ifequal fm 'select'%}
 					feedback: {
 						mode: "select",

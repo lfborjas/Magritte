@@ -27,8 +27,10 @@ if(!window.RECOMMENDER){
 					appUser: 'testUser',
 					content: '#id_content',
 					lang: 'en',
-					data_submit: null, //the element that triggers the host's form submission, must NOT have an event handler
-					data_form: null, //the form where the host's data lives
+					data: {
+						submit: null,  //the element that triggers the host's form submission, must NOT have an event handler
+						form: null, //the form where the host's data lives
+					},					
 					feedback: {
 						mode: "follow", //if select, the docs will be jquery selectables and appended to the container
 						container: null,//where to send the selected, only valid if mode is 'select'
@@ -133,10 +135,10 @@ if(!window.RECOMMENDER){
 				$('#id_content').keyup(RECOMMENDER.detectContextChange);				   
 				
 				//Call the user trigger or default to the window unloading
-				if(!RECOMMENDER._options.data_submit){
+				if(!RECOMMENDER._options.data.submit){
 					$(window).unload(RECOMMENDER.endSession);
 				}else{
-					$(RECOMMENDER._options.data_submit).click(function(event){
+					$(RECOMMENDER._options.data.submit).click(function(event){
 							//disable the button, for those impatient users that over-submit stuff
 							$(event.target).attr('disabled', 'disabled');
 							event.preventDefault();
@@ -147,7 +149,7 @@ if(!window.RECOMMENDER){
 										     lang: RECOMMENDER._options.lang, t:true}, true),
 									function(){
 										//force sync: only submit when the function returns
-										$(RECOMMENDER._options.data_form).submit();
+										$(RECOMMENDER._options.data.form).submit();
 										return false;
 									}//end of final call callback
 							);
