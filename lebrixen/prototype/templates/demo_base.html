@@ -2,8 +2,10 @@
 {%block title%}Demostración de funcionamiento{%endblock%}
 {%block stylesheets%}
 	<link rel="stylesheet" type="text/css" href="/static/css/demo.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="/static/css/slimbox2.css" media="screen" />
 {%endblock%}
 {%block scripts%}
+	<script type="text/javascript" src= "/static/js/slimbox2.js"></script>
 	<script type="text/javascript" src="/static/js/prototype/demo.js" ></script>
 {%endblock%}
 
@@ -22,7 +24,9 @@
 			</div>	
 			<div id="content-center">
 				<div id="user-profile">
-					<img id="user-profile-graph" src='/static/images/graphholder.png' />
+					<a id="user-profile-graph-thumb" rel="lightbox" title="Grafo de la ontolog&iacute;a de preferencias del usuario" href="#">
+						<img id="user-profile-graph" src='/static/images/graphholder.png' />
+					</a>
 				</div>
 				<div id="user-simulation">
 					<form id="simulation-form" action="#">

@@ -54,7 +54,8 @@ def _get_profile_graph(profile):
     if not graph_data:
         return '/static/images/nograph.png'
     else:
-        return '%s?cht=gv&chl=%s' % (base_call, graph.replace('"', '%22'))
+        #ils ont des restrictions: http://code.google.com/intl/es/apis/chart/docs/chart_params.html#gcharts_chs
+        return '%s?cht=gv&chs=700x&chl=%s' % (base_call, graph.replace('"', '%22'))
         
         
         

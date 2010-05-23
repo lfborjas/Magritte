@@ -55,6 +55,7 @@ $(function(){
 					$('.user-info').text("Perfil actual: "+ $('#id_appUser :selected').text().replace( /^\s+|\s+$/g, '')
 										 +", usuario de "+$('#id_appId :selected').text().replace( /^\s+|\s+$/g, ''))
 					$('#user-profile-graph').attr('src', data.graph);
+					$('#user-profile-graph-thumb').attr('href', data.graph);
 				});
 	});
 	
