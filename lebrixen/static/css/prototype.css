@@ -1,5 +1,6 @@
 body{
 	font-family: helvetica, arial, sans-serif;
+	height: 100%;
 }
 #planning-area{
 	float: left;
@@ -95,3 +96,22 @@ select{
 	font-size:1.5em;
 }
 
+#footer{
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;	
+	bottom: 0;
+	font-size: 1em;
+	position:absolute;
+	clear: both;			
+	margin: auto;
+	background-color: #817865;
+	width: 100%;
+	text-align:center;	
+}
+
+#footer a{
+	text-decoration: none;
+	font-weight:bold;
+	font-size: 1em;
+	color: #fff;
+}

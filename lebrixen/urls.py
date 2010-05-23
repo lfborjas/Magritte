@@ -9,7 +9,7 @@ import djapian
 djapian.load_indexes()
 
 urlpatterns = patterns('',
-                       (r'^$', 'prototype.views.index'),
+                       #(r'^$', 'prototype.views.index'),
                        (r'^getTerms/$', 'service.views.get_terms'),
                        (r'^search/', include('search.urls')),
                        (r'^prototype/', include('prototype.urls')),
