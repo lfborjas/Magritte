@@ -7,7 +7,7 @@ $(function(){
 		if(event.target.type !== 'text' && event.target.type !== 'select'){
 			//LEFT = graph
 			if(key=== 37){
-				element = '#user-profile img';
+				element = '#user-profile';
 			}
 			//UP=tools
 			else if(key===38){
@@ -21,7 +21,7 @@ $(function(){
 			else if(key===40){
 				element = "#simulation-unranked";
 			}
-			$(element).effect('highlight', {color: '#f6f6f6'}, 1000);
+			$(element).effect('highlight', {}, 1000);
 			
 		}//if not a text or a select
 	}); // end of keybindings

@@ -24,10 +24,10 @@ class PrototypePlanningForm(forms.Form):
     
 class DemoToolsForm(forms.Form):
     """A form to select an app an a user"""    
-    appId = forms.ChoiceField(label="App",
+    appId = forms.ChoiceField(label="Aplicación",
                              choices=[('', '')]+[(e.get_token(), e.url) for e in ClientApp.objects.iterator()],
                              )
-    appUser = forms.ChoiceField(label="User", choices=[])    
+    appUser = forms.ChoiceField(label="Usuario", choices=[])    
     
 class DemoSimulationForm(forms.Form):
     q = forms.CharField(label="")

@@ -72,7 +72,7 @@ body{
 	color: #111;
 	font-size: 1em;
 	font-weight: bold;
-	width: 300px;			
+	width: 150px;			
 }
 
 #simulation-form #simulation-submit{
@@ -102,8 +102,8 @@ body{
 }
 
 #unranked-results, #ranked-results{
-	list-style-type: none;
-	color: #9ccdfc;
+	list-style-type: square;
+	color: #096ac8;
 }
 #unranked-results li, #ranked-results li{
 	margin-top: 4px;
