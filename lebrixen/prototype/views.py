@@ -12,6 +12,7 @@ except ImportError:
     import json
 except ImportError:
     import django.utils.simplejson as json
+from django.utils.http import urlencode
 
 def index(request):
     """Index view for the prototype page"""
@@ -31,10 +32,32 @@ def demo(request):
                                 context_instance=RequestContext(request))
 
 def _get_profile_graph(profile):
-    """Get a graphical representation of a profile's graph"""
+    """Get a graphical representation of a profile's graph
+    
+       Uses the GraphViz DOT language: http://www.graphviz.org/doc/info/lang.html
+    """
     #only generate the graph request, I'll let the JS ask for it in google
     #async    
-    return "<img src='/static/images/nograph.png' />"
+    base_call = "http://chart.apis.google.com/chart"
+    graph_data=""
+    for pref in profile.preferences.iterator():
+        #create the individual node:
+        par_data= r'"%s\n%s"' % (pref.category.title, pref.score * 100)        
+        #add the edges with it's children:
+        if profile.preferences.filter(category__parent=pref.category).count() > 0:
+            for sub_pref in profile.preferences.filter(category__parent=pref.category).iterator():
+                graph_data += r'%s--"%s\n%s"[type=s];' % (par_data, sub_pref.category.title, sub_pref.score * 100)
+        else:
+            graph_data += r'%s;' % par_data
+        
+    graph=r"graph{%s}" % graph_data    
+    if not graph_data:
+        return '/static/images/nograph.png'
+    else:
+        return '%s?cht=gv&chl=%s' % (base_call, graph.replace('"', '%22'))
+        
+        
+        
 
 def set_profile(request):
     """Temporal, only for the demo; circumvent the jsonp convention and just get the user's graph
@@ -44,7 +67,7 @@ def set_profile(request):
     """
     if hasattr(request, 'profile'):        
         graph = _get_profile_graph(request.profile)
-        return HttpResponse(json.dumps({'graph_request': graph}), mimetype='application/json')
+        return HttpResponse(json.dumps({'graph': graph}), mimetype='application/json')
     else:
         return HttpResponseBadRequest('No profile could be set')
     
