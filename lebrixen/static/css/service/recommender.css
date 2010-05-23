@@ -1,4 +1,4 @@
-.panel {
+.lebrixen-panel {
 position: fixed;
 top: 0;
 bottom: 0;
@@ -14,7 +14,7 @@ opacity: .85;
 height: 100%;
 }
 
-a.trigger{
+a.lebrixen-trigger{
 position: fixed;
 text-decoration: none;
 top: 80px; right: 0;
@@ -37,7 +37,7 @@ opacity: .85;
 -webkit-border-bottom-left-radius: 10px;
 }
 
-a.trigger:hover{
+a.lebrixen-trigger:hover{
 padding: 20px 40px 20px 20px;
 background-color:#222222;
 }
@@ -64,7 +64,7 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 	opacity: 0 !important;
 }
 
-.panel h2{
+.lebrixen-panel h2{
 	font-size: 1.2em;
 }
 
@@ -77,7 +77,7 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 	border: 1px solid #fcaf17;
 }
 
-#terms{
+#lebrixen-terms{
 	background-color: #feeebd;
 	color: #1f1f1f;
 	font-size: 1.2em;
@@ -87,31 +87,31 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 	width: 100%;
 }
 
-#docs-container{
-	height: 400px;
+#lebrixen-docs-container{
+	height: 100%;
 	overflow: auto;	 
 }
 
-#docs-container a{	
+#lebrixen-docs-container a{	
 	color: #0074c7;
 	font-size: 1em;
 }
 
-#docs-container p{
+#lebrixen-docs-container p{
 	color: #8e846b;
 	font-style: italic;
 }
 
-#terms-title, #docs-title, #lebrixen-average-rel-title{
+#lebrixen-terms-title, #lebrixen-docs-title, #lebrixen-average-rel-title{
 	color: #fece2f;
 	font-size: 1.1em;
 }
 
-#terms, #docs, #terms-title, #docs-title{
+#lebrixen-terms, #lebrixen-docs, #lebrixen-terms-title, #lebrixen-docs-title{
 	display: none;
 }
 
-.result .lebrixen-feedback-action{
+.lebrixen-result .lebrixen-feedback-action{
 	float: left;
 	height: 20px;
 	width: 19px;
@@ -120,6 +120,6 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 	text-indent: -1000px;	
 }
 
-.result .lebrixen-result-content{
+.lebrixen-result .lebrixen-result-content{
 	display: table-cell;
 }
