@@ -140,3 +140,7 @@ body{
 	height: 300px;
 	width: 300px;	
 }
+
+select{
+	font-size:1.3em;
+}
