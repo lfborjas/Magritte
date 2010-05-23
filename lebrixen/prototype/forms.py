@@ -7,6 +7,7 @@ Created on 02/05/2010
 from django import forms
 from django.forms.widgets import HiddenInput
 from service import WEB_SERVICES
+from profile.models import ClientApp, ClientUser
 
 class PrototypePlanningForm(forms.Form):
     SERVICE_CHOICES=(
@@ -26,3 +27,15 @@ class PrototypeSettingsForm(forms.Form):
     uid = forms.CharField(label="Usuario ")
     fm = forms.ChoiceField(label="Retroalimentación", choices=[('follow', 'Implícita'), ('select', 'Explícita')])
     uw = forms.BooleanField(label="Usar widget", initial=True)
+    
+class DemoToolsForm(forms.Form):
+    """A form to select an app an a user"""    
+    appId = forms.ChoiceField(label="Aplicación",
+                             choices=[('', '')]+[(e.get_token(), e.url) for e in ClientApp.objects.iterator()],
+                             )
+    appUser = forms.ChoiceField(label="Usuario", choices=[])    
+    
+class DemoSimulationForm(forms.Form):
+    q = forms.CharField(label="")
+    hl = forms.ChoiceField(label="", choices=[('en', 'English'), ('es', 'Español')])
+    
