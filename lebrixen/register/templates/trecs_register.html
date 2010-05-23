@@ -1,0 +1,25 @@
+{%extends "register_base.html"%}
+{%block title%}Home{%endblock%}
+{%block scripts%}
+<script>
+	$($('#register-submit').click(function(e){
+		$(this).attr('disabled', 'disabled');
+	}););
+	
+	var RecaptchaOptions = {
+   		theme : 'white',   		
+   		lang: 'en'
+		};
+</script>
+{%endblock%}
+{%block content%}
+	<h2>Get your app key</h2>
+	<p>Write your app's name and an email where we could send you your app key, our capacity isn't infinite
+	   so we're forced to make fill out this form to register. After you fill it out successfully, you'll
+	   be redirected to the usage page, so you can get started</p>
+	<form id="register-form" action="#" method="post">
+		<table>{{form}}
+			<tr id="submit-row"><td><input type="submit" id="register-submit" /></td></tr>
+		</table>
+	</form>
+{%endblock%}
