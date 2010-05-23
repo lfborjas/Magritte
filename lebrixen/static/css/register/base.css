@@ -78,7 +78,7 @@ a {
 }
 
 h2{
-	color: #8dc262;	
+	color: #327e04;	
 }
 
 ol, ul{
@@ -87,4 +87,15 @@ ol, ul{
 
 ol .content , ul .content{
 	color:#847E71; 
+}
+
+h3{
+	color: #67b021;
+}
+
+h4{
+	color:#8dc262; 	
+}
+tt{
+	color: #cd5c0a;
 }
