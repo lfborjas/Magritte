@@ -8,8 +8,12 @@
 {%block scripts%}
 
 	<script type="text/javascript" src="/static/js/jquery-ui-1.8.1.custom.min.js" ></script>
-	<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
+	{%if uw%}
+		<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
+	{%endif%}
+	
 	<script>
+	{%if uw%}
 		$(document).ready(function() {
 			RECOMMENDER.init({
 				data: {
@@ -26,21 +30,75 @@
 			});
 			
 		});
+	{%else%}		
+		/*chucknorris.com likes to write it's own javascript -with whirlwind kicks*/
+		$(function(){
+			$('#id_content').keyup(function(e){
+				worten = $('#id_content').val();
+				if(worten.indexOf('science') != -1){
+					$.getJSON('http://localhost:8000/api/getRecommendations/?callback=?',
+						{content: $('#id_content').val(), lang:'en', appId: "d27348a5fd2a0c7f8977591ec51cbf10", appUser:"{{uid}}"},
+						function(data){						
+							$.each(data.results, function(index, result){
+								$('#resources').append('<li><a class="walker" id="texas_'+result.id+
+													   '" target="_blank" href="'+
+													   result.url+'" >'+result.title+'</a></li>');
+								
+							});
+							
+							$('.walker').click(function(e){
+									$(this).addClass('cornell').css('background-color', '#4e7f00');
+							});//chuck norris likes it implicit
+						}			
+					);
+				}//chuck norris is only into science														
+			});
+			
+			$('#planning-submit').click(function(e){
+					e.preventDefault();
+					var docs=[];
+					$('.cornell').each(function(index, ranger){
+						docs.push(parseInt($(ranger).attr('id').split('_').pop()));
+					});
+					$.getJSON('http://localhost:8000/api/updateProfile/?callback=?',
+						$.param({docs: docs,
+								 t:false,
+								 lang:'en',
+								 appId: "d27348a5fd2a0c7f8977591ec51cbf10",
+								 appUser:"{{uid}}",
+								 context:$('#id_content').val()}, true),
+						function(){
+							alert("¡Perfil actualizado!");
+							//$('planning-form').submit();
+						}
+					);
+				});//sometimes, chuck norris just plain hates reloading stuff
+			
+		});
+	{%endif%}
 	</script>
+	
 {%endblock%}
 {%block content%}
 	<div id="branding">
-		<h1>Protipo de recomendación</h1>
+		<h1>Prototipo de recomendación</h1> {{request.hostname}}
 		<p>Sólo para mostrar cómo funcionan la extracción automática y la búsqueda</p>
 	</div>
 	<div id="content-center">
+		<div id="settings">
+			<form id="settings-form" action="#" method="get">
+				{{settings_form}}
+				<input type="submit" id="settings-submit" value="Establecer"/>
+			</form>
+		</div>
 		<div id="planning-area">
 		<form id="planning-form" action="#" method="post">
 			{{form}}
 			<input type="submit" id="planning-submit" value="Guardar y salir"/>
 		</form>
-		<h2 class="resources-title">Referencias: </h2>
-		<ul id="resources"></ul>
+		
+			<h2 class="resources-title">{%ifequal fm select%}Referencias:{%else%}Recomendaciones:{%endifequal%} </h2>
+			<ul id="resources"></ul>		
 		</div>		
 	</div>
 	{#{%include "recommender_bar.html"%}#}
