@@ -64,3 +64,34 @@ label {
 	font-size:1.5em;
 	text-align:center;	
 }
+
+#settings{
+	background-color: #feeebd;
+	color: #383838;
+	border-color: #8e846b;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	clear: both;	
+}
+
+#settings-submit{
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	background:#d19405;
+	border:0;
+	color:#FFF;
+	cursor:pointer;
+	font-size:1.5em;
+	text-align:center;	
+}
+
+/*.settings-title{
+	color: #383838;
+	font-weight: bold;
+	font-size: 1em;
+}*/
+
+select{
+	font-size:1.5em;
+}
+

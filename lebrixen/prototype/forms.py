@@ -19,10 +19,10 @@ class PrototypePlanningForm(forms.Form):
                      )
     content = forms.CharField(widget=forms.Textarea(), label ="Contenido")
     lang = forms.CharField(widget=HiddenInput())
-    service = forms.ChoiceField(label=u"Servicio web para extracción", choices = SERVICE_CHOICES)
+    service = forms.ChoiceField(label=u"Servicio web para extracción", choices = SERVICE_CHOICES, widget=HiddenInput())
 
 class PrototypeSettingsForm(forms.Form):
     """Settings for the widget"""
     uid = forms.CharField(label="Usuario ")
     fm = forms.ChoiceField(label="Retroalimentación", choices=[('follow', 'Implícita'), ('select', 'Explícita')])
-    uw = forms.BooleanField(label="Usar widget")
+    uw = forms.BooleanField(label="Usar widget", initial=True)

@@ -36,7 +36,7 @@
 			$('#id_content').keyup(function(e){
 				worten = $('#id_content').val();
 				if(worten.indexOf('science') != -1){
-					$.getJSON('http://localhost:8000/api/getRecommendations/?callback=?',
+					$.getJSON('http://{{request.get_host}}/api/getRecommendations/?callback=?',
 						{content: $('#id_content').val(), lang:'en', appId: "d27348a5fd2a0c7f8977591ec51cbf10", appUser:"{{uid}}"},
 						function(data){						
 							$.each(data.results, function(index, result){
@@ -47,7 +47,7 @@
 							});
 							
 							$('.walker').click(function(e){
-									$(this).addClass('cornell').css('background-color', '#4e7f00');
+									$(this).addClass('cornell').parent().css('background-color', '#4e7f00');
 							});//chuck norris likes it implicit
 						}			
 					);
@@ -60,7 +60,7 @@
 					$('.cornell').each(function(index, ranger){
 						docs.push(parseInt($(ranger).attr('id').split('_').pop()));
 					});
-					$.getJSON('http://localhost:8000/api/updateProfile/?callback=?',
+					$.getJSON('http://{{request.get_host}}/api/updateProfile/?callback=?',
 						$.param({docs: docs,
 								 t:false,
 								 lang:'en',
@@ -70,6 +70,8 @@
 						function(){
 							alert("¡Perfil actualizado!");
 							//$('planning-form').submit();
+							$('#id_content').val("");
+							$('#resources').empty();
 						}
 					);
 				});//sometimes, chuck norris just plain hates reloading stuff
@@ -81,11 +83,11 @@
 {%endblock%}
 {%block content%}
 	<div id="branding">
-		<h1>Prototipo de recomendación</h1> {{request.hostname}}
-		<p>Sólo para mostrar cómo funcionan la extracción automática y la búsqueda</p>
+		<h1>Prototipo de aplicaci&oacute;n de cliente</h1> 
+		<p>Para mostrar c&oacute;mo se pueden utilizar el servicio web y el widget</p>
 	</div>
 	<div id="content-center">
-		<div id="settings">
+		<div id="settings">			
 			<form id="settings-form" action="#" method="get">
 				{{settings_form}}
 				<input type="submit" id="settings-submit" value="Establecer"/>
@@ -94,12 +96,13 @@
 		<div id="planning-area">
 		<form id="planning-form" action="#" method="post">
 			{{form}}
-			<input type="submit" id="planning-submit" value="Guardar y salir"/>
+			<input type="submit" id="planning-submit" value="Guardar y reiniciar"/>
 		</form>
-		
-			<h2 class="resources-title">{%ifequal fm select%}Referencias:{%else%}Recomendaciones:{%endifequal%} </h2>
+		</div>
+		<div id="planning-resources" {%if not uw%}style="float: right; width:35%; overflow:hidden;"{%endif%}>		
+			<h2 class="resources-title">{%if uw%}Referencias:{%else%}Recomendaciones:{%endif%} </h2>
 			<ul id="resources"></ul>		
-		</div>		
+		</div>				
 	</div>
 	{#{%include "recommender_bar.html"%}#}
 {%endblock%}
