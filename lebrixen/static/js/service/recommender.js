@@ -4,7 +4,7 @@
  * Notes: the token for the default app is 0a0c8647baf451dc081429aa9815d476
  */
 if(!window.RECOMMENDER){
-	var _service_root="http://lebrixen.com/";
+	var _service_root="http://trecs.com/";
 	RECOMMENDER = {
 			/*The urls to diverse service calls*/
 			//_service_root: "http://lebrixen.com",
