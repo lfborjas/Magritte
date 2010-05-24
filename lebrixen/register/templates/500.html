@@ -1,0 +1,51 @@
+{#{%load i18n%}#}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta name="description" content="T-Recs: onTology-based Recommender System, a web service
+        that enables you to enhance user experience in text edition and other tasks by offering 
+        intelligent reference suggestions" />
+        <title>{%block title%}Internal Error{%endblock%} :: T-Recs </title>
+        <!--[if IE]>
+	    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->        
+        {%block stylesheets%}
+			<link rel="stylesheet" type="text/css" href="/static/css/register/base.css" media="screen" />
+			<style>
+				#error-header{
+					background-color: #ffedad;
+					font-size: 1em;
+					color: #cd0a0a;					
+					
+					-moz-border-radius: 6px;
+					-webkit-border-radius: 6px;
+					height: 120px;
+					padding-top: 2px;
+					padding-bottom: 2px;
+				}
+				
+				#witty-response{
+					margin: 0 auto;
+				}
+			</style>	
+		{%endblock%}
+        <script type="text/javascript" src="/static/js/jquery-1.4.2.min.js" ></script>        
+        {%block scripts%}{#<script type="text/javascript" src="/static/js/register/base.js" ></script>#}{%endblock%}
+    </head>
+    <body>    
+    <div id="error-header">
+    	<a class="branding-link" href="/" title="T-Recs: an onTology-based Recommender Service">T-Recs</a>
+    	<div id="branding-content">
+    		<h1 class="error-title">Sorry to interrupt the festivities, but it seems we have a problem</h1>    		
+    	</div>   	
+    </div>
+    <div id="content">
+		<img id="witty-response" src="/static/images/error.png">
+	</div>
+	<div id="footer">&#x00a9;{%now "Y"%} T-Recs. An onTology-based Recommender Service</div>
+    </body>
+</html>

@@ -14,7 +14,7 @@ urlpatterns = patterns('',
                        #the real ones: the trecs urls:
                        (r'^$', direct_to_template, {'template': 'trecs_home.html'}),
                        (r'^register/$', 'register.views.register'),
-                       (r'^usage/$', direct_to_template, {'template': 'trecs_usage.html'}),
+                       (r'^usage/$', direct_to_template, {'template': 'trecs_usage.html'}),                       
                        
                        (r'^getTerms/$', 'service.views.get_terms'),
                        (r'^search/', include('search.urls')),
