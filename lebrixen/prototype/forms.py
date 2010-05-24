@@ -27,6 +27,9 @@ class PrototypeSettingsForm(forms.Form):
     uid = forms.CharField(label="Usuario ")
     fm = forms.ChoiceField(label="Retroalimentación", choices=[('follow', 'Implícita'), ('select', 'Explícita')])
     uw = forms.BooleanField(label="Usar widget", initial=True)
+    appId = forms.ChoiceField(label="Aplicación",
+                             choices=[(e.get_token(), e.url) for e in ClientApp.objects.iterator()],
+                             )
     
 class DemoToolsForm(forms.Form):
     """A form to select an app an a user"""    

@@ -19,12 +19,15 @@ def index(request):
     feedbackMode = request.GET.get('fm', 'follow')
     userId = request.GET.get('uid', 'testUser')
     useWidget = request.GET.get('uw', False)
+    appId = request.GET.get('appId', '0a0c8647baf451dc081429aa9815d476')
     return render_to_response('prototype_base.html',
                                {'form':PrototypePlanningForm(initial={'lang': 'en'}),
-                                'settings_form': PrototypeSettingsForm(initial={'fm': feedbackMode, 'uid': userId, 'uw':useWidget}),
+                                'settings_form': PrototypeSettingsForm(initial={'fm': feedbackMode, 'uid': userId, 'uw':useWidget,
+                                                                                'appId': appId}),
                                 'uid': userId,
                                 'fm': feedbackMode,
-                                'uw': useWidget},
+                                'uw': useWidget,
+                                'appId': appId},
                                 context_instance=RequestContext(request))
 
 def demo(request):

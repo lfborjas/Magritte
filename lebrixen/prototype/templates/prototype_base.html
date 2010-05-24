@@ -28,17 +28,18 @@
 					},
 				{%endifequal%}
 				appUser: "{{uid}}",
+				appId:'{{appId}}',
 			});
 			
 		});
 	{%else%}		
-		/*chucknorris.com likes to write it's own javascript -with whirlwind kicks*/
+		/*chucknorris.com likes to write it's own javascript -with whirlwind kicks*/		
 		$(function(){
 			$('#id_content').keyup(function(e){
 				worten = $('#id_content').val();
 				if(worten.indexOf('science') != -1){
 					$.getJSON('http://{{request.get_host}}/api/getRecommendations/?callback=?',
-						{content: $('#id_content').val(), lang:'en', appId: "d27348a5fd2a0c7f8977591ec51cbf10", appUser:"{{uid}}"},
+						{content: $('#id_content').val(), lang:'en', appId: "{{appId}}", appUser:"{{uid}}"},
 						function(data){						
 							$.each(data.results, function(index, result){
 								$('#resources').append('<li><a class="walker" id="texas_'+result.id+
@@ -65,7 +66,7 @@
 						$.param({docs: docs,
 								 t:false,
 								 lang:'en',
-								 appId: "d27348a5fd2a0c7f8977591ec51cbf10",
+								 appId: "{{appId}}",
 								 appUser:"{{uid}}",
 								 context:$('#id_content').val()}, true),
 						function(){

@@ -115,3 +115,9 @@ select{
 	font-size: 1em;
 	color: #fff;
 }
+
+#id_uid{
+	width: 200px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
