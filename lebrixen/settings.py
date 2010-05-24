@@ -69,6 +69,14 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS =(#"django.core.context_processors.auth",
+"django.core.context_processors.debug",
+#"django.core.context_processors.i18n",
+"django.core.context_processors.media",
+"django.core.context_processors.request"
+)
+
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -84,6 +92,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.    
     os.path.join(ROOT_PATH, 'prototype','templates'),
     os.path.join(ROOT_PATH, 'service','templates'),
+    os.path.join(ROOT_PATH, 'register','templates'),
 )
 
 INSTALLED_APPS = (
@@ -131,6 +140,9 @@ CATEGORY_CLASSIFIER_DATA = os.path.join(DATA_PATH, 'category_classifier_data')
 
 #for AES encryption
 AES_KEY = 'f7dbe0526690458fa7d22f67c8e55747'
+
+RECAPTCHA_PRIVATE_KEY = '6LdvY7oSAAAAAB5odyMgVmdLoRgIeXpMBMMNBzn0'
+RECAPTCHA_PUBLIC_KEY = '6LdvY7oSAAAAANq2Lw2eZdwpkh1k1d181VCWdByL'
 
 try:
     from local_settings import *

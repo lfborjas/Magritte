@@ -1,0 +1,17 @@
+{%extends "register_base.html"%}
+{%block title%}Usage{%endblock%}
+{%block content%}
+<h2>Usage</h2>
+<p>You can use T-recs in any kind of application, from a desktop text processor to a full web course management system.
+   The easiest way is to use the <a href="#widget">javascript widget</a>, but, if it doesn't meet your needs, you can
+   always use the <a href="#api">REST API</a>
+</p>
+<h3>Widget</h3>
+<h4>Requirements</h4>
+<h4>Options</h4>
+<h3>API</h3>
+<h4>Widget call</h4>
+<tt>http://trecs.com/api/getWidget?appId=<em>your-app-id</em>&appUser=<em>user-id</em>[&callback=<em>(for jsonp calls)</em>]</tt>
+<h4>Get Recommendations call</h4>
+<h4>Update profile call</h4>
+{%endblock%}

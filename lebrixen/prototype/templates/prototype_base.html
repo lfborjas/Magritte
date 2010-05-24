@@ -7,13 +7,20 @@
 {%endblock%}
 {%block scripts%}
 
-	<script type="text/javascript" src="/static/js/jquery-ui-1.8.1.custom.min.js" ></script>
+	{#<script type="text/javascript" src="/static/js/jquery-ui-1.8.1.custom.min.js" ></script>#}
+	{%if uw%}
+		<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
+	{%endif%}
+	
 	<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
 	<script>
+	{%if uw%}
 		$(document).ready(function() {
 			RECOMMENDER.init({
-				data_form: '#planning-form',
-				data_submit: '#planning-submit',
+				data: {
+					form: '#planning-form',
+					submit: '#planning-submit',
+				},				
 				{%ifequal fm 'select'%}
 					feedback: {
 						mode: "select",
@@ -21,25 +28,86 @@
 					},
 				{%endifequal%}
 				appUser: "{{uid}}",
+				appId:'{{appId}}',
 			});
 			
 		});
+	{%else%}		
+		/*chucknorris.com likes to write it's own javascript -with whirlwind kicks*/		
+		$(function(){
+			$('#id_content').keyup(function(e){
+				worten = $('#id_content').val();
+				if(worten.indexOf('science') != -1){
+					$.getJSON('http://{{request.get_host}}/api/getRecommendations/?callback=?',
+						{content: $('#id_content').val(), lang:'en', appId: "{{appId}}", appUser:"{{uid}}"},
+						function(data){						
+							$.each(data.results, function(index, result){
+								$('#resources').append('<li><a class="walker" id="texas_'+result.id+
+													   '" target="_blank" href="'+
+													   result.url+'" >'+result.title+'</a></li>');
+								
+							});
+							
+							$('.walker').click(function(e){
+									$(this).addClass('cornell').parent().css('background-color', '#4e7f00');
+							});//chuck norris likes it implicit
+						}			
+					);
+				}//chuck norris is only into science														
+			});
+			
+			$('#planning-submit').click(function(e){
+					e.preventDefault();
+					var docs=[];
+					$('.cornell').each(function(index, ranger){
+						docs.push(parseInt($(ranger).attr('id').split('_').pop()));
+					});
+					$.getJSON('http://{{request.get_host}}/api/updateProfile/?callback=?',
+						$.param({docs: docs,
+								 t:false,
+								 lang:'en',
+								 appId: "{{appId}}",
+								 appUser:"{{uid}}",
+								 context:$('#id_content').val()}, true),
+						function(){
+							alert("¡Perfil actualizado!");
+							//$('planning-form').submit();
+							$('#id_content').val("");
+							$('#resources').empty();
+						}
+					);
+				});//sometimes, chuck norris just plain hates reloading stuff
+			
+		});
+	{%endif%}
 	</script>
+	
 {%endblock%}
 {%block content%}
 	<div id="branding">
-		<h1>Protipo de recomendación</h1>
-		<p>Sólo para mostrar cómo funcionan la extracción automática y la búsqueda</p>
+		<h1>Prototipo de aplicaci&oacute;n de cliente</h1> 
+		<p>Para mostrar c&oacute;mo se pueden utilizar el servicio web y el widget</p>
 	</div>
 	<div id="content-center">
+		<div id="settings">			
+			<form id="settings-form" action="#" method="get">
+				{{settings_form}}
+				<input type="submit" id="settings-submit" value="Establecer"/>
+			</form>
+		</div>
 		<div id="planning-area">
 		<form id="planning-form" action="#" method="post">
 			{{form}}
-			<input type="submit" id="planning-submit" value="Guardar y salir"/>
+			<input type="submit" id="planning-submit" value="Guardar y reiniciar"/>
 		</form>
-		<h2 class="resources-title">Referencias: </h2>
-		<ul id="resources"></ul>
-		</div>		
+		</div>
+		<div id="planning-resources" {%if not uw%}style="float: right; width:35%; overflow:hidden;"{%endif%}>		
+			<h2 class="resources-title">{%if uw%}Referencias:{%else%}Recomendaciones:{%endif%} </h2>
+			<ul id="resources"></ul>		
+		</div>				
+	</div>
+	<div id="footer">
+			<a href="demo/">Bueno ¿y cómo funciona esto?</a>
 	</div>
 	{#{%include "recommender_bar.html"%}#}
 {%endblock%}

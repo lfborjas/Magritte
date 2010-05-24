@@ -82,5 +82,6 @@ def end_session(request):
     update_profile.delay(request.profile,
                          request.REQUEST.get('context', []),
                          request.REQUEST.getlist('docs'),
-                         request.REQUEST.get('lang', 'en'))       
+                         request.REQUEST.get('lang', 'en'),
+                         request.REQUEST.get('t', False))       
     return HttpResponse(json.dumps(True), mimetype="application/json")

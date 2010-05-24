@@ -10,6 +10,7 @@ import math
 from profile.models import ClientPreference
 from search.models import DmozCategory, DocumentSurrogate
 from celery.decorators import task
+from service import build_query
 #from heapq import heappush, heappop, heapify
 
 #decay factor between sessions
@@ -18,26 +19,30 @@ DECAY = 0.2
 def _interest_score(profile, concept):
     """Determine the interest score in the given profile for the given concept"""
     try:
-        p = profile.preferences.get(category__id=concept).values_list('score')
+        p = profile.preferences.get(category__id=concept).values_list('score', flat=True)
         return p[0]
     except ClientPreference.DoesNotExist:
         return 0.0
 
 @task
-def update_profile(profile, context, docs, lang='en', **kwargs):
+def update_profile(profile, context, docs, lang='en', terms=True, **kwargs):
     """Update a profile with a spreading activation algorithm: determine the concepts in which the user might be interested, 
        save the session and update the activation values, proceeding then to update the profile itself
        
        Args:
            profile: the client user
-           context: the last context terms 
-           docs: the ids of the documents of our database the user found interesting                     
+           context: the last context terms or text 
+           docs: the ids of the documents of our database the user found interesting
+           lang: the language of the user
+           terms: whether the context is already a string of index terms or a full text                     
     """
     #build the context list:
     #context = context + list(DocumentSurrogate.)
     
     #STEP 0: build the concepts set and set their activation values:    
     CON = {}      
+    if not terms:
+        context = build_query(context, language=lang)
     if not hasattr(context, '__iter__'):
         context = [context,]
     #Populate the concepts list with a dictionary of the form {concept: similarity}    

@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+from django.views.generic.simple import direct_to_template
 import djapian
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -9,9 +10,16 @@ import djapian
 djapian.load_indexes()
 
 urlpatterns = patterns('',
-                       (r'^$', 'prototype.views.index'),
+                       #(r'^$', 'prototype.views.index'),
+                       #the real ones: the trecs urls:
+                       (r'^$', direct_to_template, {'template': 'trecs_home.html'}),
+                       (r'^register/$', 'register.views.register'),
+                       (r'^usage/$', direct_to_template, {'template': 'trecs_usage.html'}),
+                       
                        (r'^getTerms/$', 'service.views.get_terms'),
                        (r'^search/', include('search.urls')),
+                       (r'^prototype/', include('prototype.urls')),
+                       (r'^api/demo/setProfile/$', 'prototype.views.set_profile'), #'cause only api/ prefixed calls get a profile
                        (r'^api/', include('service.urls')),
     # Example:
     # (r'^lebrixen/', include('lebrixen.foo.urls')),

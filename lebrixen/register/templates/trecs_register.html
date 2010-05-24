@@ -1,0 +1,32 @@
+{%extends "register_base.html"%}
+{%block title%}Get API key{%endblock%}
+{%block scripts%}
+<script>
+	$($('#register-submit').click(function(e){
+		$(this).attr('disabled', 'disabled');
+	}););
+</script>
+<script>
+	var RecaptchaOptions = {
+   		theme : 'clean',   		
+   		lang: 'en'
+		};
+</script>
+{%endblock%}
+{%block content%}
+	<h2>Get your app key</h2>
+	<p>Write your app's name and an email where we could send you your app key, our capacity isn't infinite
+	   so we're forced to make you fill out this form to register. After you fill it out successfully, you'll
+	   be redirected to the usage page, so you can get started</p>
+	<form id="register-form" action="#" method="post">
+		<table>
+		{% for field in form %}
+    			<tr>                          			
+         			<th> <label for="{{ field.auto_id }}">{{ field.label}} </label> </th>
+         			<td>{{field}}</td><td> {{field.errors}} </td>
+         	    </tr>                  
+		{% endfor %}
+			<tr id="submit-row"><td><input type="submit" id="register-submit" value="Ready!"/></td></tr>
+		</table>
+	</form>
+{%endblock%}

@@ -10,9 +10,9 @@ if(!window.RECOMMENDER){
 			//_service_root: "http://lebrixen.com",
 			//_service_root: "http://localhost:8000/",
 			//initial call url:
-			_init_call: _service_root+"api/startSession/?callback=?",
+			_init_call: _service_root+"api/getWidget/?callback=?",
 			_get_recommendations_call: _service_root+"api/getRecommendations/?callback=?",
-			_final_call: _service_root+"api/endSession/?callback=?",
+			_final_call: _service_root+"api/updateProfile/?callback=?",
 			
 			/*Internal data*/
 			_lastContext: "",
@@ -24,18 +24,20 @@ if(!window.RECOMMENDER){
 			
 			_defaults: {
 					appId: '0a0c8647baf451dc081429aa9815d476',
-					appUser: 'testUser',
-					content: '#id_content',
+					appUser: 'testUser',					
 					lang: 'en',
-					data_submit: null, //the element that triggers the host's form submission, must NOT have an event handler
-					data_form: null, //the form where the host's data lives
+					data: {
+						submit: null,  //the element that triggers the host's form submission, must NOT have an event handler
+						form: null, //the form where the host's data lives
+						content: '#id_content', //the input where the content is (should have a "value" attribute)
+					},					
 					feedback: {
 						mode: "follow", //if select, the docs will be jquery selectables and appended to the container
 						container: null,//where to send the selected, only valid if mode is 'select'
 						element: "<li></li>"//how to append to the container, defaults to list element
 					}			 
 					
-			  },
+			  }, //end of defaults
 			  
 			_options: {},
 			
@@ -75,8 +77,8 @@ if(!window.RECOMMENDER){
 				 * dunno how to solve it (a jsonp CAN'T be synchronous, so it's
 				 * no case setting async to false in $.ajax*/
 				$.getJSON(RECOMMENDER._final_call,
-						$.param({context: $('#terms').val(), docs: RECOMMENDER._feedback,
-							lang: RECOMMENDER._options.lang}, true)						
+						$.param({context: $('#lebrixen-terms').val(), docs: RECOMMENDER._feedback,
+							lang: RECOMMENDER._options.lang, t: true}, true)						
 						);
 				return false;
 			},//end of the end session definition
@@ -92,8 +94,8 @@ if(!window.RECOMMENDER){
 						function(data){
 							$('body').append(data.recommender_bar);
 							//to toggle the bar open
-							$(".trigger").click(function(){
-								$(".panel").toggle("fast");
+							$(".lebrixen-trigger").click(function(){
+								$(".lebrixen-panel").toggle("fast");
 								$(this).hide();
 								//$(this).toggleClass("active");
 								return false;
@@ -101,8 +103,8 @@ if(!window.RECOMMENDER){
 							//to close the bar:
 							$("#lebrixen-hide-panel").click(function(e){
 								e.preventDefault();
-								$(".panel").toggle("fast");
-								$('.trigger').show();
+								$(".lebrixen-panel").toggle("fast");
+								$('.lebrixen-trigger').show();
 								return false;
 							})
 							//set the slider:
@@ -130,24 +132,24 @@ if(!window.RECOMMENDER){
 				});
 
 				//Set the host's components events
-				$('#id_content').keyup(RECOMMENDER.detectContextChange);				   
+				$(RECOMMENDER._options.data.content).keyup(RECOMMENDER.detectContextChange);				   
 				
 				//Call the user trigger or default to the window unloading
-				if(!RECOMMENDER._options.data_submit){
+				if(!RECOMMENDER._options.data.submit){
 					$(window).unload(RECOMMENDER.endSession);
 				}else{
-					$(RECOMMENDER._options.data_submit).click(function(event){
+					$(RECOMMENDER._options.data.submit).click(function(event){
 							//disable the button, for those impatient users that over-submit stuff
 							$(event.target).attr('disabled', 'disabled');
 							event.preventDefault();
 							$.getJSON(RECOMMENDER._final_call,
 									//cf: http://api.jquery.com/jQuery.param/
-									$.param({context: $('#terms').val(),
+									$.param({context: $('#lebrixen-terms').val(),
 										     docs: RECOMMENDER._feedback,
-										     lang: RECOMMENDER._options.lang}, true),
+										     lang: RECOMMENDER._options.lang, t:true}, true),
 									function(){
 										//force sync: only submit when the function returns
-										$(RECOMMENDER._options.data_form).submit();
+										$(RECOMMENDER._options.data.form).submit();
 										return false;
 									}//end of final call callback
 							);
@@ -179,22 +181,22 @@ if(!window.RECOMMENDER){
 			/**Get the actual recommendations*/
 			doQuery: function(){
 				$.post(RECOMMENDER._get_recommendations_call,
-						{content: $(RECOMMENDER._options.content).val(), lang : RECOMMENDER._options.lang},
+						{content: $(RECOMMENDER._options.data.content).val(), lang : RECOMMENDER._options.lang},
 						function(data){
 							var cnt = 0;
-							$('#docs-container').html("");
+							$('#lebrixen-docs-container').empty();
 							if(!data.results){
-								$('#docs-title').hide();
+								$('#lebrixen-docs-title').hide();
 							}else{
-								$('#terms-title').show();						
-								$('#terms').val(data.terms);					
-								$('#terms').effect('highlight');
-								$('#docs-title').show().text("Recomendaciones ("+data.results.length+")");
+								$('#lebrixen-terms-title').show();						
+								$('#lebrixen-terms').val(data.terms);					
+								$('#lebrixen-terms').effect('highlight');
+								$('#lebrixen-docs-title').show().text("Recomendaciones ("+data.results.length+")");
 							}							
 							var smry=[];
 							$.each(data.results, function(index, hit){
 								smry = hit.summary.split(' ');
-								$('#docs-container').append('<div class="result" id="doc_'+hit.id+'">'+
+								$('#lebrixen-docs-container').append('<div class="lebrixen-result" id="doc_'+hit.id+'">'+
 												   '<a class="lebrixen-feedback-action" id="fdbk_'+hit.id+
 												   '" title="Add to resources" href="#" style="display:none;">Add</a>'+												   
 												   '<div id="content_'+hit.id+'" class="lebrixen-result-content">'+
@@ -211,21 +213,21 @@ if(!window.RECOMMENDER){
 							$("#lebrixen-average-rel-slider").show();
 							if(data.results){
 								//behavior for the results:
-								$('.result').hover(function(e){
+								$('.lebrixen-result').hover(function(e){
 									$(e.target).find('.summary_body').show();
 								}, function(e){
 									$(e.target).find('.summary_body').hide();
 								});
-								RECOMMENDER._bind_feedback('.result');
+								RECOMMENDER._bind_feedback('.lebrixen-result');
 								$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
 							}else{
 								$("#lebrixen-average-rel-slider").slider('value', cnt);
 							}
-							$('#docs').effect('highlight');
-							if($('.trigger').is(':visible')){
-								if(!$('.trigger').hasClass('active'))
-									$('.trigger').addClass("active");
-								$('.trigger').effect("pulsate", {times:5}, 1000);
+							$('#lebrixen-docs').effect('highlight');
+							if($('.lebrixen-trigger').is(':visible')){
+								if(!$('.lebrixen-trigger').hasClass('active'))
+									$('.lebrixen-trigger').addClass("active");
+								$('.lebrixen-trigger').effect("pulsate", {times:5}, 1000);
 							}
 						},
 						'jsonp');
