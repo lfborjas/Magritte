@@ -8,7 +8,10 @@
 {%block scripts%}
 
 	{#<script type="text/javascript" src="/static/js/jquery-ui-1.8.1.custom.min.js" ></script>#}
-	{%if uw%}
+	{%if uw%}		
+		<script>
+			var _service_root = "http://"+"{{request.get_host}}"+"/";
+		</script>
 		<script type="text/javascript" src="/static/js/diff_match_patch.js" ></script>
 		<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
 	{%endif%}

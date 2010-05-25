@@ -4,8 +4,11 @@
  * Notes: the token for the default app is 0a0c8647baf451dc081429aa9815d476
  */
 if(!window.RECOMMENDER){
-	//var _service_root="http://trecs.com/";	
-	var _service_root="http://localhost:8000/";
+	/*HACK: to allow a localhost page to override this and avoid changing this file*/
+	if(!window._service_root){
+		_service_root="http://trecs.com/";
+	}
+	//var _service_root="http://localhost:8000/";
 	var _avgWordLen = 5.16; //(5.10/*english awl*/ + 5.22/*spanish awl*/)/2 cf. http://blogamundo.net/lab/wordlengths/
 	var _lastContext = "";	
 	var _triggerWords = 2;	
@@ -254,8 +257,8 @@ if(!window.RECOMMENDER){
 							});
 							RECOMMENDER._bind_feedback('.lebrixen-result');
 							var sldv = cnt/data.results.length;
-							sldv = isNaN(sldv) 0 : sldv; 
-							$("#lebrixen-average-rel-slider").slider('value', );
+							sldv = isNaN(sldv) ? 0 : sldv; 
+							$("#lebrixen-average-rel-slider").slider('value', sldv);
 							$('#lebrixen-docs').effect('highlight');
 							if($('.lebrixen-trigger').is(':visible')){
 								if(!$('.lebrixen-trigger').hasClass('active'))
