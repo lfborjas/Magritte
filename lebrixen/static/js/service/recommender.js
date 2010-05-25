@@ -4,12 +4,15 @@
  * Notes: the token for the default app is 0a0c8647baf451dc081429aa9815d476
  */
 if(!window.RECOMMENDER){
-	//var _service_root="http://trecs.com/";
+	//var _service_root="http://trecs.com/";	
 	var _service_root="http://localhost:8000/";
+	var _avgWordLen = 5.16; //(5.10/*english awl*/ + 5.22/*spanish awl*/)/2 cf. http://blogamundo.net/lab/wordlengths/
 	var _lastContext = "";	
 	var _triggerWords = 2;	
 	var _diff = 0;
 	var _pm = new diff_match_patch();
+	var _lastLength = 0;
+	
 	
 	RECOMMENDER = {
 			/*The urls to diverse service calls*/
@@ -163,10 +166,19 @@ if(!window.RECOMMENDER){
 			
 			/**Determine when to make new recommendations*/	
 			detectContextChange: function(e){				   
-				   if(e.which == 32){ _diff ++;} // 32 == SPACEBAR
+				   /*if(e.which == 32){ _diff ++;} // 32 == SPACEBAR*/
 				   //only check every trigger words and when there are actually words in the context!
-				   var cnt = $.trim($(RECOMMENDER._options.data.content).val());
-				   if(_diff < _triggerWords || cnt.length == 0){					   
+				   //var cnt = $(RECOMMENDER._options.data.content).val();
+				   var cnt = $(e.target).val();
+				   //just get outta here if it's still to small:
+				   if(cnt.length < _triggerWords*_avgWordLen){
+					   return false;
+				   }
+				   //if it seems big enough, analyze patiently:
+				   cnt = $.trim(cnt).replace(/\s+/, ' ');
+				   var cntLen = cnt.length;
+				   //if the context has changed in <trigger> words:				   
+				   if(Math.abs(cntLen - _lastLength)/_avgWordLen < _triggerWords || cntLen == 0){					   
 					   return false;
 				   }
 				   //start detecting the context after the initial words treshold			  
@@ -174,8 +186,8 @@ if(!window.RECOMMENDER){
 				   _pm.diff_cleanupEfficiency(d);
 				   var l = _pm.diff_levenshtein(d);
 				   //if the differences consist of more than 60% of the new text, do query:
-				   if(l > 0 && (l/cnt.length)*100 >= 60.0){
-					   _diff = 0; 
+				   if(l > 0 && (l/cntLen)*100 >= 60.0){
+					   _lastLength = cntLen; 
 					   _lastContext = cnt;
 					   RECOMMENDER.doQuery();
 				   }
@@ -192,7 +204,7 @@ if(!window.RECOMMENDER){
 							var cnt = 0;
 							var worthIt = false;
 							if(data.terms && data.results){
-								$.each(data.terms, function(i,v){
+								$.each(data.terms.split(' '), function(i,v){
 									//if at least a term is new, is worth it: 
 									//the order doesn't matter, is a bag of words...
 									if($('#lebrixen-terms').val().indexOf(v) == -1){
@@ -240,8 +252,10 @@ if(!window.RECOMMENDER){
 							}, function(e){
 									$(e.target).find('.summary_body').hide();
 							});
-							RECOMMENDER._bind_feedback('.lebrixen-result');							
-							$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
+							RECOMMENDER._bind_feedback('.lebrixen-result');
+							var sldv = cnt/data.results.length;
+							sldv = isNaN(sldv) 0 : sldv; 
+							$("#lebrixen-average-rel-slider").slider('value', );
 							$('#lebrixen-docs').effect('highlight');
 							if($('.lebrixen-trigger').is(':visible')){
 								if(!$('.lebrixen-trigger').hasClass('active'))
