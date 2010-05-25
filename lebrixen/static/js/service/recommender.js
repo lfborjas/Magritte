@@ -169,13 +169,13 @@ if(!window.RECOMMENDER){
 				   if(_diff < _triggerWords || cnt.length == 0){					   
 					   return false;
 				   }
-				   //start detecting the context after the initial words treshold				  
-				   _diff = 0; 
+				   //start detecting the context after the initial words treshold			  
 				   var d = _pm.diff_main(_lastContext, cnt); //the diff timeout is 1 second...				  			   
 				   _pm.diff_cleanupEfficiency(d);
 				   var l = _pm.diff_levenshtein(d);
 				   //if the differences consist of more than 60% of the new text, do query:
-				   if(l > 0 && (l/cnt.length)*100 >= 60.0){					   
+				   if(l > 0 && (l/cnt.length)*100 >= 60.0){
+					   _diff = 0; 
 					   _lastContext = cnt;
 					   RECOMMENDER.doQuery();
 				   }
