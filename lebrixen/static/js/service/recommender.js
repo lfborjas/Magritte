@@ -115,7 +115,7 @@ if(!window.RECOMMENDER){
 								min: 0,
 								change: function(event, ui){
 									//var v = parseInt(ui.value);
-									v = ui.value;
+									v = isNaN(ui.value) ? 0 : ui.value;
 									$('#lebrixen-average-rel-title').text("Relevancia promedio:"+v+"%");
 									if(v < 30){
 										$('#lebrixen-average-rel-slider .ui-widget-header').css('background', '#ff3333');
@@ -240,7 +240,7 @@ if(!window.RECOMMENDER){
 							}, function(e){
 									$(e.target).find('.summary_body').hide();
 							});
-							RECOMMENDER._bind_feedback('.lebrixen-result');
+							RECOMMENDER._bind_feedback('.lebrixen-result');							
 							$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
 							$('#lebrixen-docs').effect('highlight');
 							if($('.lebrixen-trigger').is(':visible')){
