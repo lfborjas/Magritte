@@ -49,6 +49,10 @@ filter: alpha(opacity=90);
 opacity: 0.9;
 }
 
+a.active:hover{
+	background-color:#f7941e;
+}
+
 /*a.active.trigger {
 background:#222222 url(images/minus.png) 85% 55% no-repeat;
 }*/
