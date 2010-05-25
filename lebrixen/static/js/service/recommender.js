@@ -187,16 +187,34 @@ if(!window.RECOMMENDER){
 				$.post(RECOMMENDER._get_recommendations_call,
 						{content: $(RECOMMENDER._options.data.content).val(), lang : RECOMMENDER._options.lang},
 						function(data){
+							/**Callback function, update the terms and results with whatever the server
+							 * recommended*/
 							var cnt = 0;
-							$('#lebrixen-docs-container').empty();
-							if(!data.results){
-								$('#lebrixen-docs-title').hide();
+							var worthIt = false;
+							if(data.terms && data.results){
+								$.each(data.terms, function(i,v){
+									//if at least a term is new, is worth it: 
+									//the order doesn't matter, is a bag of words...
+									if($('#lebrixen-terms').val().indexOf(v) == -1){
+										worthIt = true;
+										return false;
+									}
+								});
+								//if no new terms were found, don't bother the user:
+								if(!worthIt){
+									return false;
+								}
 							}else{
-								$('#lebrixen-terms-title').show();						
-								$('#lebrixen-terms').val(data.terms);					
-								$('#lebrixen-terms').effect('highlight');
-								$('#lebrixen-docs-title').show().text("Recomendaciones ("+data.results.length+")");
-							}							
+								//if we didn't even find terms, get outta here.
+								return false;
+							}
+							
+							$('#lebrixen-docs-container').empty();
+							$('#lebrixen-terms-title').show();						
+							$('#lebrixen-terms').val(data.terms);					
+							$('#lebrixen-terms').effect('highlight');
+							$('#lebrixen-docs-title').show().text("Recomendaciones ("+data.results.length+")");
+														
 							var smry=[];
 							$.each(data.results, function(index, hit){
 								smry = hit.summary.split(' ');
@@ -215,18 +233,15 @@ if(!window.RECOMMENDER){
 							
 							//set the slider:
 							$("#lebrixen-average-rel-slider").show();
-							if(data.results){
-								//behavior for the results:
-								$('.lebrixen-result').hover(function(e){
-									$(e.target).find('.summary_body').show();
-								}, function(e){
+							
+							//behavior for the results:
+							$('.lebrixen-result').hover(function(e){
+								$(e.target).find('.summary_body').show();
+							}, function(e){
 									$(e.target).find('.summary_body').hide();
-								});
-								RECOMMENDER._bind_feedback('.lebrixen-result');
-								$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
-							}else{
-								$("#lebrixen-average-rel-slider").slider('value', cnt);
-							}
+							});
+							RECOMMENDER._bind_feedback('.lebrixen-result');
+							$("#lebrixen-average-rel-slider").slider('value', cnt/data.results.length);
 							$('#lebrixen-docs').effect('highlight');
 							if($('.lebrixen-trigger').is(':visible')){
 								if(!$('.lebrixen-trigger').hasClass('active'))
