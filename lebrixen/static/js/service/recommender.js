@@ -4,7 +4,13 @@
  * Notes: the token for the default app is 0a0c8647baf451dc081429aa9815d476
  */
 if(!window.RECOMMENDER){
-	var _service_root="http://trecs.com/";
+	//var _service_root="http://trecs.com/";
+	var _service_root="http://localhost:8000/";
+	var _lastContext = "";	
+	var _triggerWords = 2;	
+	var _diff = 0;
+	var _pm = new diff_match_patch();
+	
 	RECOMMENDER = {
 			/*The urls to diverse service calls*/
 			//_service_root: "http://lebrixen.com",
@@ -14,12 +20,7 @@ if(!window.RECOMMENDER){
 			_get_recommendations_call: _service_root+"api/getRecommendations/?callback=?",
 			_final_call: _service_root+"api/updateProfile/?callback=?",
 			
-			/*Internal data*/
-			_lastContext: "",
-			_lastLength: 0,
-			_triggerWords: 2,
-			_wordsDiff: 0,
-			_diff: 0,
+			/*Internal data*/			
 			_feedback: [],
 			
 			_defaults: {
@@ -161,21 +162,24 @@ if(!window.RECOMMENDER){
 			},//end of init definition
 			
 			/**Determine when to make new recommendations*/	
-			detectContextChange: function(e){
-				   if(e.which == 32){ RECOMMENDER._diff ++;}
-					
-				   //primitive context change sensibility: lexical comparison...
-				   //start detecting the context after the initial words treshold
-				   wordcount = $('#id_content').val().split(' ').length;
-				   if(wordcount >= RECOMMENDER._triggerWords && RECOMMENDER._diff >= RECOMMENDER._wordsDiff){
-					   if(wordcount != RECOMMENDER._lastLength && $('#id_content').val() != RECOMMENDER._lastContext){			   
-						   RECOMMENDER._lastContext = $('#id_content').val();
-						   RECOMMENDER._lastLength = wordcount;
-						   RECOMMENDER._diff = 0;
-						   //call the extraction method:
-						   RECOMMENDER.doQuery();
-					   }
-				   }					
+			detectContextChange: function(e){				   
+				   if(e.which == 32){ _diff ++;} // 32 == SPACEBAR
+				   //only check every trigger words and when there are actually words in the context!
+				   var cnt = $.trim($(RECOMMENDER._options.data.content).val());
+				   if(_diff < _triggerWords || cnt.length == 0){					   
+					   return false;
+				   }
+				   //start detecting the context after the initial words treshold				  
+				   _diff = 0; 
+				   var d = _pm.diff_main(_lastContext, cnt); //the diff timeout is 1 second...				  			   
+				   _pm.diff_cleanupEfficiency(d);
+				   var l = _pm.diff_levenshtein(d);
+				   //if the differences consist of more than 60% of the new text, do query:
+				   if(l > 0 && (l/cnt.length)*100 >= 60.0){					   
+					   _lastContext = cnt;
+					   RECOMMENDER.doQuery();
+				   }
+				   return false;
 			},//end of detectContextChange definition
 			
 			/**Get the actual recommendations*/
