@@ -1,5 +1,6 @@
 {%extends "base.html"%}
-{%block title%}Demostración de funcionamiento{%endblock%}
+{%load i18n%}
+{%block title%}{%trans "Internals Demo"%}{%endblock%}
 {%block stylesheets%}
 	<link rel="stylesheet" type="text/css" href="/static/css/demo.css" media="screen" />
 	{#<link rel="stylesheet" type="text/css" href="/static/css/slimbox2.css" media="screen" />#}
@@ -11,28 +12,28 @@
 
 {%block content%}
 	<div id="branding">
-		<h1>Demostraci&oacute;n del funcionamiento</h1>
-		<p>Para ver c&oacute;mo evolucionan los perfiles y se construyen las recomendaciones</p>
+		<h1>{%trans "Internals Demo"%}</h1>
+		<p>{%trans "To demonstrate how the profiles evolve and the recommendations are built"%}</p>
 	</div>
 	<div id="content">
 			<div id="tools">
 				<form id="tools-form" action="#">
 					{{tools_form}}
-					<input type="submit" value="Mostrar" id="tools-submit" disabled="disabled"/>
+					<input type="submit" value="{%trans 'Set'%}" id="tools-submit" disabled="disabled"/>
 				</form>
 				<h2 class="user-info"></h2>
 			</div>	
 			<div id="content-center">
 				<div id="user-profile">
 					<a id="user-profile-graph-thumb" target="_blank" 
-					   rel="lightbox" title="Grafo de la ontolog&iacute;a de preferencias del usuario" href="#">
+					   rel="lightbox" title="{%trans 'User profile graph'%}" href="#">
 						<img id="user-profile-graph" src='/static/images/graphholder.png' />
 					</a>
 				</div>
 				<div id="user-simulation">
 					<form id="simulation-form" action="#">
 						{{simulation_form}}
-						<input type="submit" value="Simular" id="simulation-submit" disabled="disabled"/>
+						<input type="submit" value="{%trans 'Query'%}" id="simulation-submit" disabled="disabled"/>
 					</form>
 					<div id="simulation-unranked">
 						<ul id="unranked-results"></ul>
@@ -45,8 +46,7 @@
 	</div>	
 	<div id="footer">
 			<span>
-				P&Aacute;GINA DE DEMOSTRACI&Oacute;N: (con un tema deliberadamente conspicuo)
-				No es parte del producto final, en &eacute;ste se respetar&aacute; la privacidad.				 
+				{%trans "Demo Page, not an actual part of the final product"%}				 
 			</span>
 	</div>
 {%endblock%}

@@ -8,13 +8,101 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-26 13:08-0600\n"
+"POT-Creation-Date: 2010-05-26 15:12-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: prototype/forms.py:23
+msgid "Content"
+msgstr ""
+
+#: prototype/forms.py:29 prototype/forms.py:42
+msgid "User"
+msgstr ""
+
+#: prototype/forms.py:30
+msgid "Feedback"
+msgstr ""
+
+#: prototype/forms.py:30
+msgid "Implicit"
+msgstr ""
+
+#: prototype/forms.py:30
+msgid "Explicit"
+msgstr ""
+
+#: prototype/forms.py:31
+msgid "Use Widget"
+msgstr ""
+
+#: prototype/forms.py:32 prototype/forms.py:39
+msgid "Application"
+msgstr ""
+
+#: prototype/forms.py:35
+msgid "Language"
+msgstr ""
+
+#: prototype/templates/demo_base.html:3 prototype/templates/demo_base.html:15
+msgid "Internals Demo"
+msgstr ""
+
+#: prototype/templates/demo_base.html:16
+msgid ""
+"To demonstrate how the profiles evolve and the recommendations are built"
+msgstr ""
+
+#: prototype/templates/demo_base.html:22
+#: prototype/templates/prototype_base.html:99
+msgid "Set"
+msgstr ""
+
+#: prototype/templates/demo_base.html:29
+msgid "User profile graph"
+msgstr ""
+
+#: prototype/templates/demo_base.html:36
+msgid "Query"
+msgstr ""
+
+#: prototype/templates/demo_base.html:49
+msgid "Demo Page, not an actual part of the final product"
+msgstr ""
+
+#: prototype/templates/prototype_base.html:3
+msgid "Example Client"
+msgstr ""
+
+#: prototype/templates/prototype_base.html:92
+msgid "Client application example"
+msgstr ""
+
+#: prototype/templates/prototype_base.html:93
+msgid "To show how the web service or the widget could be used"
+msgstr ""
+
+#: prototype/templates/prototype_base.html:105
+msgid "Save and Reset"
+msgstr ""
+
+#: prototype/templates/prototype_base.html:109
+msgid "References"
+msgstr ""
+
+#: prototype/templates/prototype_base.html:109
+#: service/templates/recommender_bar.html:10
+#: service/templates/recommender_bar.html:14
+msgid "Recommendations"
+msgstr ""
+
+#: prototype/templates/prototype_base.html:114
+msgid "So, how does this work?"
+msgstr ""
 
 #: service/templates/recommender_bar.html:3
 msgid "Hide"
@@ -26,9 +114,4 @@ msgstr ""
 
 #: service/templates/recommender_bar.html:7
 msgid "Keywords"
-msgstr ""
-
-#: service/templates/recommender_bar.html:10
-#: service/templates/recommender_bar.html:14
-msgid "Recommendations"
 msgstr ""

@@ -61,12 +61,12 @@ class DmozCategory(models.Model):
             rval.update({int(result.data['category_id'][0]): result.percent/100})
         
         s_conn.close()
-        if not rval:
-            logging.debug("No categories match query %s" % query)
-            return None
-            #TODO: try correcting spelling ?
+            
         if as_dict:
-            return rval
+            if not rval:
+                logging.debug("No categories match query %s" % query)
+            #TODO: try correcting spelling ?
+            return rval or {}
         #get the categories and set their weight relative to the query:
         categories = cls.objects.filter(pk__in = rval.keys())
         #[setattr(category, 'relative_weight', (rval[category.pk]) * category.weight) for category in categories]

@@ -8,13 +8,101 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-26 13:08-0600\n"
+"POT-Creation-Date: 2010-05-26 15:12-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: prototype/forms.py:23
+msgid "Content"
+msgstr "Contenido"
+
+#: prototype/forms.py:29 prototype/forms.py:42
+msgid "User"
+msgstr "Usuario"
+
+#: prototype/forms.py:30
+msgid "Feedback"
+msgstr "Retroalimentación"
+
+#: prototype/forms.py:30
+msgid "Implicit"
+msgstr "Implícita"
+
+#: prototype/forms.py:30
+msgid "Explicit"
+msgstr "Explícita"
+
+#: prototype/forms.py:31
+msgid "Use Widget"
+msgstr "Usar Widget"
+
+#: prototype/forms.py:32 prototype/forms.py:39
+msgid "Application"
+msgstr "Aplicación"
+
+#: prototype/forms.py:35
+msgid "Language"
+msgstr "Lenguaje"
+
+#: prototype/templates/demo_base.html:3 prototype/templates/demo_base.html:15
+msgid "Internals Demo"
+msgstr "Demostración del funcionamiento interno"
+
+#: prototype/templates/demo_base.html:16
+msgid ""
+"To demonstrate how the profiles evolve and the recommendations are built"
+msgstr "Para mostrar cómo evolucionan los perfiles y cómo son hechas las recomendaciones"
+
+#: prototype/templates/demo_base.html:22
+#: prototype/templates/prototype_base.html:99
+msgid "Set"
+msgstr "Establecer"
+
+#: prototype/templates/demo_base.html:29
+msgid "User profile graph"
+msgstr "Grafo del perfil del usuario"
+
+#: prototype/templates/demo_base.html:36
+msgid "Query"
+msgstr "Consultar"
+
+#: prototype/templates/demo_base.html:49
+msgid "Demo Page, not an actual part of the final product"
+msgstr "Página de demostración, no es parte del producto final"
+
+#: prototype/templates/prototype_base.html:3
+msgid "Example Client"
+msgstr "Aplicación cliente de ejemplo"
+
+#: prototype/templates/prototype_base.html:92
+msgid "Client application example"
+msgstr "Aplicación cliente de ejemplo"
+
+#: prototype/templates/prototype_base.html:93
+msgid "To show how the web service or the widget could be used"
+msgstr "Para mostrar cómo podrían ser usuados el widget o el servicio web"
+
+#: prototype/templates/prototype_base.html:105
+msgid "Save and Reset"
+msgstr "Guardar y Reiniciar"
+
+#: prototype/templates/prototype_base.html:109
+msgid "References"
+msgstr "Referencias"
+
+#: prototype/templates/prototype_base.html:109
+#: service/templates/recommender_bar.html:10
+#: service/templates/recommender_bar.html:14
+msgid "Recommendations"
+msgstr "Recomendaciones"
+
+#: prototype/templates/prototype_base.html:114
+msgid "So, how does this work?"
+msgstr "y ¿cómo funciona esto?"
 
 #: service/templates/recommender_bar.html:3
 msgid "Hide"
@@ -27,8 +115,3 @@ msgstr "Relevancia Promedio"
 #: service/templates/recommender_bar.html:7
 msgid "Keywords"
 msgstr "Términos Clave"
-
-#: service/templates/recommender_bar.html:10
-#: service/templates/recommender_bar.html:14
-msgid "Recommendations"
-msgstr "Recomendaciones"

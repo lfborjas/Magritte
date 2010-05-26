@@ -5,6 +5,7 @@ from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseBadRequest
 from profile.models import ClientApp
 import logging
+from django.utils.translation import check_for_language
 
 try:
     import jsonlib2 as json
@@ -20,21 +21,25 @@ def index(request):
     userId = request.GET.get('uid', 'testUser')
     useWidget = request.GET.get('uw', False)
     appId = request.GET.get('appId', '0a0c8647baf451dc081429aa9815d476')
+    lang = request.REQUEST.get('lang', request.LANGUAGE_CODE)
+    if hasattr(request, 'session') and check_for_language(lang):
+        request.session['django_language'] = lang
     return render_to_response('prototype_base.html',
                                {'form':PrototypePlanningForm(initial={'lang': 'en'}),
                                 'settings_form': PrototypeSettingsForm(initial={'fm': feedbackMode, 'uid': userId, 'uw':useWidget,
-                                                                                'appId': appId}),
+                                                                                'appId': appId, 'lang':lang}),
                                 'uid': userId,
                                 'fm': feedbackMode,
                                 'uw': useWidget,
-                                'appId': appId},
+                                'appId': appId,
+                                'lang': lang},
                                 context_instance=RequestContext(request))
 
 def demo(request):
     """The internals demo page"""
     return render_to_response('demo_base.html',
                                {'tools_form':DemoToolsForm(),
-                                'simulation_form': DemoSimulationForm()},
+                                'simulation_form': DemoSimulationForm(initial={'hl': request.LANGUAGE_CODE})},
                                 context_instance=RequestContext(request))
 
 def _get_profile_graph(profile):

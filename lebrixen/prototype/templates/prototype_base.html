@@ -1,6 +1,6 @@
 {%extends "base.html"%}
-{#{%load i18n%}#}
-{%block title%}Prototipo de recomendación{%endblock%}
+{%load i18n%}
+{%block title%}{%trans "Example Client"%}{%endblock%}
 {%block stylesheets%}
 	<link rel="stylesheet" type="text/css" href="/static/css/prototype.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/static/css/service/recommender.css" media="screen" />
@@ -32,6 +32,7 @@
 				{%endifequal%}
 				appUser: "{{uid}}",
 				appId:'{{appId}}',
+				lang : '{{lang}}',
 			});
 			
 		});
@@ -42,7 +43,7 @@
 				worten = $('#id_content').val();
 				if(worten.indexOf('science') != -1){
 					$.getJSON('http://{{request.get_host}}/api/getRecommendations/?callback=?',
-						{content: $('#id_content').val(), lang:'en', appId: "{{appId}}", appUser:"{{uid}}"},
+						{content: $('#id_content').val(), lang:'{{lang}}', appId: "{{appId}}", appUser:"{{uid}}"},
 						function(data){						
 							$.each(data.results, function(index, result){
 								$('#resources').append('<li><a class="walker" id="texas_'+result.id+
@@ -68,7 +69,7 @@
 					$.getJSON('http://{{request.get_host}}/api/updateProfile/?callback=?',
 						$.param({docs: docs,
 								 t:false,
-								 lang:'en',
+								 lang:'{{lang}}',
 								 appId: "{{appId}}",
 								 appUser:"{{uid}}",
 								 context:$('#id_content').val()}, true),
@@ -88,29 +89,29 @@
 {%endblock%}
 {%block content%}
 	<div id="branding">
-		<h1>Prototipo de aplicaci&oacute;n de cliente</h1> 
-		<p>Para mostrar c&oacute;mo se pueden utilizar el servicio web y el widget</p>
+		<h1>{%trans "Client application example"%}</h1> 
+		<p>{%trans "To show how the web service or the widget could be used"%}</p>
 	</div>
 	<div id="content-center">
 		<div id="settings">			
-			<form id="settings-form" action="#" method="get">
+			<form id="settings-form" action="{{request.path}}" method="get">
 				{{settings_form}}
-				<input type="submit" id="settings-submit" value="Establecer"/>
+				<input type="submit" id="settings-submit" value="{%trans 'Set'%}"/>
 			</form>
 		</div>
 		<div id="planning-area">
 		<form id="planning-form" action="#" method="post">
 			{{form}}
-			<input type="submit" id="planning-submit" value="Guardar y reiniciar"/>
+			<input type="submit" id="planning-submit" value="{%trans 'Save and Reset'%}"/>
 		</form>
 		</div>
 		<div id="planning-resources" {%if not uw%}style="float: right; width:35%; overflow:hidden;"{%endif%}>		
-			<h2 class="resources-title">{%if uw%}Referencias:{%else%}Recomendaciones:{%endif%} </h2>
+			<h2 class="resources-title">{%if uw%}{%trans 'References'%}{%else%}{%trans 'Recommendations'%}{%endif%} </h2>
 			<ul id="resources"></ul>		
 		</div>				
 	</div>
 	<div id="footer">
-			<a href="demo/">Bueno ¿y cómo funciona esto?</a>
+			<a href="demo/">{%trans "So, how does this work?"%}</a>
 	</div>
 	{#{%include "recommender_bar.html"%}#}
 {%endblock%}

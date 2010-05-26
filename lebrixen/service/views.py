@@ -12,7 +12,8 @@ except ImportError:
 import logging
 from django.template.loader import render_to_string
 from profile.tasks import update_profile
-from django.utils.translation import check_for_language 
+from django.utils.translation import check_for_language
+from django.template.context import RequestContext 
 
 def get_terms(request):
     """Given an ajax request, return, in a json, the index terms"""
@@ -51,8 +52,9 @@ def start_session(request):
         if check_for_language(lang):
             if hasattr(request, 'session'):
                 request.session['django_language'] = lang         
-                
-        raw_bar = render_to_string('recommender_bar.html', {}) #this could contain some attributes for the style or something...
+        #this could contain some attributes for the style or something...       
+        raw_bar = render_to_string('recommender_bar.html', {}, context_instance =RequestContext(request))
+         
         return HttpResponse("%s(%s)"%(request.REQUEST['callback'], json.dumps({'recommender_bar': raw_bar})),
                              mimetype="application/json")
     else:
@@ -66,7 +68,7 @@ def get_recommendations(request):
     context = request.REQUEST['content']
     lang = request.REQUEST.get('lang', 'en')
     service = request.REQUEST.get('service', '')    
-    service = service if service in WEB_SERVICES.keys() or not service else 'yahoo'
+    service = service if service in WEB_SERVICES.keys() or (not service and lang == 'en') else 'alchemy'
     use_service = bool(service)    
     
     terms = build_query(context, language=lang, use_web_service=use_service, web_service=service)
