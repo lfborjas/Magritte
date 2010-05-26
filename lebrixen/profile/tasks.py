@@ -12,6 +12,7 @@ from search.models import DmozCategory, DocumentSurrogate
 from celery.decorators import task
 from service import build_query
 #from heapq import heappush, heappop, heapify
+import logging
 
 #decay factor between sessions
 DECAY = 0.2 
@@ -51,7 +52,7 @@ def update_profile(profile, context, docs, lang='en', terms=True, **kwargs):
     for d in DocumentSurrogate.objects.filter(pk__in=docs).values_list('category', flat=True).iterator():
         #TODO: should I compute the document's summary similarity to its alleged category?
         CON.update({d:1.0})
-    
+    #logging.debug("Concepts gathered %s" % CON)
     #Spreading: add to the interest list the attenuated weight of it's ancestors:    
     for c in CON.keys():        
         curr_concept = c
@@ -63,10 +64,11 @@ def update_profile(profile, context, docs, lang='en', terms=True, **kwargs):
             CON.update({parent: max(CON.get(parent, 0.0), CON[curr_concept] * ch_weight)})
             curr_concept = parent
             parent = DmozCategory.objects.filter(pk=curr_concept).values_list('parent', flat=True)[0]                    
-    
+    #logging.debug("After propagation: %s" % CON)
     #STEP 2: Evolve the profile
     #Use linear combination to update
     existing_preferences = []    
+    #logging.debug("Profile before update: %s" % profile.preferences.all())
     for preference in profile.preferences.iterator():
         #if the preference is not in this session, decay
         ctg = preference.category.pk
@@ -86,7 +88,7 @@ def update_profile(profile, context, docs, lang='en', terms=True, **kwargs):
         if CON[newcat]:
             new_pref = ClientPreference(category_id=newcat, score=CON[newcat], user=profile)
             new_pref.save()    
-    
+    #logging.debug("Profile after update: %s" %profile.preferences.all())
     return True
                 
 @task
