@@ -36,13 +36,13 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = False
+USE_I18N = True 
 
-#LANGUAGES=(
-#           ('en', u'English'),
-#           ('es', u'Español'),
+LANGUAGES=(
+           ('en', u'English'),
+           ('es', u'Español'),
 #           ('fr', u'Français'),
-#           )
+           )
 
 
 # Absolute path to the directory that holds media.
@@ -71,7 +71,7 @@ TEMPLATE_LOADERS = (
 
 TEMPLATE_CONTEXT_PROCESSORS =(#"django.core.context_processors.auth",
 "django.core.context_processors.debug",
-#"django.core.context_processors.i18n",
+"django.core.context_processors.i18n",
 "django.core.context_processors.media",
 "django.core.context_processors.request"
 )
@@ -80,6 +80,7 @@ TEMPLATE_CONTEXT_PROCESSORS =(#"django.core.context_processors.auth",
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     #'django.contrib.auth.middleware.AuthenticationMiddleware',
     'profile.middleware.ProfileMiddleware',
 )

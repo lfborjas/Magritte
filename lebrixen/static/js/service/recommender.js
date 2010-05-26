@@ -97,7 +97,7 @@ if(!window.RECOMMENDER){
 				
 				//Append the recommender bar to the host's body and bind it's events
 				$.getJSON(RECOMMENDER._init_call,
-						{appId: RECOMMENDER._options.appId, appUser: RECOMMENDER._options.appUser},
+						{appId: RECOMMENDER._options.appId, appUser: RECOMMENDER._options.appUser,lang: RECOMMENDER._options.lang},
 						function(data){
 							$('body').append(data.recommender_bar);
 							//to toggle the bar open
@@ -122,7 +122,7 @@ if(!window.RECOMMENDER){
 								change: function(event, ui){
 									//var v = parseInt(ui.value);
 									v = isNaN(ui.value) ? 0 : ui.value;
-									$('#lebrixen-average-rel-title').text("Relevancia promedio:"+v+"%");
+									$('#lebrixen-average-rel').text(v+"%");
 									if(v < 30){
 										$('#lebrixen-average-rel-slider .ui-widget-header').css('background', '#ff3333');
 									}else if(v >= 30 && v < 60){
@@ -228,7 +228,7 @@ if(!window.RECOMMENDER){
 							$('#lebrixen-terms-title').show();						
 							$('#lebrixen-terms').val(data.terms);					
 							$('#lebrixen-terms').effect('highlight');
-							$('#lebrixen-docs-title').show().text("Recomendaciones ("+data.results.length+")");
+							$('#lebrixen-docs-q').show().text("("+data.results.length+")");
 														
 							var smry=[];
 							$.each(data.results, function(index, hit){

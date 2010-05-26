@@ -11,7 +11,8 @@ except ImportError:
     
 import logging
 from django.template.loader import render_to_string
-from profile.tasks import update_profile 
+from profile.tasks import update_profile
+from django.utils.translation import check_for_language 
 
 def get_terms(request):
     """Given an ajax request, return, in a json, the index terms"""
@@ -46,6 +47,11 @@ def start_session(request):
     elif hasattr(request, 'profile'):
         #The profile was successfully retrieved, so we can proceed to return the whole bar now, and append it
         #to the caller's page body with javascript!        
+        lang = request.REQUEST.get('lang', 'en')
+        if check_for_language(lang):
+            if hasattr(request, 'session'):
+                request.session['django_language'] = lang         
+                
         raw_bar = render_to_string('recommender_bar.html', {}) #this could contain some attributes for the style or something...
         return HttpResponse("%s(%s)"%(request.REQUEST['callback'], json.dumps({'recommender_bar': raw_bar})),
                              mimetype="application/json")
