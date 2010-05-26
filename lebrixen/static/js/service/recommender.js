@@ -207,15 +207,9 @@ if(!window.RECOMMENDER){
 							var cnt = 0;
 							var worthIt = false;
 							if(data.terms && data.results){
-								$.each(data.terms.split(' '), function(i,v){
-									//if at least a term is new, is worth it: 
-									//the order doesn't matter, is a bag of words...
-									if($('#lebrixen-terms').val().indexOf(v) == -1){
-										worthIt = true;
-										return false;
-									}
-								});
-								//if no new terms were found, don't bother the user:
+								//if the new bag-of-words differs from the older one, is worth it:
+								worthIt= data.terms.split(' ').sort().join != $('#lebrixen-terms').val().split(' ').sort().join()								
+								//if the terms don't differ, don't bother the user:
 								if(!worthIt){
 									return false;
 								}
