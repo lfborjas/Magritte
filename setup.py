@@ -8,4 +8,9 @@ requires =[ 'django>=1.1.1',
             'jsonlib2',	
 	    'South>=0.6',
 	    'djapian',
+ 	    'recaptcha-client',
+	    'django-debug-toolbar',
+	    'gettext', #not a python pkg
+	    'xappy'	
+	    'xapian' #cf djapian install page for real pkgs
 ]
