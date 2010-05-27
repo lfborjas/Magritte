@@ -57,7 +57,7 @@ def get_recommendations(request):
     context = request.REQUEST['content']
     lang = request.REQUEST.get('lang', 'en')
     service = request.REQUEST.get('service', '')    
-    service = service if service in WEB_SERVICES.keys() or (not service and lang == 'en') else 'alchemy'
+    service = service if service in WEB_SERVICES.keys() or (not service and lang == 'en') else 'tagthe'
     use_service = bool(service)    
     
     terms = build_query(context, language=lang, use_web_service=use_service, web_service=service)

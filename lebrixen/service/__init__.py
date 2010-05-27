@@ -1,9 +1,11 @@
 from __future__ import division
 #utility functions to support the web service
 try:
+    import jsonlib2 as json
+except ImportError:
     import json
-except:
-    import simplejson as json
+except ImportError:
+    import django.utils.simplejson as json
 from django.http import HttpResponse, HttpResponseBadRequest
 from topia.termextract import extract
 from django.utils.html import strip_tags
@@ -183,11 +185,17 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
     #2. Try to call the service:
     resp = None
     logging.debug('requesting %s' % WEB_SERVICES[service]+'?%s'%urlencode(query))
-    try:        
-        resp_url = urlopen(WEB_SERVICES[service], urlencode(query))
+    try:
+        #tagthe has issues con POST request, so try and do a GET
+        #max length for a GET request is 2048:
+        #http://stackoverflow.com/questions/1344616/max-length-of-query-string-in-an-ajax-get-request
+        if service == 'tagthe' and len(urlencode(query)) <= 2048:
+            resp_url = urlopen(WEB_SERVICES[service]+'?%s'%urlencode(query))       
+        else:            
+            resp_url = urlopen(WEB_SERVICES[service], urlencode(query))
         resp = resp_url.read()
         #this causes the exception...
-        logging.debug( u"%s returned %s" % (service, resp))        
+        #logging.debug( u"%s returned %s" % (service, resp))        
     except Exception as e:
         #TODO: retry in timeouts and stuff
         logging.debug('Error in request: %s' % e, exc_info = True)
