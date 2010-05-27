@@ -4,9 +4,16 @@ Created on 17/05/2010
 @author: lfborjas
 '''
 
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 import re
 import logging
+import validate_jsonp
+try:
+    import jsonlib2 as json
+except ImportError:
+    import json
+except ImportError:
+    import django.utils.simplejson as json
 
 API_URLS = r'^/api/.*$'
 
@@ -36,11 +43,20 @@ class ProfileMiddleware(object):
             try:
                 a = ClientApp.get_for_token(request.REQUEST[APP_ID], id_only=True)
                 request.session[APP_KEY] = a
+                request.__class__.profile = LazyProfile(request.session[APP_KEY])
             except:
-                return HttpResponseNotFound("No app with the given token is registered or the token is invalid")
-        elif not APP_KEY in request.session:
-            return HttpResponseBadRequest("An app token must have been provided in a call to startSession or in this request")
-            
-        request.__class__.profile = LazyProfile(request.session[APP_KEY])
-        
+                rval = json.dumps({'message':"No app with the given token is registered or the token is invalid",
+                                   'status': 404,
+                                   'valid': False})
+                cb = ''
+                if 'callback' in request.REQUEST:
+                    cb = request.REQUEST['callback']            
+                    if not validate_jsonp.is_valid_jsonp_callback_value(cb):
+                        return HttpResponseBadRequest('%s is not a valid jsonp callback identifier' % cb,
+                                     mimetype='text/plain')
+                    rval = '%s(%s)' % (cb, rval)
+                return HttpResponse(rval, mimetype='application/json')
+        #elif not APP_KEY in request.session:
+        #    return HttpResponseBadRequest("An app token must have been provided in a call to startSession or in this request")
+                        
         return None

@@ -85,7 +85,8 @@ if(!window.RECOMMENDER){
 				 * no case setting async to false in $.ajax*/
 				$.getJSON(RECOMMENDER._final_call,
 						$.param({context: $('#lebrixen-terms').val(), docs: RECOMMENDER._feedback,
-							lang: RECOMMENDER._options.lang, t: true}, true)						
+							lang: RECOMMENDER._options.lang, t: true,
+							appUser: RECOMMENDER._options.appUser, appId: RECOMMENDER._options.appId}, true)						
 						);
 				return false;
 			},//end of the end session definition
@@ -99,6 +100,9 @@ if(!window.RECOMMENDER){
 				$.getJSON(RECOMMENDER._init_call,
 						{appId: RECOMMENDER._options.appId, appUser: RECOMMENDER._options.appUser,lang: RECOMMENDER._options.lang},
 						function(data){
+							if(!data.valid){
+								return false;
+							}
 							$('body').append(data.recommender_bar);
 							//to toggle the bar open
 							$(".lebrixen-trigger").click(function(){
@@ -153,7 +157,9 @@ if(!window.RECOMMENDER){
 									//cf: http://api.jquery.com/jQuery.param/
 									$.param({context: $('#lebrixen-terms').val(),
 										     docs: RECOMMENDER._feedback,
-										     lang: RECOMMENDER._options.lang, t:true}, true),
+										     lang: RECOMMENDER._options.lang, t:true,
+										     appUser: RECOMMENDER._options.appUser, 
+										     appId: RECOMMENDER._options.appId}, true),
 									function(){
 										//force sync: only submit when the function returns
 										$(RECOMMENDER._options.data.form).submit();
@@ -200,10 +206,14 @@ if(!window.RECOMMENDER){
 			/**Get the actual recommendations*/
 			doQuery: function(){
 				$.post(RECOMMENDER._get_recommendations_call,
-						{content: $(RECOMMENDER._options.data.content).val(), lang : RECOMMENDER._options.lang},
+						{content: $(RECOMMENDER._options.data.content).val(), lang : RECOMMENDER._options.lang,
+						 appUser: RECOMMENDER._options.appUser, appId: RECOMMENDER._options.appId},
 						function(data){
 							/**Callback function, update the terms and results with whatever the server
 							 * recommended*/
+							if(!data.valid){
+								return false;
+							} 
 							var cnt = 0;
 							var worthIt = false;
 							if(data.terms && data.results){

@@ -1,6 +1,6 @@
 # Create your views here.
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
-from service import build_query, WEB_SERVICES, jsonp_view, re_rank
+from service import build_query, WEB_SERVICES, api_call, re_rank
 from search.views import do_search 
 try:
     import jsonlib2 as json
@@ -33,34 +33,23 @@ def get_terms(request):
     else:
         return HttpResponse(terms, mimetype="text/plain")
 
-
+@api_call
 def start_session(request):
     """Check that this is an authentic session starter call and that the middleware managed to set the profile
         
        if it is, return the html to build the recommender bar
     """
-    from profile import APP_ID, PROFILE_ID
-    #the sole purpose of this call is to set these!
-    if not (APP_ID in request.REQUEST and PROFILE_ID in request.REQUEST):                
-        return HttpResponseBadRequest("'appId' and 'appUser' must have been provided to start the session")
-    if not 'callback' in request.REQUEST:
-        return HttpResponseBadRequest("Can't return jsonp response without callback")
-    elif hasattr(request, 'profile'):
-        #The profile was successfully retrieved, so we can proceed to return the whole bar now, and append it
-        #to the caller's page body with javascript!        
-        lang = request.REQUEST.get('lang', 'en')
-        if check_for_language(lang):
-            if hasattr(request, 'session'):
-                request.session['django_language'] = lang         
-        #this could contain some attributes for the style or something...       
-        raw_bar = render_to_string('recommender_bar.html', {}, context_instance =RequestContext(request))
-         
-        return HttpResponse("%s(%s)"%(request.REQUEST['callback'], json.dumps({'recommender_bar': raw_bar})),
-                             mimetype="application/json")
-    else:
-        return HttpResponseServerError("Oops, somehow we couldn't get the profile!")
+    lang = request.REQUEST.get('lang', 'en')
+    if hasattr(request, 'session') and check_for_language(lang):
+        request.session['django_language'] = lang         
+    #this could contain some attributes for the style or something...       
+    raw_bar = render_to_string('recommender_bar.html', {}, context_instance = RequestContext(request))
+     
+    return HttpResponse(json.dumps({'recommender_bar': raw_bar, 'valid': True, 'status':200}),
+                         mimetype="application/json")
+    
 
-@jsonp_view
+@api_call
 def get_recommendations(request):
     if not 'content' in request.REQUEST:
         return HttpResponseBadRequest("No content provided")
@@ -81,10 +70,10 @@ def get_recommendations(request):
     else:
         return HttpResponseBadRequest("No profile found")
     #return    
-    return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms)}, ensure_ascii=False, encoding='utf-8'),
+    return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms), 'valid': True, 'status': 200}, ensure_ascii=False, encoding='utf-8'),
                          mimetype="application/json")
 
-@jsonp_view
+@api_call
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""
     update_profile.delay(request.profile,
@@ -92,4 +81,4 @@ def end_session(request):
                          request.REQUEST.getlist('docs'),
                          lang=request.REQUEST.get('lang', 'en'),
                          terms=request.REQUEST.get('t', False))       
-    return HttpResponse(json.dumps(True), mimetype="application/json")
+    return HttpResponse(json.dumps({'valid': True, 'status': 200}), mimetype="application/json")

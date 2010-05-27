@@ -4,7 +4,7 @@ try:
     import json
 except:
     import simplejson as json
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from topia.termextract import extract
 from django.utils.html import strip_tags
 from urllib2 import urlopen
@@ -276,18 +276,60 @@ def jsonp_view(v):
         response = v(request, *args, **kwargs)
         #assert isinstance(response, HttpResponse), "The function MUST return an HttpResponse object"
         if 'callback' in request.REQUEST and response.status_code == 200:
-            cb = request.REQUEST['callback']
+            cb = request.REQUEST['callback']            
             response['Content-type'] = 'application/json'
             if not validate_jsonp.is_valid_jsonp_callback_value(cb):
-                raise Exception('%s is not a valid jsonp callback identifier' % cb)
-            response.content = (u'%s(%s)' % (cb, response.content.decode('utf-8')))
-            
+                return HttpResponse(json.dumps({'valid': False, 'message': '%s is not a valid jsonp callback identifier' % cb,
+                                                'status': 400}),
+                                     mimetype='application/json')
+            response.content = (u'%s(%s)' % (cb, response.content.decode('utf-8')))            
             return response
-        else:
-            return response
+        elif 'callback' in request.REQUEST and response.status_code >= 400: #is an error
+            return HttpResponse(json.dumps({'valid': False, 'message': response.content, 'status': response.status_code}),
+                                 mimetype='application/json')
+        else:    
+            return HttpResponse(json.dumps({'valid': False, 'message': 'No jsonp callback provided'}), mimetype='application/json')
     
     return jsonp_transform
 
+def api_call(v):
+    """Checks that the request contains the REST-ful parameters and returns a json or a jsonp."""   
+    
+    from profile import APP_ID, PROFILE_ID
+    def api_validate(request, *args, **kwargs):
+        
+        cb = ''
+        if 'callback' in request.REQUEST:
+            cb = request.REQUEST['callback']            
+            if not validate_jsonp.is_valid_jsonp_callback_value(cb):
+                return HttpResponseBadRequest('%s is not a valid jsonp callback identifier' % cb,
+                                     mimetype='text/plain')
+                        
+        if not (APP_ID in request.REQUEST and PROFILE_ID in request.REQUEST):
+            retval = json.dumps({'valid': False,
+                                 'message': 'Both %s and %s must be provided in this call' % (APP_ID, PROFILE_ID),
+                                 'status': 400})
+            if cb:
+                retval = '%s(%s)' % (cb, retval)
+            
+            return HttpResponse(retval, mimetype='application/json')
+            
+        else:  #has the params                      
+            response = v(request, *args, **kwargs)           
+                                    
+            if response.status_code < 400: #not error:
+                if cb: 
+                    response.content = (u'%s(%s)' % (cb, response.content.decode('utf-8')))            
+                return response
+            else: #somehow invalid:
+                retval = json.dumps({'valid': False, 'message': response.content, 'status': response.status_code})
+                if cb:
+                    retval = '%s(%s)' % (cb, retval)
+                    
+                return HttpResponse(retval,mimetype='application/json')
+    
+    return api_validate
+    
 PENALTY = 0.3 #as recommended in Daoud2008
 def re_rank(profile, results):
     """Based on the profile preferences, re-rank the results"""    

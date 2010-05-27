@@ -42,7 +42,7 @@ def update_profile(profile, context, docs, lang='en', terms=True, **kwargs):
     
     #STEP 0: build the concepts set and set their activation values:    
     CON = {}      
-    if not terms:
+    if not terms and context:
         context = build_query(context, language=lang)
     if not hasattr(context, '__iter__'):
         context = [context,]
