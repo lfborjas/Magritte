@@ -156,7 +156,10 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
         #http://www.opencalais.com/applications/python-calais-python-interface-opencalais-api
         logging.debug('Using the opencalais interface with key %s' % apikey)
         s = Calais(apikey)
-        res = s.analyze(text + raw_query)
+        try:
+            res = s.analyze(text + raw_query)
+        except:
+            raise WebServiceException(service, 'error in request')    
         logging.debug('The raw response: %s'  % res.raw_response)
         if hasattr(res, 'topics') or hasattr(res, 'entities'):
             retval = [t['categoryName'] for t in res.topics] if hasattr(res, 'topics') else []
@@ -201,7 +204,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
     except Exception as e:
         #TODO: retry in timeouts and stuff
         logging.debug('Error in request: %s' % e, exc_info = True)
-        pass
+        raise WebServiceException(service, 'Error in request to service : %s' % e)
             
     #3. Process the response:    
     if resp:
@@ -229,7 +232,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
                 result = data['memes'][0]['dimensions']['topic']
                 logging.debug(u'tagthe result %s' %result)
             else:
-                raise WebServiceException(service, "The data didn't contain the topics!")
+                result = ['', ]
             
 
         return [unescape(w) for w in result]
@@ -264,7 +267,22 @@ def build_query(text, extra_query='', language='', use_web_service = False, web_
         query_terms = [e[0] for e in query_tuples]
     else:
         #if not in english, use a webservice to get the terms:
-        query_terms = web_extract_terms(text, extra_query, service=web_service)
+        #if the web service fails, fallback to another, do that at least four times before  
+        fallback_services = [e for e in ['alchemy', 'yahoo', 'tagthe'] if e != web_service] + [web_service, ] 
+        
+        while fallback_services:
+            #logging.debug(fallback_services)
+            web_service = fallback_services.pop()
+            try:
+                logging.debug('Trying to call %s' % web_service)
+                query_terms = web_extract_terms(text, extra_query, service=web_service)
+                break
+            except WebServiceException:
+                logging.error('Request to %s failed' % web_service, exc_info=True)                
+                continue
+            except Exception, e:
+                logging.error("Other exception: %s" % e, exc_info=True)
+                break
 
     return extra_query + u' '.join(query_terms)
 
