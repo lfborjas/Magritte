@@ -190,7 +190,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
         logging.debug( u"%s returned %s" % (service, resp))        
     except Exception as e:
         #TODO: retry in timeouts and stuff
-        logging.debug('Error in request: %s' % e)
+        logging.debug('Error in request: %s' % e, exc_info = True)
         pass
             
     #3. Process the response:    
@@ -217,6 +217,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
             data = json.loads(resp)
             if 'memes' in data and 'dimensions' in data['memes'][0] and 'topic' in data['memes'][0]['dimensions']:
                 result = data['memes'][0]['dimensions']['topic']
+                logging.debug(u'tagthe result %s' %result)
             else:
                 raise WebServiceException(service, "The data didn't contain the topics!")
             

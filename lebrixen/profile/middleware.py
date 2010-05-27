@@ -40,10 +40,16 @@ class ProfileMiddleware(object):
         from profile.models import ClientApp
         #try to respect REST:, if they provide the appId again, it must be that they like doing queries all the time:        
         if APP_ID in request.REQUEST:
-            try:
+            try:                
                 a = ClientApp.get_for_token(request.REQUEST[APP_ID], id_only=True)
                 request.session[APP_KEY] = a
                 request.__class__.profile = LazyProfile(request.session[APP_KEY])
+                
+                #limit the number of requests:
+                #r=ClientRequest(date=date.today(), app=a, ip=request.META.get('REMOTE_ADDRESS', ''));r.save() 
+                #if ClientRequest.objects.filter(date = date.today(), app = a).count() > REQUEST_LIMIT: rval = "403 Exceeded";raise Exc
+                #limit the number of users:
+                #if ClientApp.objects.get(pk=a).users.count() >= USER_LIMIT: rval="403 usr limit exceeded"; raise Exc 
             except:
                 rval = json.dumps({'message':"No app with the given token is registered or the token is invalid",
                                    'status': 404,
@@ -56,6 +62,7 @@ class ProfileMiddleware(object):
                                      mimetype='text/plain')
                     rval = '%s(%s)' % (cb, rval)
                 return HttpResponse(rval, mimetype='application/json')
+            
         #elif not APP_KEY in request.session:
         #    return HttpResponseBadRequest("An app token must have been provided in a call to startSession or in this request")
                         
