@@ -186,12 +186,14 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
     resp = None
     logging.debug('requesting %s' % WEB_SERVICES[service]+'?%s'%urlencode(query))
     try:
-        #tagthe has issues con POST request, so try and do a GET
+        #HACK: tagthe has issues con POST request, so try and do a GET
         #max length for a GET request is 2048:
         #http://stackoverflow.com/questions/1344616/max-length-of-query-string-in-an-ajax-get-request
         if service == 'tagthe' and len(urlencode(query)) <= 2048:
             resp_url = urlopen(WEB_SERVICES[service]+'?%s'%urlencode(query))       
-        else:            
+        else:
+            #HACK: fallback to yahoo if the request is too much for tagthe
+            service = 'yahoo' if service == 'tagthe' else service            
             resp_url = urlopen(WEB_SERVICES[service], urlencode(query))
         resp = resp_url.read()
         #this causes the exception...
