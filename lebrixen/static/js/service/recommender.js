@@ -142,9 +142,12 @@ if(!window.RECOMMENDER){
 							
 				});
 
-				//Set the host's components events
-				$(RECOMMENDER._options.data.content).keyup(RECOMMENDER.detectContextChange);				   
-				
+				//Set the host's components events; use blur? (for lost-focus)
+				$(RECOMMENDER._options.data.content).bind('keyup',RECOMMENDER.detectContextChange);
+				//HACK: set a timeout, waiting for the paste to update the content:
+				$(RECOMMENDER._options.data.content).bind('paste', function(e){
+					setTimeout("RECOMMENDER.detectContextChange()", 20);
+				});
 				//Call the user trigger or default to the window unloading
 				if(!RECOMMENDER._options.data.submit){
 					$(window).unload(RECOMMENDER.endSession);
@@ -175,10 +178,14 @@ if(!window.RECOMMENDER){
 			
 			/**Determine when to make new recommendations*/	
 			detectContextChange: function(e){				   
+				   //to enforce whole words, only take heed to keyup when it's a spacebar:
+				   if(e && e.type && e.type == 'keyup' && e.which != 32){
+					   return false;
+				   }
 				   /*if(e.which == 32){ _diff ++;} // 32 == SPACEBAR*/
 				   //only check every trigger words and when there are actually words in the context!
 				   //var cnt = $(RECOMMENDER._options.data.content).val();
-				   var cnt = $(e.target).val();
+				   var cnt = $(RECOMMENDER._options.data.content).val();//$(e.target).val();
 				   //just get outta here if it's still to small:
 				   if(cnt.length < _triggerWords*_avgWordLen){
 					   return false;
