@@ -375,6 +375,6 @@ def re_rank(profile, results):
         result['weight'] = PENALTY * (result['percent']/100) + (1-PENALTY)*interest_score
         
     #re-order them     
-    return sorted(results, key= lambda x: x['weight'])        
+    return sorted(results, key= lambda x: x['weight'], reverse=True)        
 
 
