@@ -52,7 +52,7 @@ class ClientApp(models.Model):
     
 class ClientUser(models.Model):
     app = models.ForeignKey(ClientApp, related_name='users')
-    clientId = models.CharField(max_length = 320) #the unique id in the app's db
+    clientId = models.CharField(max_length = 320, db_index=True) #the unique id in the app's db
     clientName = models.CharField(max_length=320, blank = True, default="")
     info = models.TextField(blank = True, default = "")
     
