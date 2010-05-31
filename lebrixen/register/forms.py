@@ -57,9 +57,12 @@ class RegisterForm(forms.Form):
             key = ""
             try:
                 app = ClientApp(url=self.cleaned_data['url'])
-                app.save()
+                raw_pass = ClientApp.make_random_password()
+                app.set_password(raw_pass)
+                app.save()                
                 key = app.get_token()
                 self.cleaned_data['key'] = key
+                self.cleaned_data['pass']= raw_pass
             except:
                 pass
             return self.cleaned_data

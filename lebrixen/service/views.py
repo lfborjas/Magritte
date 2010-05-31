@@ -13,7 +13,9 @@ import logging
 from django.template.loader import render_to_string
 from profile.tasks import update_profile
 from django.utils.translation import check_for_language
-from django.template.context import RequestContext 
+from django.template.context import RequestContext
+from service.auth_backend import basic_auth
+from django.views.decorators.http import require_POST, require_GET 
 
 def get_terms(request):
     """Given an ajax request, return, in a json, the index terms"""
@@ -33,6 +35,7 @@ def get_terms(request):
     else:
         return HttpResponse(terms, mimetype="text/plain")
 
+@require_GET
 @api_call
 def start_session(request):
     """Check that this is an authentic session starter call and that the middleware managed to set the profile
@@ -48,7 +51,7 @@ def start_session(request):
     return HttpResponse(json.dumps({'recommender_bar': raw_bar, 'valid': True, 'status':200}),
                          mimetype="application/json")
     
-
+#Because the text might be too large, we accept POST or GET indistinctly #@require_GET
 @api_call
 def get_recommendations(request):
     if not 'content' in request.REQUEST:
@@ -72,7 +75,8 @@ def get_recommendations(request):
     #return    
     return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms), 'valid': True, 'status': 200}, ensure_ascii=False, encoding='utf-8'),
                          mimetype="application/json")
-
+@require_POST
+@basic_auth
 @api_call
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""

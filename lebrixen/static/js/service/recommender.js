@@ -31,6 +31,7 @@ if(!window.RECOMMENDER){
 			
 			_defaults: {
 					appId: '0a0c8647baf451dc081429aa9815d476',
+					appAuth: 'if we make this visible, a user might screw other users stuff!',
 					appUser: 'testUser',					
 					lang: 'en',
 					data: {

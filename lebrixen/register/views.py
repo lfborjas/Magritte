@@ -12,9 +12,11 @@ def register(request):
             url = form.cleaned_data['url']            
             recipient = form.cleaned_data['mail']
             key = form.cleaned_data['key']
+            p = form.cleaned_data['password']
             message = render_to_string('mail/appkey.html', {'app': url,
                                                             'key': key,
-                                                            'url': request.build_absolute_uri('/usage/')})
+                                                            'url': request.build_absolute_uri('/usage/'),
+                                                            'pass': p})
             send_mail(
                 'Your T-Recs App key',
                 message, 'noreply@trecs.com',
