@@ -10,13 +10,14 @@ from django.http import HttpResponse
 #from django.contrib.auth.models.UserManager
 
 
-def authenticate(username, password):
-    from profile.models import ClientApp
+def authenticate(username, password, user=None):
+    from profile.models import ClientUser
     """Authenticate a user app"""
-    app = ClientApp.get_for_token(username, id_only=False)
-    if app:
-        if app.check_password(password):
-            return app
+    if not user:
+        user = ClientUser.objects.get(clientId=username)
+    if user:
+        if user.check_password(password):
+            return user
     return None
     
 
@@ -44,8 +45,12 @@ def view_or_basicauth(view, request, test_func, realm = "", *args, **kwargs):
             #
             if auth[0].lower() == "basic":
                 uname, passwd = base64.b64decode(auth[1]).split(':')
-                app = authenticate(username=uname, password=passwd)
-                if app is not None:
+                if hasattr(request,'profile'):
+                    cu = request.profile
+                else:
+                    cu = None
+                user = authenticate(username=uname, password=passwd, user=cu)
+                if user is not None:
                     return view(request, *args, **kwargs)
 
     # Either they did not provide an authorization header or
