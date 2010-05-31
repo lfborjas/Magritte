@@ -30,9 +30,9 @@ if(!window.RECOMMENDER){
 			_feedback: [],
 			
 			_defaults: {
-					appId: '0a0c8647baf451dc081429aa9815d476',					
+					appId: '0a0c8647baf451dc081429aa9815d476',
+					appAuth: 'if we make this visible, a user might screw other users stuff!',
 					appUser: 'testUser',					
-					userAuth: 'Only the user might now his secret...',
 					lang: 'en',
 					data: {
 						submit: null,  //the element that triggers the host's form submission, must NOT have an event handler
