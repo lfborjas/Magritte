@@ -37,7 +37,7 @@ def get_terms(request):
         return HttpResponse(terms, mimetype="text/plain")
 
 
-@api_call()
+@api_call(required=['appId'])
 @require_GET
 def start_session(request):
     """Check that this is an authentic session starter call and that the middleware managed to set the profile
