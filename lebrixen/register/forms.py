@@ -56,7 +56,7 @@ class RegisterForm(forms.Form):
         else:
             key = ""
             try:
-                app = ClientApp(url=self.cleaned_data['url'])
+                app = ClientApp(url=self.cleaned_data['url'], contact=self.cleaned_data['mail'])
                 raw_pass = ClientApp.make_random_password()
                 app.set_password(raw_pass)
                 app.save()                

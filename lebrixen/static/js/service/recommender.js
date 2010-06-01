@@ -30,8 +30,7 @@ if(!window.RECOMMENDER){
 			_feedback: [],
 			
 			_defaults: {
-					appId: '0a0c8647baf451dc081429aa9815d476',
-					appAuth: 'if we make this visible, a user might screw other users stuff!',
+					appId: '0a0c8647baf451dc081429aa9815d476',					
 					appUser: 'testUser',					
 					lang: 'en',
 					data: {

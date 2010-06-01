@@ -11,6 +11,7 @@ from profile.models import ClientPreference
 from search.models import DmozCategory, DocumentSurrogate
 from celery.decorators import task
 from service import build_query
+from django.conf import settings
 #from heapq import heappush, heappop, heapify
 import logging
 
@@ -100,7 +101,31 @@ def add_document(profile, doc):
     #select the category with most weight that is also in the preferences
     pass
                              
-                
+def _bulk_add(users, app):
+    from django.db import connection, transaction
+    cursor = connection.cursor()
+
+    # Data modifying operation - commit required
+    sql = """INSERT INTO profile_clientuser (app_id, "clientId")
+                      (
+                          SELECT i.app_id, i.clientId
+                          FROM (VALUES %s) AS i(app_id, clientId)
+                          LEFT JOIN profile_clientuser as existing
+                              ON (existing.app_id = i.app_id AND existing."clientId" = i.clientId)
+                          WHERE existing.id IS NULL
+                      );""" 
+    sql = sql % (("(%s,%s),"%(app.pk, '%s'))*len(users))[:-1]
+    cursor.execute(sql, users)
+    transaction.commit_unless_managed()
+
+@task
+def add_bulk_users(users, app):
+    """Given an app, add a list of users to it and send a confirmation email.
+        
+       Duplicates will be silently ignored
+    """
+    #if app.users.count() + len(users) >= settings.FREE_USER_LIMIT: return False    
+    pass
         
         
             

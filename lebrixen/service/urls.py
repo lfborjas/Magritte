@@ -9,6 +9,8 @@ urlpatterns = patterns('service.views',
     (r'^getWidget/$', 'start_session'),
     (r'^getRecommendations/$', 'get_recommendations'),
     (r'^updateProfile/$', 'end_session'),
+    (r'^registerUser/$', 'register_users'),
+    (r'^bulkRegisterUsers/$', 'register_users', {'bulk': True}),
 )
 
 

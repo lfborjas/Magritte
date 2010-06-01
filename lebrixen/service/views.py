@@ -75,8 +75,7 @@ def get_recommendations(request):
     #return    
     return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms), 'valid': True, 'status': 200}, ensure_ascii=False, encoding='utf-8'),
                          mimetype="application/json")
-@require_POST
-@basic_auth
+
 @api_call
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""
@@ -86,3 +85,15 @@ def end_session(request):
                          lang=request.REQUEST.get('lang', 'en'),
                          terms=request.REQUEST.get('t', False))       
     return HttpResponse(json.dumps({'valid': True, 'status': 200}), mimetype="application/json")
+
+
+@require_POST
+@basic_auth
+def register_users(request, bulk=False):
+    """Register a user or a list of users. If bulk, then it will be asynchronous"""
+    if bulk:
+        pass #delay
+    else:
+        pass #get_or_create the user
+
+register_users = api_call(register_users, required=['appId'])

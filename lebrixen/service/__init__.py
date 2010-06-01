@@ -321,10 +321,10 @@ def jsonp_view(v):
     
     return jsonp_transform
 
-def api_call(v):
+def api_call(v, required=['appId', 'appUser']):
     """Checks that the request contains the REST-ful parameters and returns a json or a jsonp."""   
     
-    from profile import APP_ID, PROFILE_ID
+    #from profile import APP_ID, PROFILE_ID
     def api_validate(request, *args, **kwargs):
         
         cb = ''
@@ -333,10 +333,10 @@ def api_call(v):
             if not validate_jsonp.is_valid_jsonp_callback_value(cb):
                 return HttpResponseBadRequest('%s is not a valid jsonp callback identifier' % cb,
                                      mimetype='text/plain')
-                        
-        if not (APP_ID in request.REQUEST and PROFILE_ID in request.REQUEST):
+        #if any of the required elements is not in the request,                 
+        if bool([e for e in required if not e in request.REQUEST]):
             retval = json.dumps({'valid': False,
-                                 'message': 'Both %s and %s must be provided in this call' % (APP_ID, PROFILE_ID),
+                                 'message': 'The following arguments are required in this call: ' + ('%s'%required)[1:-1],
                                  'status': 400})
             if cb:
                 retval = '%s(%s)' % (cb, retval)

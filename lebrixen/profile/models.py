@@ -15,6 +15,7 @@ class ClientApp(models.Model):
     #appId = models.CharField(max_length=320)
     url = models.CharField(blank = True, default="", max_length=512, unique = True)
     password = models.CharField(max_length=128, blank=True, default="")
+    contact = models.EmailField(blank=True, default="")
     
     def get_token(self):
         plaintext = str(self.pk)
