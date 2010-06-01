@@ -191,10 +191,12 @@ if(!window.RECOMMENDER){
 					   return false;
 				   }
 				   //if it seems big enough, analyze patiently:
-				   cnt = $.trim(cnt).replace(/\s+/, ' ');
+				   //remove urls and extra space:
+				   cnt = $.trim(cnt).replace(/((https?|ftp|gopher|telnet|file|notes|ms-help):((\/\/)|(\\\\))+[\w\d:#@%\/;$()~_?\+-=\\\.&]*)|(\s+)/g,
+						   					 ' ');
 				   var cntLen = cnt.length;
 				   //if the context has changed in <trigger> words:				   
-				   if(Math.abs(cntLen - _lastLength)/_avgWordLen < _triggerWords || cntLen == 0){					   
+				   if(Math.abs(cntLen/_avgWordLen - _lastLength/_avgWordLen) < _triggerWords || cntLen == 0){					   
 					   return false;
 				   }
 				   //start detecting the context after the initial words treshold			  
