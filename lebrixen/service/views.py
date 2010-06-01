@@ -37,7 +37,7 @@ def get_terms(request):
         return HttpResponse(terms, mimetype="text/plain")
 
 
-@api_call
+@api_call()
 @require_GET
 def start_session(request):
     """Check that this is an authentic session starter call and that the middleware managed to set the profile
@@ -54,7 +54,7 @@ def start_session(request):
                          mimetype="application/json")
     
 #Because the text might be too large, we accept POST or GET indistinctly #@require_GET
-@api_call
+@api_call()
 def get_recommendations(request):
     if not 'content' in request.REQUEST:
         return HttpResponseBadRequest("No content provided")
@@ -78,7 +78,7 @@ def get_recommendations(request):
     return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms), 'valid': True, 'status': 200}, ensure_ascii=False, encoding='utf-8'),
                          mimetype="application/json")
 
-@api_call
+@api_call()
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""
     update_profile.delay(request.profile,
