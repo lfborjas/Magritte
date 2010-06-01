@@ -97,3 +97,15 @@ def register_users(request, bulk=False):
         pass #get_or_create the user
 
 register_users = api_call(register_users, required=['appId'])
+
+@require_GET
+def app_users(request):
+    from profile.models import ClientApp
+    """Return a dump of all the users in an app"""
+    
+    return HttpResponse(json.dumps({'users': [e.clientId for e in ClientApp.get_for_token(request.GET.get('appId')).users.iterator()], 
+                                    'status': 200,
+                                    'valid': True }, ensure_ascii=False), mimetype="application/json")
+    
+    
+app_users = api_call(app_users, required=['appId'])

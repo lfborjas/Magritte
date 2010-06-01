@@ -20,21 +20,16 @@ def authenticate(username, password):
     return None
     
 
-#the followint adapted from: http://djangosnippets.org/snippets/243/
+#the following adapted from: http://djangosnippets.org/snippets/243/
 #############################################################################
 #
-def view_or_basicauth(view, request, test_func, realm = "", *args, **kwargs):
+def view_or_basicauth(view, request, realm = "", *args, **kwargs):
     """
     This is a helper function used by both 'logged_in_or_basicauth' and
     'has_perm_or_basicauth' that does the nitty of determining if they
     are already logged in or if they have provided proper http-authorization
     and returning the view if all goes well, otherwise responding with a 401.
     """
-    if test_func(request.user):
-        # Already logged in, just return the view.
-        #
-        return view(request, *args, **kwargs)
-
     # They are not logged in. See if they provided login credentials
     #
     if 'HTTP_AUTHORIZATION' in request.META:
@@ -90,8 +85,7 @@ def basicauth(realm = ""):
     """
     def view_decorator(func):
         def wrapper(request, *args, **kwargs):
-            return view_or_basicauth(func, request,
-                                     lambda u: u.is_authenticated(),
+            return view_or_basicauth(func, request,                                     
                                      realm, *args, **kwargs)
         return wrapper
     return view_decorator

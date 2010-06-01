@@ -27,8 +27,10 @@ def get_profile(request, app_id):
     if PROFILE_ID in request.REQUEST:        
         #If the external id is provided, get or create a user instance
         try:
-            u , created= ClientUser.objects.get_or_create(clientId = request.REQUEST[PROFILE_ID], app = ClientApp.objects.get(pk=app_id))
+            u = ClientUser.objects.get(clientId = request.REQUEST[PROFILE_ID], app__pk = app_id)
+            created = False
         except:
+            u = None
             logging.error("error retrieving", exc_info=True)
         
         if created:

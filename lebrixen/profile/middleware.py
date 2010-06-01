@@ -36,22 +36,25 @@ class ProfileMiddleware(object):
         m = re.match(API_URLS, request.path)
         if not m:            
             return None
-        from profile import APP_ID, APP_KEY
+        from profile import APP_ID, APP_KEY, PROFILE_ID
         from profile.models import ClientApp
         #try to respect REST:, if they provide the appId again, it must be that they like doing queries all the time:        
         if APP_ID in request.REQUEST:
+            message = "No app with the given token is registered or the token is invalid"
             try:                
                 a = ClientApp.get_for_token(request.REQUEST[APP_ID], id_only=True)
                 request.session[APP_KEY] = a
                 request.__class__.profile = LazyProfile(request.session[APP_KEY])
-                
+                if not hasattr(request, 'profile') and PROFILE_ID in request.REQUEST:
+                    message = "The requested user does not exist "
+                    raise Exception('Not existent user')
                 #limit the number of requests:
                 #r=ClientRequest(date=date.today(), app=a, ip=request.META.get('REMOTE_ADDRESS', ''));r.save() 
                 #if ClientRequest.objects.filter(date = date.today(), app = a).count() > REQUEST_LIMIT: rval = "403 Exceeded";raise Exc
                 #limit the number of users:
                 #if ClientApp.objects.get(pk=a).users.count() >= USER_LIMIT: rval="403 usr limit exceeded"; raise Exc 
             except:
-                rval = json.dumps({'message':"No app with the given token is registered or the token is invalid",
+                rval = json.dumps({'message': message,
                                    'status': 404,
                                    'valid': False})
                 cb = ''
