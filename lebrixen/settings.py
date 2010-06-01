@@ -146,6 +146,8 @@ AES_KEY = 'f7dbe0526690458fa7d22f67c8e55747'
 RECAPTCHA_PRIVATE_KEY = '6LdvY7oSAAAAAB5odyMgVmdLoRgIeXpMBMMNBzn0'
 RECAPTCHA_PUBLIC_KEY = '6LdvY7oSAAAAANq2Lw2eZdwpkh1k1d181VCWdByL'
 
+FREE_USER_LIMIT = 30 
+
 try:
     from local_settings import *
 except:

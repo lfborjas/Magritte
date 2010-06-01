@@ -54,7 +54,7 @@ def view_or_basicauth(view, request, realm = "", *args, **kwargs):
     
 #############################################################################
 #
-def basicauth(realm = ""):
+def basic_auth(realm = ""):
     """
     A simple decorator that requires a user to be logged in. If they are not
     logged in the request is examined for a 'authorization' header.
@@ -90,3 +90,5 @@ def basicauth(realm = ""):
         return wrapper
     return view_decorator
 
+
+            

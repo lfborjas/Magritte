@@ -1,0 +1,11 @@
+Hello
+
+Your request to register {{users}} users has {%if not success%}NOT{%endif%} been successfully completed.
+{%if success%}Some of those users may not have been created if they already existed in our database.
+You have {{users_left}} left to add.
+{%else%} Please note that, due to the error NONE of the users could be added to our database, to avoid further issues.
+{%endif%}
+Remember that you could always check which of your users are registered with us with a GET call to 
+{{get_users_url}}?appId=[your-application-token]
+
+

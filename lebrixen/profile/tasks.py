@@ -14,6 +14,8 @@ from service import build_query
 from django.conf import settings
 #from heapq import heappush, heappop, heapify
 import logging
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 #decay factor between sessions
 DECAY = 0.2 
@@ -115,18 +117,35 @@ def _bulk_add(users, app):
                           WHERE existing.id IS NULL
                       );""" 
     sql = sql % (("(%s,%s),"%(app.pk, '%s'))*len(users))[:-1]
-    cursor.execute(sql, users)
-    transaction.commit_unless_managed()
+    try:
+        cursor.execute(sql, users)
+        transaction.commit_unless_managed()
+        return True
+    except:
+        return False
 
 @task
-def add_bulk_users(users, app):
+def add_bulk_users(users, app, get_users_url):
     """Given an app, add a list of users to it and send a confirmation email.
         
        Duplicates will be silently ignored
-    """
-    #if app.users.count() + len(users) >= settings.FREE_USER_LIMIT: return False    
-    pass
-        
+    """    
+    
+    success = _bulk_add(users, app)   
+    
+    message = render_to_string('service_mail/bulk_addition.txt', {'app': app.url,
+                                                                  'users': len(users),
+                                                                  'users_left': settings.FREE_USER_LIMIT - len(users),
+                                                                  'get_users_url': get_users_url,
+                                                                  'success': success})
+    send_mail(
+                'Bulk addition complete' if success else 'Error in bulk addition',
+                message, 'noreply@trecs.com',
+                [app.contact, ]
+            )
+    
+    return True
+    
         
             
             

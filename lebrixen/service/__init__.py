@@ -321,43 +321,44 @@ def jsonp_view(v):
     
     return jsonp_transform
 
-def api_call(v, required=['appId', 'appUser']):
+def api_call(required=['appId', 'appUser']):
     """Checks that the request contains the REST-ful parameters and returns a json or a jsonp."""   
-    
-    #from profile import APP_ID, PROFILE_ID
-    def api_validate(request, *args, **kwargs):
-        
-        cb = ''
-        if 'callback' in request.REQUEST:
-            cb = request.REQUEST['callback']            
-            if not validate_jsonp.is_valid_jsonp_callback_value(cb):
-                return HttpResponseBadRequest('%s is not a valid jsonp callback identifier' % cb,
-                                     mimetype='text/plain')
-        #if any of the required elements is not in the request, is invalid                
-        if bool([e for e in required if not e in request.REQUEST]):
-            retval = json.dumps({'valid': False,
-                                 'message': 'The following arguments are required in this call: ' + ('%s'%required)[1:-1],
-                                 'status': 400})
-            if cb:
-                retval = '%s(%s)' % (cb, retval)
+    def wrap(v):
+        #from profile import APP_ID, PROFILE_ID
+        def api_validate(request, *args, **kwargs):
             
-            return HttpResponse(retval, mimetype='application/json')
-            
-        else:  #has the params                      
-            response = v(request, *args, **kwargs)           
-                                    
-            if response.status_code < 400: #not error:
-                if cb: 
-                    response.content = (u'%s(%s)' % (cb, response.content.decode('utf-8')))            
-                return response
-            else: #somehow invalid:
-                retval = json.dumps({'valid': False, 'message': response.content, 'status': response.status_code})
+            cb = ''
+            if 'callback' in request.REQUEST:
+                cb = request.REQUEST['callback']            
+                if not validate_jsonp.is_valid_jsonp_callback_value(cb):
+                    return HttpResponseBadRequest('%s is not a valid jsonp callback identifier' % cb,
+                                         mimetype='text/plain')
+            #if any of the required elements is not in the request, is invalid                
+            if bool([e for e in required if not e in request.REQUEST]):
+                retval = json.dumps({'valid': False,
+                                     'message': 'The following arguments are required in this call: ' + ', '.join(required),
+                                     'status': 400})
                 if cb:
                     retval = '%s(%s)' % (cb, retval)
-                    
-                return HttpResponse(retval,mimetype='application/json')
-    
-    return api_validate
+                
+                return HttpResponse(retval, mimetype='application/json')
+                
+            else:  #has the params                      
+                response = v(request, *args, **kwargs)           
+                                        
+                if response.status_code < 400: #not error:
+                    if cb: 
+                        response.content = (u'%s(%s)' % (cb, response.content.decode('utf-8')))            
+                    return response
+                else: #somehow invalid:
+                    retval = json.dumps({'valid': False, 'message': response.content, 'status': response.status_code})
+                    if cb:
+                        retval = '%s(%s)' % (cb, retval)
+                        
+                    return HttpResponse(retval,mimetype='application/json')
+        
+        return api_validate
+    return wrap
     
 PENALTY = 0.3 #as recommended in Daoud2008
 def re_rank(profile, results):

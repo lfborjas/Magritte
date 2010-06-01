@@ -4,6 +4,7 @@ from recaptcha.client import captcha
 from django import forms
 from django.conf import settings
 from django.forms.util import ErrorList
+import logging
 
 class ReCaptchaWidget(forms.widgets.Widget):
         """
@@ -61,6 +62,7 @@ class RegisterForm(forms.Form):
                 app.set_password(raw_pass)
                 app.save()                
                 key = app.get_token()
+                logging.debug('pass for %s: %s' % (app.url, raw_pass))
                 self.cleaned_data['key'] = key
                 self.cleaned_data['pass']= raw_pass
             except:
