@@ -26,8 +26,9 @@ def dashboard(request):
             if request.user.get_profile().users.count() + formset.total_form_count() <= settings.FREE_USER_LIMIT: 
                 for form in formset.forms:
                     if 'name' in form.cleaned_data:
-                        u = ClientUser(clientId = form.cleaned_data['name'], app = request.user.get_profile())
-                        u.save() 
+                        u, created = ClientUser.objects.get_or_create(clientId = form.cleaned_data['name'],
+                                                                       app = request.user.get_profile())
+                        #u.save() 
             else:
                 message = "User limit exceeded"
             formset = UserFormset()
