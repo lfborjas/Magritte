@@ -52,9 +52,9 @@ class DmozCategory(models.Model):
         xapian_query = s_conn.query_field('%s_text' % lang, query)
         results = s_conn.search(xapian_query, 0, max_results) #only search the best matches
         rval = {}
-        logging.debug("Categories matching %s" % query)
+        #logging.debug("Categories matching %s" % query)
         for result in results:            
-            logging.debug("Category: %s, relevance: %s, id: %s" % (result.data['category_title'], result.percent, result.data['category_id']))
+            #logging.debug("Category: %s, relevance: %s, id: %s" % (result.data['category_title'], result.percent, result.data['category_id']))
             #rval += [{'category_id': result.data['category_id'],
             #          'category_title': result.data['category_title'],
             #          'relevance': result.rank},]

@@ -154,13 +154,13 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
     elif service == 'opencalais':
         #use the python interface, obtained from:
         #http://www.opencalais.com/applications/python-calais-python-interface-opencalais-api
-        logging.debug('Using the opencalais interface with key %s' % apikey)
+        #logging.debug('Using the opencalais interface with key %s' % apikey)
         s = Calais(apikey)
         try:
             res = s.analyze(text + raw_query)
         except:
             raise WebServiceException(service, 'error in request')    
-        logging.debug('The raw response: %s'  % res.raw_response)
+        #logging.debug('The raw response: %s'  % res.raw_response)
         if hasattr(res, 'topics') or hasattr(res, 'entities'):
             retval = [t['categoryName'] for t in res.topics] if hasattr(res, 'topics') else []
             retval += [t['name'] for t in res.entities] if hasattr(res, 'entities') else []
@@ -171,10 +171,10 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
             return ["",]
     elif service == 'extractor':
         #use the python interface
-        logging.debug('using the extractor interface with key %s' % apikey)
+        #logging.debug('using the extractor interface with key %s' % apikey)
         extractor=ExtractorService(key=apikey, url=WEB_SERVICES[service])
         raw_response = extractor.extract(text + raw_query)
-        logging.debug('The raw response: %s' % raw_response)
+        #logging.debug('The raw response: %s' % raw_response)
 
         if raw_response.get('ExtractionStatus') == '-1':
             print "failure!"
@@ -187,7 +187,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
 
     #2. Try to call the service:
     resp = None
-    logging.debug('requesting %s' % WEB_SERVICES[service]+'?%s'%urlencode(query))
+    #logging.debug('requesting %s' % WEB_SERVICES[service]+'?%s'%urlencode(query))
     try:
         #HACK: tagthe has issues con POST request, so try and do a GET
         #max length for a GET request is 2048:
@@ -203,7 +203,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
         #logging.debug( u"%s returned %s" % (service, resp))        
     except Exception as e:
         #TODO: retry in timeouts and stuff
-        logging.debug('Error in request: %s' % e, exc_info = True)
+        #logging.debug('Error in request: %s' % e, exc_info = True)
         raise WebServiceException(service, 'Error in request to service : %s' % e)
             
     #3. Process the response:    
@@ -230,7 +230,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
             data = json.loads(resp)
             if 'memes' in data and 'dimensions' in data['memes'][0] and 'topic' in data['memes'][0]['dimensions']:
                 result = data['memes'][0]['dimensions']['topic']
-                logging.debug(u'tagthe result %s' %result)
+                #logging.debug(u'tagthe result %s' %result)
             else:
                 result = ['', ]
             
@@ -263,7 +263,7 @@ def build_query(text, extra_query='', language='', use_web_service = False, web_
         #extract terms from the text:
         query_tuples = extractor(text)
         #the extractor returns tuples, we only need strings:
-        logging.debug("Topia term extractor suggested: %s" % query_tuples)
+        #logging.debug("Topia term extractor suggested: %s" % query_tuples)
         query_terms = [e[0] for e in query_tuples]
     else:
         #if not in english, use a webservice to get the terms:

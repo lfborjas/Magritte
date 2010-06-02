@@ -65,7 +65,7 @@ class RegisterForm(forms.Form):
                 raw_pass = User.objects.make_random_password()
                 u = User.objects.create_user(app.url, self.cleaned_data['mail'], raw_pass)
                 u.save()                                           
-                logging.debug('pass for %s: %s' % (app.url, raw_pass))
+                #logging.debug('pass for %s: %s' % (app.url, raw_pass))
                 app.user = u
                 app.save()
                 self.cleaned_data['key'] = key

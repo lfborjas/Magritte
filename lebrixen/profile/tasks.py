@@ -104,6 +104,10 @@ def add_document(profile, doc):
     pass
                              
 def _bulk_add(users, app):
+    
+    if app.users.count()-1 + len(users) > settings.FREE_USER_LIMIT:
+        return False, 'User quota exceeded'
+    
     from django.db import connection, transaction
     cursor = connection.cursor()
 
@@ -120,10 +124,10 @@ def _bulk_add(users, app):
     try:
         cursor.execute(sql, users)
         transaction.commit_unless_managed()
-        return True
+        return True, 'Bulk complete'
     except:
         logging.debug("Error in bulk addition", exc_info=True)
-        return False
+        return False, 'Internal server error'
 
 @task
 def add_bulk_users(users, app, get_users_url):
@@ -132,18 +136,20 @@ def add_bulk_users(users, app, get_users_url):
        Duplicates will be silently ignored
     """    
     
-    success = _bulk_add(users, app)   
+    success, message = _bulk_add(users, app)   
     
     message = render_to_string('service_mail/bulk_addition.txt', {'app': app.url,
                                                                   'users': len(users),
                                                                   'users_left': settings.FREE_USER_LIMIT - app.users.count(),
                                                                   'user_limit': settings.FREE_USER_LIMIT,
                                                                   'get_users_url': get_users_url,
-                                                                  'success': success})
+                                                                  'success': success, 
+                                                                  'message': message})
     send_mail(
                 'Bulk addition complete' if success else 'Error in bulk addition',
                 message, 'noreply@trecs.com',
-                [app.user.email, ]
+                [app.user.email, ],
+                fail_silently = True,
             )
     
     return True
