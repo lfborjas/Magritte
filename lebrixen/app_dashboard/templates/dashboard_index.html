@@ -16,10 +16,7 @@
 				);
 			}
 		}});
-		//don't let add if this is the last user:
-		if(e_limit == 1){
-			$('.dynamic-form-add', $('#register-users-form')).remove();
-		}
+		
 		
 		$('#register-users-form tbody tr').formset({
 			prefix: '{{formset.prefix}}',
@@ -38,6 +35,12 @@
 			}
 			}
 		);
+		
+		//don't let add if this is the last user:
+		if(e_limit == 1){
+			$('.dynamic-form-add', $('#register-users-form')).remove();
+			$('.delete-row', $('#register-users-form')).remove();
+		}
 		
 		var dlg = $('#dialog-confirm');
 		$('#dialog-confirm').dialog({
