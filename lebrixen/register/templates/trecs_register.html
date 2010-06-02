@@ -1,15 +1,15 @@
 {%extends "register_base.html"%}
 {%block title%}Get API key{%endblock%}
 {%block scripts%}
-{%comment%}
+
 <script>
-	$(function(){
-		$('#register-submit').click(function(e){
-			$(this).attr('disabled', 'disabled');
-		});
-	});
+$(function(){
+	$("form").submit(function(e) {
+    	$('input[type=submit]').attr('disabled', 'disabled');
+    }
+    });
 </script>
-{%endcomment%}
+
 <script>
 	var RecaptchaOptions = {
    		theme : 'clean',   		
