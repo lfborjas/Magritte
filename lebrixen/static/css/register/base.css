@@ -13,6 +13,7 @@ body{
 	/*color: #312e25;*/
 	color: #847E71;
 	height: 100%;
+	overflow: auto;
 }
 
 #footer{
@@ -33,7 +34,7 @@ body{
 #content{
 	/*position: relative;*/
 	height: 100%;
-	overflow: hidden;
+	/*overflow: hidden;*/
 }
 
 #branding{
@@ -202,3 +203,4 @@ table#app-users th, table#app-users td{
 	background-color: #459e00;
 	color: #ffffff;	
 }
+

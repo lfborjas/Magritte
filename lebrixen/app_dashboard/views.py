@@ -19,11 +19,11 @@ from django.conf import settings
 @login_required
 def dashboard(request):
     message = ""
-    user_count = request.user.get_profile().users.count()
+    
     if request.method == 'POST':
         formset = UserFormset(request.POST)
         if formset.is_valid():
-            if user_count + formset.total_form_count() <= settings.FREE_USER_LIMIT: 
+            if request.user.get_profile().users.count() + formset.total_form_count() <= settings.FREE_USER_LIMIT: 
                 for form in formset.forms:
                     if 'name' in form.cleaned_data:
                         u = ClientUser(clientId = form.cleaned_data['name'], app = request.user.get_profile())
@@ -36,11 +36,12 @@ def dashboard(request):
             
     else:
         formset  = UserFormset()
-    
+    user_count = request.user.get_profile().users.count()
     return render_to_response('dashboard_index.html', 
                               {'formset': formset,
-                               'user_count': request.user.get_profile().users.count(),
+                               'user_count': user_count,
                                'user_limit': settings.FREE_USER_LIMIT,
+                               'user_delta': settings.FREE_USER_LIMIT - user_count,
                                'message': message},
                                context_instance=RequestContext(request))
 

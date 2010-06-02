@@ -2,6 +2,9 @@
 {%block scripts%}
 <script type="text/javascript" src= "/static/js/jquery.formset.min.js"></script>
 <script>
+	var c_limit = {{user_limit}}; //users allowed per app
+	var used = {{user_count}}; //your user count
+	var e_limit = {{user_delta}}; //how many more you can add
 	$(function(){
 		$('#tabs').tabs({ajaxOptions: {
 			complete: function(){
@@ -13,10 +16,29 @@
 				);
 			}
 		}});
+		//don't let add if this is the last user:
+		if(e_limit == 1){
+			$('.dynamic-form-add', $('#register-users-form')).remove();
+		}
 		
 		$('#register-users-form tbody tr').formset({
-			prefix: '{{formset.prefix}}'
-		});
+			prefix: '{{formset.prefix}}',
+			added: function(row){
+					var frms = $('.dynamic-form', $('#register-users-form')).length;
+					if( frms == e_limit){
+						$('.dynamic-form-add', $('#register-users-form')).hide();
+						//remove those that managed to be added:
+					}	
+					if(frms > e_limit){
+						$('.dynamic-form', $('#register-users-form')).slice(-(frms-e_limit)).remove();
+					}
+				},
+			removed: function(row){
+				$('.dynamic-form-add', $('#register-users-form')).show();
+			}
+			}
+		);
+		
 		var dlg = $('#dialog-confirm');
 		$('#dialog-confirm').dialog({
 			autoOpen: false,
@@ -61,7 +83,7 @@
 		<input type="hidden" id="remove-user-id" value="" name="uid"/>
 	</form>
 </div>
-	<p></p>
+	<p>You have {{user_count}} users registered. The current limit is {{user_limit}}: you can add {{user_delta}} more</p>
 	
 	<div id="tabs">
 		<ul>
@@ -69,6 +91,9 @@
 			<li><a href="/dashboard/users/">All Users</a></li>
 		</ul>
 		<div id="register-users">
+		{%ifequal user_delta 0%}
+				<span class="warning">User limit exceeded. You cannot register more users</span>
+		{%else%}
 		<p>Fill this list with the unique identifiers your application will be passing to the recommendation service. With these,
 		we'll know which user is performing a task and give her/him personalized recommendations</p>
 		{%if message%}
@@ -88,7 +113,7 @@
   				{{ formset.management_form }}
   				<input type="submit" class="trecs-submit" value="Register"/>
 			</form>
-					
+		{%endifequal%}			
 		</div>
 	</div>
 {%endblock%}
