@@ -11,22 +11,24 @@
         intelligent reference suggestions" />
         <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon" />
 		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
-        <title>{%block title%}{%endblock%} :: T-Recs </title>
+        <title>{%block title%}{%endblock%} {{user.get_profile.url}} :: Your Dashboard :: T-Recs </title>
         <!--[if IE]>
 	    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->        
         {%block stylesheets%}
-			<link rel="stylesheet" type="text/css" href="/static/css/register/base.css" media="screen" />	
+			<link rel="stylesheet" type="text/css" href="/static/css/register/base.css" media="screen" />
+			<link rel="stylesheet" type="text/css" href="/static/css/south-street/jquery-ui-1.8.1.custom.css" media="screen" />	
 		{%endblock%}
-        <script type="text/javascript" src="/static/js/jquery-1.4.2.min.js" ></script>        
-        {%block scripts%}{#<script type="text/javascript" src="/static/js/register/base.js" ></script>#}{%endblock%}
+        <script type="text/javascript" src="/static/js/jquery-1.4.2.min.js" ></script>
+        <script type="text/javascript" src="/static/js/jquery-ui-1.8.1.custom.min.js" ></script>                      
+        {%block scripts%}{%endblock%}
     </head>
     <body>    
     <div id="branding">
     	<a class="branding-link" href="/" title="T-Recs: an onTology-based Recommender Service">T-Recs</a>
     	<div id="branding-content">
-    		<h1 class="branding-title">T-Recs: an on<span class="accr">T</span>ology-based 
-    		<span class="accr">REC</span>ommender <span class="accr">S</span>ervice</h1>    		
+    		<h1 class="branding-title">T-Recs Dashboard{% if user.get_profile.url %}: <span class="app_name">{{user.get_profile.url}}</span>
+    		{%endif%}</h1>    		
     	</div>   	
     </div>
     <div id="content">
@@ -34,8 +36,7 @@
 		{%endblock%}
 	</div>
 	<div id="footer">
-		<a href="/dashboard/"> Go to your dashboard </a>
-		<p>&#x00a9;{%now "Y"%} T-Recs. An onTology-based Recommender Service</p>
-	</div>
+		<a href="/dashboard/logout/">Logout</a>
+		<p>&#x00a9;{%now "Y"%} T-Recs. An onTology-based Recommender Service</p></div>
     </body>
 </html>

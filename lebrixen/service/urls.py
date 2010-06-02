@@ -14,6 +14,7 @@ urlpatterns = patterns('service.views',
     (r'^registerUser/$', 'register_users'),
     (r'^bulkRegisterUsers/$', 'register_users', {'bulk': True}),
     (r'^getUsers/$', 'app_users'),
+    (r'^deleteUser/$', 'delete_user'),
 )
 
 

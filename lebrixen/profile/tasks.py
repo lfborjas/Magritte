@@ -141,7 +141,7 @@ def add_bulk_users(users, app, get_users_url):
     send_mail(
                 'Bulk addition complete' if success else 'Error in bulk addition',
                 message, 'noreply@trecs.com',
-                [app.contact, ]
+                [app.user.email, ]
             )
     
     return True

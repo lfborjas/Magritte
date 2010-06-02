@@ -3,7 +3,8 @@ from search.models import DmozCategory as Category
 from Crypto.Cipher import AES
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned
-from django.contrib.auth.models import get_hexdigest, check_password
+from django.contrib.auth.models import User
+from datetime import date
 import logging
 
 # Create your models here.
@@ -14,8 +15,7 @@ class BadToken(Exception):
 class ClientApp(models.Model):
     #appId = models.CharField(max_length=320)
     url = models.CharField(blank = True, default="", max_length=512, unique = True)
-    password = models.CharField(max_length=128, blank=True, default="")
-    contact = models.EmailField(blank=True, default="")
+    user = models.OneToOneField(User, related_name='app', null = True)
     
     def get_token(self):
         plaintext = str(self.pk)
@@ -54,42 +54,14 @@ class ClientApp(models.Model):
     def __unicode__(self):
         return self.url
     
-    def set_password(self, raw_password):
-        import random
-        algo = 'sha1'
-        salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
-        hsh = get_hexdigest(algo, salt, raw_password)
-        self.password = '%s$%s$%s' % (algo, salt, hsh)
-
-    def check_password(self, raw_password):
-        """
-        Returns a boolean of whether the raw_password was correct. Handles
-        encryption formats behind the scenes.
-        """
-        # Backwards-compatibility check. Older passwords won't include the
-        # algorithm or salt.
-        if '$' not in self.password:
-            is_correct = (self.password == get_hexdigest('md5', '', raw_password))
-            if is_correct:
-                # Convert the password to the new, more secure format.
-                self.set_password(raw_password)
-                self.save()
-            return is_correct
-        return check_password(raw_password, self.password)
-    
-    @classmethod
-    def make_random_password(cls, length=10, allowed_chars='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'):
-        "Generates a random password with the given length and given allowed_chars"
-        # Note that default value of allowed_chars does not have "I" or letters
-        # that look like it -- just to avoid confusion.
-        from random import choice
-        return ''.join([choice(allowed_chars) for i in range(length)])    
+        
     
 class ClientUser(models.Model):
     app = models.ForeignKey(ClientApp, related_name='users')
     clientId = models.CharField(max_length = 320, db_index=True) #the unique id in the app's db
     clientName = models.CharField(max_length=320, blank = True, default="")
     info = models.TextField(blank = True, default = "")
+    added = models.DateField(auto_now_add=True, default = date.today())
     
     def __unicode__(self):
         return u"%s of %s" % (self.clientId, self.app)

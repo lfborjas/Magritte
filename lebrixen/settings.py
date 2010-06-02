@@ -69,7 +69,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS =(#"django.core.context_processors.auth",
+TEMPLATE_CONTEXT_PROCESSORS =("django.core.context_processors.auth",
 "django.core.context_processors.debug",
 "django.core.context_processors.i18n",
 "django.core.context_processors.media",
@@ -81,7 +81,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    #'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'profile.middleware.ProfileMiddleware',
 )
 
@@ -94,10 +94,11 @@ TEMPLATE_DIRS = (
     os.path.join(ROOT_PATH, 'prototype','templates'),
     os.path.join(ROOT_PATH, 'service','templates'),
     os.path.join(ROOT_PATH, 'register','templates'),
+    os.path.join(ROOT_PATH, 'app_dashboard','templates'),
 )
 
 INSTALLED_APPS = (
-    #'django.contrib.auth',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     #'django.contrib.sites',
@@ -152,6 +153,11 @@ try:
     from local_settings import *
 except:
     pass
+
+#FOR USER AUTH:
+AUTH_PROFILE_MODULE = 'profile.ClientApp'
+LOGIN_URL = '/dashboard/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 #set up the logging facility:
 if DEBUG:

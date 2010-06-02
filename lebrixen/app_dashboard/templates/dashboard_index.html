@@ -1,0 +1,86 @@
+{%extends "dashboard_base.html"%}
+{%block scripts%}
+<script type="text/javascript" src= "/static/js/jquery.formset.min.js"></script>
+<script>
+	$(function(){
+		$('#tabs').tabs({ajaxOptions: {
+			complete: function(){
+				$('.user-remove').click(
+					function(e){
+						$('#remove-user-id').val($(e.target).attr('id'));
+						$('#dialog-confirm').dialog('open');
+					}
+				);
+			}
+		}});
+		
+		$('#register-users-form tbody tr').formset({
+			prefix: '{{formset.prefix}}'
+		});
+		var dlg = $('#dialog-confirm');
+		$('#dialog-confirm').dialog({
+			autoOpen: false,
+			resizable: false,
+			height:140,
+			modal: true,
+			buttons: {
+				Delete: function() {
+					$.post('/dashboard/users/remove/',
+							$('#remove-form').serialize(),
+							function(data){
+								if(data.valid){
+									$('#user_'+data.id).remove();
+									dlg.dialog('close');
+								}else{
+									$('#feedback').text(data.message);
+								}
+							},
+							'json'
+							);
+					
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+		
+		
+	});
+</script>
+	
+{%endblock%}
+
+{%block content%}
+<div id="dialog-confirm" title="Delete user?">
+	<p><span id="feedback"></span></p>
+	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+	This user will be permanently deleted and cannot be recovered. Are you sure?</p>
+	<form id="remove-form">
+		<input type="hidden" id="remove-user-id" value="" name="uid"/>
+	</form>
+</div>
+
+	<div id="tabs">
+		<ul>
+			<li><a href="#register-users">Register Users</a></li>
+			<li><a href="/dashboard/users/">All Users</a></li>
+		</ul>
+		<div id="register-users">
+			<form id="register-users-form" method="post" action="">
+  				<table border="0" cellpadding="0" cellspacing="0">
+    				<tbody>
+    				{% for form in formset.forms %}
+      				<tr>
+        				<td>{{ form.name }}</td>             				
+      				</tr>
+    				{% endfor %}
+    				</tbody>
+  				</table>
+  				{{ formset.management_form }}
+  				<input type="submit" class="trecs-submit" value="Register"/>
+			</form>
+					
+		</div>
+	</div>
+{%endblock%}

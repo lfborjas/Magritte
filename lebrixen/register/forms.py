@@ -47,6 +47,7 @@ class RegisterForm(forms.Form):
     
     def clean(self):
         from profile.models import ClientApp
+        from django.contrib.auth.models import User
         """Register the app"""
         super(RegisterForm, self).clean()        
         if any(self.errors):
@@ -57,12 +58,16 @@ class RegisterForm(forms.Form):
         else:
             key = ""
             try:
-                app = ClientApp(url=self.cleaned_data['url'], contact=self.cleaned_data['mail'])
-                raw_pass = ClientApp.make_random_password()
-                app.set_password(raw_pass)
+                app = ClientApp(url=self.cleaned_data['url'])
                 app.save()                
                 key = app.get_token()
+                
+                raw_pass = User.objects.make_random_password()
+                u = User.objects.create_user(app.url, self.cleaned_data['mail'], raw_pass)
+                u.save()                                           
                 logging.debug('pass for %s: %s' % (app.url, raw_pass))
+                app.user = u
+                app.save()
                 self.cleaned_data['key'] = key
                 self.cleaned_data['pass']= raw_pass
             except:

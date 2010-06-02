@@ -1,0 +1,6 @@
+<ul id="app-users">
+{%for user in users%}
+	<li id="user_{{user.id}}"><div class="app-user">{{user.clientId}}, added on {{user.added}}
+	 <button type="button" class="user-remove" id="{{user.id}}">Delete</button></div></li>
+{%endfor%}
+</ul>

@@ -137,3 +137,30 @@ def app_users(request):
                                     'valid': True }, ensure_ascii=False), mimetype="application/json")
     
     
+@basic_auth(realm='trecs.com')
+@api_call(required=['appId'])
+@require_POST
+def delete_user(request):
+    """Remove a single user"""
+    from profile.models import ClientApp, ClientUser
+    
+    try:
+        app = ClientApp.get_for_token(request.POST.get('appId'))
+    except:
+        return HttpResponseNotFound("App not found")
+
+    users = request.POST.getlist('user')
+    if not users:
+        return HttpResponseBadRequest("Expected at least one 'user' argument, none given")
+    
+        
+    
+    #just get the first, then
+    user = users[0]
+    try:
+        u = ClientUser.objects.get(app=app, clientId=user)
+        u.delete()
+        return HttpResponse(json.dumps({'deleted': True, 'status': 200, 'valid': True}), mimetype="application/json")
+    except:
+        return HttpResponse(json.dumps({'created': False, 'status': 500, 'valid': False}), mimetype="application/json")
+    
