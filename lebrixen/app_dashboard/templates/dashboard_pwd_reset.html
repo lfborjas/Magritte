@@ -1,6 +1,10 @@
 {%extends "dashboard_base.html"%}
 {%block content%}
-<p>A new password will be sent to your email. 
+<p>A new password will be sent to your email.
+If all goes well, you will be redirected to the main page, check your e-mail in the next 24 hours, 
+if you don't get it, make sure it was not sent to your spam folder and ask for reset again. 
+<em>Note that you must provide the email with which you registered your application.</em>
+ 
 </p>
 {% if form.errors %}
 {#<p>Your application name and password didn't match. Please try again.</p>#}
