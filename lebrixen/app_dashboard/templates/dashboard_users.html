@@ -1,6 +1,18 @@
-<ul id="app-users">
+<table id="app-users">
+<tr>
+	<th>User</th>
+	<th>Date Added</th>
+	<th>&nbsp;</th>
+</tr>
 {%for user in users%}
-	<li id="user_{{user.id}}"><div class="app-user">{{user.clientId}}, added on {{user.added}}
-	 <button type="button" class="user-remove" id="{{user.id}}">Delete</button></div></li>
+	{%if forloop.counter|divisibleby:'2'%}
+	<tr id="user_{{user.id}}">
+	{%else%}
+	<tr id="user_{{user.id}}" class="odd-row">
+	{%endif%}
+		<td class="app-user">{{user.clientId}} </td>
+		<td class="app-user-date">{{user.added}}</td>
+		<td><button type="button" class="user-remove" id="{{user.id}}">Delete</button></td>
+	</tr>
 {%endfor%}
-</ul>
+</table>

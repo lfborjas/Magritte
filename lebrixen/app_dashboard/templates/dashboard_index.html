@@ -21,7 +21,8 @@
 		$('#dialog-confirm').dialog({
 			autoOpen: false,
 			resizable: false,
-			height:140,
+			height:300,
+			width: 400,
 			modal: true,
 			buttons: {
 				Delete: function() {
@@ -60,19 +61,26 @@
 		<input type="hidden" id="remove-user-id" value="" name="uid"/>
 	</form>
 </div>
-
+	<p></p>
+	
 	<div id="tabs">
 		<ul>
 			<li><a href="#register-users">Register Users</a></li>
 			<li><a href="/dashboard/users/">All Users</a></li>
 		</ul>
 		<div id="register-users">
+		<p>Fill this list with the unique identifiers your application will be passing to the recommendation service. With these,
+		we'll know which user is performing a task and give her/him personalized recommendations</p>
+		{%if message%}
+			<span class="warning">{{message}}</span>
+		{%endif%}		
 			<form id="register-users-form" method="post" action="">
   				<table border="0" cellpadding="0" cellspacing="0">
     				<tbody>
     				{% for form in formset.forms %}
       				<tr>
-        				<td>{{ form.name }}</td>             				
+        				<td>{{ form.name }}</td>
+        				<td>{{ form.name.errors }}</td>	
       				</tr>
     				{% endfor %}
     				</tbody>

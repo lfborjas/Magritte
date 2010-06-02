@@ -14,20 +14,34 @@ except ImportError:
 import logging
 from app_dashboard.forms import UserFormset
 from profile.models import ClientUser
+from django.conf import settings
 
 @login_required
 def dashboard(request):
+    message = ""
+    user_count = request.user.get_profile().users.count()
     if request.method == 'POST':
         formset = UserFormset(request.POST)
         if formset.is_valid():
-            for form in formset.forms:
-                u = ClientUser(clientId = form.cleaned_data['name'], app = request.user.get_profile())
-                u.save()                  
+            if user_count + formset.total_form_count() <= settings.FREE_USER_LIMIT: 
+                for form in formset.forms:
+                    if 'name' in form.cleaned_data:
+                        u = ClientUser(clientId = form.cleaned_data['name'], app = request.user.get_profile())
+                        u.save() 
+            else:
+                message = "User limit exceeded"
+            formset = UserFormset()
+        else:
+            message = "Error saving users"
+            
     else:
         formset  = UserFormset()
     
     return render_to_response('dashboard_index.html', 
-                              {'formset': formset},
+                              {'formset': formset,
+                               'user_count': request.user.get_profile().users.count(),
+                               'user_limit': settings.FREE_USER_LIMIT,
+                               'message': message},
                                context_instance=RequestContext(request))
 
 @login_required

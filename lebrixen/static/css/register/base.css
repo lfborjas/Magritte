@@ -2,30 +2,32 @@
   cf. http://jqueryui.com/themeroller/
 */
 
-/*html{
-	background-color: #f5f3e5;
-}*/
+html{
+	/*background-color: #f5f3e5;*/
+	height: 90%;
+}
 body{
 	font-family: segoe ui, Arial, sans-serif;
 	font-weight: bold;
 	font-size: 1.1em;
 	/*color: #312e25;*/
 	color: #847E71;
+	height: 100%;
 }
 
 #footer{
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;	
-	bottom: 0;
+	/*bottom: 0;*/
 	font-size: 1.1em;
-	position:absolute;
+	/*position:absolute;*/
 	clear: both;			
 	margin: auto;
 	background-color: #67b021;
 	border-color: #327e04;
 	width: 99%;
 	text-align:center;	
-	color: #ffffff;
+	color: #ffffff;	
 }
 
 #content{
@@ -76,6 +78,8 @@ a {
 	margin: 0px auto;
 	padding-top: 10px;
 	padding-botom: 10px;	
+	min-height: 80%;
+	height: 80%;
 }
 
 
@@ -106,7 +110,7 @@ tt{
 	color: #cd5c0a;
 }
 
-#register-form input[type=text], #login-form input[type=text]{
+input[type=text],  input[type=password]{
 	color: #312e25;	
 	font-size: 1.2em;
 	-moz-border-radius:6px;
@@ -141,14 +145,60 @@ tt{
 .user-remove{
 	-moz-border-radius:6px;
 	-webkit-border-radius:6px;
-	background:#cd5c0a;
+	background:#ffedad;
 	border:1px solid #e3a345;	
-	color:#cd0a0a;
+	color: #cd5c0a;
 	cursor:pointer;
 	font-size:1.3em;
 	text-align:center;
 }
 
 .user-remove:hover{
-	background:#e3a345;
+	background-color:#fcf0ba;
+}
+
+#footer a{
+	color: #fff;	
+}
+
+.ui-dialog{
+	font-size: 1em !important;
+}
+
+.add-row {
+        padding-left:18px;
+        background:url(/static/images/add.png) no-repeat left center;
+    }
+.delete-row {
+        float:right;
+        display:block;
+        margin:5px 0 0 5px;
+        text-indent:-6000px;
+        background:url(/static/images/delete.png) no-repeat left center;
+        width:16px;
+        height:16px;
+}
+
+.warning{
+	background: #ffedad;
+	color: #cd5c0a;
+	border-color: #e3a345;
+	
+}
+.odd-row{
+	background-color: #8dc262;
+}
+
+table#app-users{
+	width: 100%;	
+}
+
+table#app-users th, table#app-users td{
+	border: 1px solid #327e04;
+	color: ;
+}
+
+#app-users th{
+	background-color: #459e00;
+	color: #ffffff;	
 }
