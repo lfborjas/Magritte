@@ -57,6 +57,7 @@
 								if(data.valid){
 									$('#user_'+data.id).remove();
 									dlg.dialog('close');
+									window.location.reload();
 								}else{
 									$('#feedback').text(data.message);
 								}
