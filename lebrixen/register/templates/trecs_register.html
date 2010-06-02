@@ -1,6 +1,7 @@
 {%extends "register_base.html"%}
 {%block title%}Get API key{%endblock%}
 {%block scripts%}
+{%comment%}
 <script>
 	$(function(){
 		$('#register-submit').click(function(e){
@@ -8,6 +9,7 @@
 		});
 	});
 </script>
+{%endcomment%}
 <script>
 	var RecaptchaOptions = {
    		theme : 'clean',   		
