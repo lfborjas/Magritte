@@ -91,7 +91,7 @@ def end_session(request):
 
 
 
-@basic_auth(realm='trecs.com')
+@basic_auth()
 @api_call(required=['appId'])
 @require_POST
 def register_users(request, bulk=False):
@@ -138,7 +138,7 @@ def app_users(request):
                                     'valid': True }, ensure_ascii=False), mimetype="application/json")
     
     
-@basic_auth(realm='trecs.com')
+@basic_auth()
 @api_call(required=['appId'])
 @require_POST
 def delete_user(request):
@@ -163,5 +163,5 @@ def delete_user(request):
         u.delete()
         return HttpResponse(json.dumps({'deleted': True, 'status': 200, 'valid': True}), mimetype="application/json")
     except:
-        return HttpResponse(json.dumps({'created': False, 'status': 500, 'valid': False}), mimetype="application/json")
+        return HttpResponse(json.dumps({'deleted': False, 'status': 500, 'valid': False}), mimetype="application/json")
     
