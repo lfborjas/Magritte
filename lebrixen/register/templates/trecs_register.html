@@ -2,9 +2,11 @@
 {%block title%}Get API key{%endblock%}
 {%block scripts%}
 <script>
-	$($('#register-submit').click(function(e){
-		$(this).attr('disabled', 'disabled');
-	}););
+	$(function(){
+		$('#register-submit').click(function(e){
+			$(this).attr('disabled', 'disabled');
+		});
+	});
 </script>
 <script>
 	var RecaptchaOptions = {

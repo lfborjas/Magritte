@@ -108,9 +108,9 @@ def _bulk_add(users, app):
     cursor = connection.cursor()
 
     # Data modifying operation - commit required
-    sql = """INSERT INTO profile_clientuser (app_id, "clientId")
+    sql = """INSERT INTO profile_clientuser (app_id, "clientId", added)
                       (
-                          SELECT i.app_id, i.clientId
+                          SELECT i.app_id, i.clientId, CURRENT_DATE
                           FROM (VALUES %s) AS i(app_id, clientId)
                           LEFT JOIN profile_clientuser as existing
                               ON (existing.app_id = i.app_id AND existing."clientId" = i.clientId)
@@ -122,6 +122,7 @@ def _bulk_add(users, app):
         transaction.commit_unless_managed()
         return True
     except:
+        logging.debug("Error in bulk addition", exc_info=True)
         return False
 
 @task
@@ -135,7 +136,8 @@ def add_bulk_users(users, app, get_users_url):
     
     message = render_to_string('service_mail/bulk_addition.txt', {'app': app.url,
                                                                   'users': len(users),
-                                                                  'users_left': settings.FREE_USER_LIMIT - len(users),
+                                                                  'users_left': settings.FREE_USER_LIMIT - app.users.count(),
+                                                                  'user_limit': settings.FREE_USER_LIMIT,
                                                                   'get_users_url': get_users_url,
                                                                   'success': success})
     send_mail(
