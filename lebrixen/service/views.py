@@ -132,7 +132,8 @@ def app_users(request):
     """Return a dump of all the users in an app"""
     from profile.models import ClientApp   
     
-    return HttpResponse(json.dumps({'users': [e.clientId for e in ClientApp.get_for_token(request.GET.get('appId')).users.iterator()], 
+    return HttpResponse(json.dumps({'users': [{'id': e.clientId, 'added': str(e.added)} 
+                                              for e in ClientApp.get_for_token(request.GET.get('appId')).users.iterator()], 
                                     'status': 200,
                                     'valid': True }, ensure_ascii=False), mimetype="application/json")
     
