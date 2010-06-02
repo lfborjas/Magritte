@@ -19,6 +19,8 @@ urlpatterns = patterns('app_dashboard.views',
                        (r'^password_reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 
                         password_reset_confirm, {'template_name': 'dashboard_pwd_reset_confirm.html',
                                                        'post_reset_redirect': '/'}),
+                        
+                                                       
                                                        
                            
 )
