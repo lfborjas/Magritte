@@ -18,7 +18,7 @@ from django.utils.http import urlencode
 def index(request):
     """Index view for the prototype page"""
     feedbackMode = request.GET.get('fm', 'follow')
-    userId = request.GET.get('uid', 'abend')
+    userId = request.GET.get('uid', 'nacht')
     useWidget = request.GET.get('uw', True)
     appId = request.GET.get('appId', 'b4a697108bd3ea77ff7ff89713b3c55b')
     lang = request.REQUEST.get('lang', request.LANGUAGE_CODE)

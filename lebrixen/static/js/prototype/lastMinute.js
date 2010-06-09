@@ -15,7 +15,8 @@ $(function(){
 				}				
 				//DOWN = simulation
 				else if(key===40){
-					$('#demo-link').click();
+					//$('#demo-link').click();
+					window.location.replace($('#demo-link').attr('href'));
 				}
 				//RIGHT: spanish text:
 				else if(key===39){
