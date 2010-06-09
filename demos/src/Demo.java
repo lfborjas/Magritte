@@ -6,6 +6,29 @@ import java.io.InputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import com.google.gson.Gson;
+
+class Result {
+	public Doc[] results;
+	public String terms;
+	public String status;
+	public String valid;
+	public Result(){}
+	public String toString(){
+		return this.terms;			
+	}
+}
+
+class Doc {
+	String title;
+	String summary;
+	String id;
+	String url;
+	String percent;
+	String category;
+	String weight;
+	public Doc(){}
+}
+
 public class Demo {
 	public static String getContents(InputStream s) throws IOException{
 				BufferedReader in = new BufferedReader(new InputStreamReader(s));
