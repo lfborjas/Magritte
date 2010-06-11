@@ -87,9 +87,8 @@ def end_session(request):
     return {'queued':True}
 
 
-
-@api_call(required=['appId'], data=['added'])
 @basic_auth()
+@api_call(required=['appId'], data=['added'])
 @require_POST
 def register_users(request, bulk=False):
     """Register a user or a list of users. If bulk, then it will be asynchronous"""
@@ -132,9 +131,8 @@ def app_users(request):
     return {'users': [{'id': e.clientId, 'added': str(e.added)} 
                                               for e in ClientApp.get_for_token(request.GET.get('appId')).users.iterator()]} 
                                     
-    
-@api_call(required=['appId'], data=['deleted'])    
-@basic_auth()
+@basic_auth()    
+@api_call(required=['appId'], data=['deleted'])  
 @require_POST
 def delete_user(request):
     """Remove a single user"""
