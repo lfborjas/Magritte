@@ -7,15 +7,17 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import com.google.gson.Gson;
 
-class Result {
-	public Doc[] results;
-	public String terms;
-	public String status;
-	public String valid;
+class RecommendationsResult{
+	String terms;
+	Doc[] results;
+}
+
+class Result {	
+	public int status;
+	public String message;
+	public RecommendationsResult data;
 	public Result(){}
-	public String toString(){
-		return this.terms;			
-	}
+	
 }
 
 class Doc {
@@ -47,7 +49,7 @@ public class Demo {
 		String appId = "0a0c8647baf451dc081429aa9815d476";
 		String appUser = "testUser";
 		String context = "Science!"; //remember to url-encode
-		String urlpath = String.format("%s?appId=%s&appUser=%s&content=%s", call, appId, appUser, context);
+		String urlpath = String.format("%s?appId=%s&appUser=%s&context=%s", call, appId, appUser, context);
 		serviceCall = new URL(urlpath);				
 		//get the response:
 		HttpURLConnection conn = (HttpURLConnection)serviceCall.openConnection();		
@@ -56,10 +58,11 @@ public class Demo {
 		if(conn.getResponseCode() < 400){
 			is = conn.getInputStream();			
 			Gson gson = new Gson();
-			String json = getContents(is);			
+			String json = getContents(is);	
+			//System.out.println(json);
 			Result result = gson.fromJson(json, Result.class);			
 			System.out.println("Recommendations");
-			for(Doc r: result.results){
+			for(Doc r: result.data.results){
 				System.out.printf("Title: %s, URL: %s \n", r.title, r.url);
 			}
 		}else{
