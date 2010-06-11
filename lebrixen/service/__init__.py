@@ -321,7 +321,7 @@ def jsonp_view(v):
     
     return jsonp_transform
 
-def api_call(required=['appId', 'appUser']):
+def api_call(required=['appId', 'appUser'], data=[]):
     """Checks that the request contains the REST-ful parameters and returns a json or a jsonp."""   
     def wrap(v):
         #from profile import APP_ID, PROFILE_ID
@@ -335,8 +335,8 @@ def api_call(required=['appId', 'appUser']):
                                          mimetype='text/plain')
             #if any of the required elements is not in the request, is invalid                
             if bool([e for e in required if not e in request.REQUEST]):
-                retval = json.dumps({'valid': False,
-                                     'message': 'The following arguments are required in this call: ' + ', '.join(required),
+                retval = json.dumps({'data': dict.fromkeys(data),
+                                     'message': 'The following arguments are required for this call: ' + ', '.join(required),
                                      'status': 400})
                 if cb:
                     retval = '%s(%s)' % (cb, retval)
@@ -344,18 +344,23 @@ def api_call(required=['appId', 'appUser']):
                 return HttpResponse(retval, mimetype='application/json')
                 
             else:  #has the params                      
-                response = v(request, *args, **kwargs)           
-                                        
-                if response.status_code < 400: #not error:
-                    if cb: 
-                        response.content = (u'%s(%s)' % (cb, response.content.decode('utf-8')))            
-                    return response
-                else: #somehow invalid:
-                    retval = json.dumps({'valid': False, 'message': response.content, 'status': response.status_code})
-                    if cb:
-                        retval = '%s(%s)' % (cb, retval)
-                        
-                    return HttpResponse(retval,mimetype='application/json')
+                response = v(request, *args, **kwargs)                
+                if hasattr(response, 'status_code') and response.status_code >= 400: #there was an error
+                    retval = json.dumps({'data': dict.fromkeys(data), 'message': response.content, 'status': response.status_code})                    
+                elif hasattr(response, 'status_code'): #weird case... all went well but didn't return a dict
+                    retval = json.dumps({'data': response.content, 'message':'', 'status': response.status_code},
+                                         ensure_ascii=False, encoding='utf-8')
+                else: #expected case for successful calls: return a JSON-encodeable object
+                    retval = json.dumps({'data': response, 'message':'', 'status': 200},
+                                         ensure_ascii=False, encoding='utf-8')
+                
+                
+                #return as an http response:
+                retval = retval.decode('utf-8')                    
+                if cb:
+                    retval = u'%s(%s)' % (cb, retval)
+                                    
+                return HttpResponse(retval,mimetype='application/json')
         
         return api_validate
     return wrap

@@ -43,7 +43,7 @@ def view_or_basicauth(view, request, test_func, realm = "", *args, **kwargs):
     # something in the authorization attempt failed. Send a 401
     # back to them to ask them to authenticate.
     #
-    response = HttpResponse()
+    response = HttpResponse('Authentication failed')
     response.status_code = 401
     response['WWW-Authenticate'] = 'Basic realm="%s"' % realm
     return response
