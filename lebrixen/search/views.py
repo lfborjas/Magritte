@@ -15,7 +15,6 @@ def do_search(query, lang='en'):
     indexer = DocumentSurrogate.indexer
     #logging.debug('Using indexer %s' % indexer)     
     search_results = indexer.search(query).prefetch()[:20]
-    #search_results = indexer.search(query).stemming(lang).prefetch()[:20]
     #logging.debug('ResultSet %s for query %s' % (search_results, query))
     #search_results._stemming_lang=lang    
     #serialize:

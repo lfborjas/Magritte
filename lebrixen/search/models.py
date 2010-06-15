@@ -43,9 +43,10 @@ class DmozCategory(models.Model):
         """Given a query, find out to which categories it most probably belongs to, 
            with the weights relative to the query calculated"""
         
-        #cf. http://xappy.org/docs/0.5/introduction.html
-        
+        #cf. http://xappy.org/docs/0.5/introduction.html        
         s_conn = xappy.SearchConnection(settings.CATEGORY_CLASSIFIER_DATA)
+        
+        
         #TODO: use a setting for this:
         lang = lang if lang in ['en', 'es'] else 'en'
         #query = s_conn.spell_correct(query, allow=['%s_text'%lang,])
@@ -63,13 +64,13 @@ class DmozCategory(models.Model):
         s_conn.close()
             
         if as_dict:
-            if not rval:
-                logging.debug("No categories match query %s" % query)
+            #if not rval:
+            #    logging.debug("No categories match query %s" % query)
             #TODO: try correcting spelling ?
             return rval or {}
-        #get the categories and set their weight relative to the query:
+        #get the categories and set their weight relative to the query:        
         categories = cls.objects.filter(pk__in = rval.keys())
-        #[setattr(category, 'relative_weight', (rval[category.pk]) * category.weight) for category in categories]
+        [setattr(category, 'relative_weight', rval[category.pk]) for category in categories]
         #for category in categories:
         #    category.relative_weight = rval[category.pk] * category.weight
          

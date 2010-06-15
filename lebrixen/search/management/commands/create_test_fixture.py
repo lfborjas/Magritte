@@ -7,6 +7,7 @@ Created on 14/06/2010
 Creates two test documents and a test ontology. Also trains a test category classifier.
 Deletes the documents and the ontology from the db after all, as to not affect the database.
 '''
+from __future__ import division
 from django.core.management.base import NoArgsCommand
 import logging
 import xappy
@@ -88,6 +89,7 @@ class Command(NoArgsCommand):
                 #logging.debug("From a total of %s, category %s has %s documents (%s percent)" % (s, sc.topic_id, sub_docs, sub_docs/s*100))
                 sc.weight = 1 - sub_docs / s 
                 sc.save()
+                #logging.debug("Weight: %s" % sc.weight)
             c += 1
         
         logging.debug("Done pondering %s categories" % c)
@@ -197,23 +199,29 @@ class Command(NoArgsCommand):
                       en_qpdoc, es_qpdoc,
                       en_csdoc, es_csdoc]
         logging.debug('Documents: %s' % [e.pk for e in documents])
+        
+        cats = DmozCategory.objects.filter(pk__in = [e.pk for e in categories])
+        docs = DocumentSurrogate.objects.filter(pk__in = [e.pk for e in documents])
+        
+        #ponder categories:
+        logging.debug('Pondering categories')        
+        self.ponder_categories(cats)
+        #HACK: get the categories again... (to ensure the changes have taken effect)
+        cats = DmozCategory.objects.filter(pk__in = [e.pk for e in categories])
         #create the fixture:        
         logging.debug('Creating fixture')
         json_serializer = serializers.get_serializer('json')()        
         fixture = open(os.path.join(settings.ROOT_PATH, 'search', 'fixtures', 'testData.json'), 'w')
-        cats = DmozCategory.objects.filter(pk__in = [e.pk for e in categories])
-        docs = DocumentSurrogate.objects.filter(pk__in = [e.pk for e in documents])
+        
         try:
             json_serializer.serialize(itertools.chain(cats, docs), stream = fixture)
         except:
             logging.error('Couldnt serialize!', exc_info=True)
             pass   
         else:
-            #step 4: train the test classifier
-            logging.debug('Pondering categories')        
-            self.ponder_categories(categories)
+            #step 4: train the test classifier            
             logging.debug('Classifying categories')
-            self.train_classifier(categories)
+            self.train_classifier(cats)
         finally:
             fixture.close()        
         #step 5: delete the categories and documents from the real db

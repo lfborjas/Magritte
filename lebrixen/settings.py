@@ -139,6 +139,7 @@ DATA_PATH = os.path.join(os.environ.get('HOME', '/home/norman'), 'Magritte', 'da
 ONTOLOGY_FILE = os.path.join(DATA_PATH, '2010-03-04_science_sub-structure.rdf.u8')
 #settings for djapian:
 DJAPIAN_DATABASE_PATH = os.path.join(DATA_PATH, 'djapian_spaces')
+DJAPIAN_TEST_PATH = os.path.join(DATA_PATH, 'djapian_test_spaces')
 CATEGORY_CLASSIFIER_DATA = os.path.join(DATA_PATH, 'category_classifier_data')
 TEST_CLASSIFIER_DATA = os.path.join(DATA_PATH, 'test_classifier_data')
 #for AES encryption
@@ -148,6 +149,8 @@ RECAPTCHA_PRIVATE_KEY = '6LdvY7oSAAAAAB5odyMgVmdLoRgIeXpMBMMNBzn0'
 RECAPTCHA_PUBLIC_KEY = '6LdvY7oSAAAAANq2Lw2eZdwpkh1k1d181VCWdByL'
 
 FREE_USER_LIMIT = 10 #30 
+
+TEST_RUNNER = 'search.tests.custom_run_tests'
 
 try:
     from local_settings import *
