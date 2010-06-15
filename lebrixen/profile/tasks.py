@@ -42,7 +42,7 @@ def update_profile(profile, context, docs, lang='en', terms=True, **kwargs):
     """
     #build the context list:
     #context = context + list(DocumentSurrogate.)
-    
+    lang = lang if lang in [e[0] for e in settings.LANGUAGES] else 'en'
     #STEP 0: build the concepts set and set their activation values:    
     CON = {}      
     if not terms and context:

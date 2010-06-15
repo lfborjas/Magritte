@@ -84,5 +84,5 @@ class DmozCategory(models.Model):
         while parent:
             p= parent
             parent = p.parent
-            yield p.pk
+            yield p
                 
