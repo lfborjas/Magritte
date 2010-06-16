@@ -15,11 +15,16 @@ from django.contrib.webdesign import lorem_ipsum
 import urllib
 from profile.tasks import update_profile
 from search.views import do_search
-from service import re_rank
+from service import re_rank, api_call
 import subprocess
 from django.conf import settings
 import djapian
 from djapian.space import IndexSpace
+import base64
+from django.http import HttpResponse
+from service.auth_backend import basic_auth
+from django.utils.importlib import import_module
+ 
 
 index_set = False
 def _reset_index():
@@ -285,8 +290,56 @@ class ReRankingTest(TestCase):
         
                         
         self.assertEqual(sorted(re_ranked[:len(docs)]), sorted(docs))
+
+
+class DummyRequest(object):
+    """Dummy request class to test the decorators, tailor made to match the attributes needed by those methods
+    
+        NEVER use in lieu of django.htpp.HttpRequest! (For view testing, use the test client)
+    
+    """    
+    def __init__(self, request={}, auth={}):
+        self.REQUEST = request
+        self.META = {}
+        engine = import_module(settings.SESSION_ENGINE)        
+        self.session = engine.SessionStore('2b1189a188b44ad18c35e113ac6ceead')
+        if auth and 'username' in auth and 'password' in auth:            
+            self.META['HTTP_AUTHORIZATION'] = "basic %s" % base64.b64encode('%s:%s' % (auth['username'], auth['password']))         
+
+class AuthDecoratorTest(TestCase):
+    """Test the auth decorator """
+    
+    fixtures = ['testApp.json']
+    
+    def setUp(self):
+        self.credentials={'username': 'fixtureapp.tmp',
+                          'password': 'testapp'}
+    
+    def test_auth_no_headers(self):
+        """If no auth credentials are given, must return a 401"""
+        dummy_function = lambda request: HttpResponse()
+        decorated_dummy = basic_auth()(dummy_function) 
+        self.assertContains(response=decorated_dummy(DummyRequest()), text='', status_code=401)
+    
+    def test_auth_no_app(self):
+        """If auth credentials are given, but the user doesn't exist, expect a 401"""
         
-#
-#class DecoratorsTest(TestCase):
-#    """Test the auth and api calls decorators """
-#    pass
+        dummy_function = lambda request: HttpResponse()
+        decorated_dummy = basic_auth()(dummy_function) 
+        self.assertContains(response=decorated_dummy(DummyRequest(auth={'username': 'lalo','password':'foo'})),
+                            text='', status_code=401)
+    
+    def test_auth_incorrect_password(self):
+        """Test that password is actually verified"""
+        dummy_function = lambda request: HttpResponse()
+        decorated_dummy = basic_auth()(dummy_function) 
+        self.assertContains(response=decorated_dummy(DummyRequest(auth={'username': self.credentials['username'],
+                                                                        'password':'foo'})),
+                            text='', status_code=401)
+    
+    def test_auth(self):
+        """Test that, given credentials, a user authenticates successfully"""
+        dummy_function = lambda request: HttpResponse('made it!')
+        decorated_dummy = basic_auth()(dummy_function) 
+        self.assertContains(response=decorated_dummy(DummyRequest(auth=self.credentials)),
+                            text='made it!')
