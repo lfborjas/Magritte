@@ -11,6 +11,7 @@ from profile.models import ClientUser
 from search.models import DmozCategory, DocumentSurrogate
 from profile.tasks import update_profile
 import itertools
+import logging
 
 class ProfileTest(TestCase):
     """Test the profile evolution
@@ -22,21 +23,22 @@ class ProfileTest(TestCase):
     """
     
     fixtures = ['testData.json', 'testApp.json']
+    
     def setUp(self):
-        self.profile = ClientUser.objects.get('testUser1')
+        self.profile = ClientUser.objects.get(clientId='testUser1')
     
     def _check_expected_profile(self, profile, categories):
         """Given a collection of categories, check they match those in a given profile"""
-        expected = sorted([e.category.pk for e in profile.preferences.iterator()])
+        result = sorted([e.category.pk for e in profile.preferences.iterator()])
         #due to propagation, must take into account the parents of the categories:
-        all_categories = categories
-        for c in categories:            
+        all_categories = []
+        for c in categories:
+            all_categories.append(c.pk)            
             for p in c.get_parents():
-                all_categories.append(p)
-        #remove duplicates:
-        all_categories = set(all_categories)
-        result = sorted([e.pk for e in all_categories])
-        
+                all_categories.append(p.pk)
+        #remove duplicates and sort:              
+        expected = sorted(set(all_categories))
+                        
         return result == expected
         
         
@@ -93,7 +95,7 @@ class ProfileTest(TestCase):
     def test_classify_empty_context(self):
         """Test that no profile is created if no context is given"""                               
         r = update_profile.apply(args=[self.profile, [], []])
-        self.assertEqual([], list(self.profile.preferences))
+        self.assertEqual([], list(self.profile.preferences.all()))
                 
     
     def test_profile_creation(self):
@@ -122,9 +124,9 @@ class ProfileTest(TestCase):
         """"Test that a profile decays properly with no new categories"""
         #create the profile:
         r = update_profile.apply(args=[self.profile, 'Einstein', []], kwargs={'lang': 'en', 'terms': True})
-        before = sum(self.profile.preferences.all())
+        before = sum([e.score for e in self.profile.preferences.all()])
         r = update_profile.apply(args=[self.profile, [], []], kwargs={'lang': 'en', 'terms': True})
-        after = sum(self.profile.preferences.all())
+        after = sum([e.score for e in self.profile.preferences.all()])
         
         self.assert_(before > after)
         
@@ -133,8 +135,8 @@ class ProfileTest(TestCase):
     def test_profile_evolution(self):
         """Test that a profile evolves with a normal context"""
         
-        categories = DmozCategory.get_for_query(query="study")      
-        other_cats = DmozCategory.get_for_query(query="Einstein")                
+        categories = list(DmozCategory.get_for_query(query="study"))      
+        other_cats = list(DmozCategory.get_for_query(query="Einstein"))                
         docs = list(DocumentSurrogate.objects.filter(category__in=categories).values_list('pk', flat=True))
         #first pass: both are added
         r = update_profile.apply(args=[self.profile, 'Einstein', docs], kwargs={'lang': 'en', 'terms': True})
@@ -151,8 +153,10 @@ class ProfileTest(TestCase):
         after_decay = {} 
         [after_decay.update({e.category.pk: e.score}) for e in q if e.category in other_cats]
         #the docs must've been boosted, the others, decayed:
-        self.assertFalse([k for k,v in after_boost if after_boost[k] <= before_boost[k]]
-                         +[k for k,v in after_decay if after_decay[k] >= before_decay[k]])
+        
+        #REMEMBER: if a preferences gets to 1, it can't go farther up!! (100% is the maximum score)
+        self.assertFalse([k for k,v in after_boost.items() if after_boost[k] < before_boost[k]]
+                         +[k for k,v in after_decay.items() if after_decay[k] >= before_decay[k]])
         
         
     
@@ -171,7 +175,7 @@ class ProfileTest(TestCase):
     
     def test_propagation(self):
         """Test that preferences propagate properly"""
-        cat = DmozCategory.objects.get(title='Quantum physics')
+        cat = DmozCategory.objects.get(title='Quantum Physics')
         categories = [cat.pk,] + [p.pk for p in cat.get_parents()]
         categories.sort()
         docs = list(DocumentSurrogate.objects.filter(category=cat).values_list('pk', flat=True))

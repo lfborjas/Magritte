@@ -61,7 +61,7 @@ class ClientUser(models.Model):
     clientId = models.CharField(max_length = 320, db_index=True) #the unique id in the app's db
     clientName = models.CharField(max_length=320, blank = True, default="")
     info = models.TextField(blank = True, default = "")
-    added = models.DateField(auto_now_add=True, default = date.today())
+    added = models.DateField(auto_now_add=True, default = date.today)
     
     def __unicode__(self):
         return u"%s of %s" % (self.clientId, self.app)
