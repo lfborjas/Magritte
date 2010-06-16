@@ -56,7 +56,7 @@ class ProfileMiddleware(object):
             except:
                 rval = json.dumps({'message': message,
                                    'status': 404,
-                                   'valid': False})
+                                   'data': {}})
                 cb = ''
                 if 'callback' in request.REQUEST:
                     cb = request.REQUEST['callback']            

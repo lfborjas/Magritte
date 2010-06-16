@@ -100,10 +100,10 @@ if(!window.RECOMMENDER){
 				$.getJSON(RECOMMENDER._init_call,
 						{appId: RECOMMENDER._options.appId, appUser: RECOMMENDER._options.appUser,lang: RECOMMENDER._options.lang},
 						function(data){
-							if(!data.valid){
+							if(data.status >= 400){
 								return false;
 							}
-							$('body').append(data.recommender_bar);
+							$('body').append(data.data.recommender_bar);
 							//to toggle the bar open
 							$(".lebrixen-trigger").click(function(){
 								$(".lebrixen-panel").toggle("fast");
@@ -215,19 +215,19 @@ if(!window.RECOMMENDER){
 			/**Get the actual recommendations*/
 			doQuery: function(){
 				$.post(RECOMMENDER._get_recommendations_call,
-						{content: $(RECOMMENDER._options.data.content).val(), lang : RECOMMENDER._options.lang,
+						{context: $(RECOMMENDER._options.data.content).val(), lang : RECOMMENDER._options.lang,
 						 appUser: RECOMMENDER._options.appUser, appId: RECOMMENDER._options.appId},
 						function(data){
 							/**Callback function, update the terms and results with whatever the server
 							 * recommended*/
-							if(!data.valid){
+							if(data.status >= 400){								
 								return false;
 							} 
 							var cnt = 0;
 							var worthIt = false;
-							if(data.terms && data.results){
+							if(data.data.terms && data.data.results){
 								//if the new bag-of-words differs from the older one, is worth it:
-								worthIt= data.terms.split(' ').sort().join != $('#lebrixen-terms').val().split(' ').sort().join()								
+								worthIt= data.data.terms.split(' ').sort().join != $('#lebrixen-terms').val().split(' ').sort().join()								
 								//if the terms don't differ, don't bother the user:
 								if(!worthIt){
 									return false;
@@ -235,16 +235,15 @@ if(!window.RECOMMENDER){
 							}else{
 								//if we didn't even find terms, get outta here.
 								return false;
-							}
-							
+							}							
 							$('#lebrixen-docs-container').empty();
 							$('#lebrixen-terms-title').show();						
-							$('#lebrixen-terms').val(data.terms);					
+							$('#lebrixen-terms').val(data.data.terms);					
 							$('#lebrixen-terms').effect('highlight');
-							$('#lebrixen-docs-q').show().text("("+data.results.length+")");
+							$('#lebrixen-docs-q').show().text("("+data.data.results.length+")");
 														
 							var smry=[];
-							$.each(data.results, function(index, hit){
+							$.each(data.data.results, function(index, hit){
 								smry = hit.summary.split(' ');
 								$('#lebrixen-docs-container').append('<div class="lebrixen-result" id="doc_'+hit.id+'">'+
 												   '<a class="lebrixen-feedback-action" id="fdbk_'+hit.id+
@@ -269,7 +268,7 @@ if(!window.RECOMMENDER){
 									$(e.target).find('.summary_body').hide();
 							});
 							RECOMMENDER._bind_feedback('.lebrixen-result');
-							var sldv = cnt/data.results.length;
+							var sldv = cnt/data.data.results.length;
 							sldv = isNaN(sldv) ? 0 : sldv; 
 							$("#lebrixen-average-rel-slider").slider('value', sldv);
 							$('#lebrixen-docs').effect('highlight');

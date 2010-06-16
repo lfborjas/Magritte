@@ -37,7 +37,7 @@ def get_terms(request):
         return HttpResponse(terms, mimetype="text/plain")
 
 
-@api_call(required=['appId'])
+@api_call(required=['appId'], data=['recommender_bar'])
 @require_GET
 def start_session(request):
     """Check that this is an authentic session starter call and that the middleware managed to set the profile
@@ -50,16 +50,15 @@ def start_session(request):
     #this could contain some attributes for the style or something...       
     raw_bar = render_to_string('recommender_bar.html', {}, context_instance = RequestContext(request))
      
-    return HttpResponse(json.dumps({'recommender_bar': raw_bar, 'valid': True, 'status':200}),
-                         mimetype="application/json")
+    return {'recommender_bar': unicode(raw_bar)}
     
 #Because the text might be too large, we accept POST or GET indistinctly #@require_GET
-@api_call()
+@api_call(data=['results', 'terms'])
 def get_recommendations(request):
-    if not 'content' in request.REQUEST:
-        return HttpResponseBadRequest("No content provided")
+    if not 'context' in request.REQUEST:
+        return HttpResponseBadRequest("No context provided")
     #get the terms
-    context = request.REQUEST['content']
+    context = request.REQUEST['context']
     lang = request.REQUEST.get('lang', 'en')
     service = request.REQUEST.get('service', '')    
     service = service if service in WEB_SERVICES.keys() or (not service and lang == 'en') else 'tagthe'
@@ -78,10 +77,9 @@ def get_recommendations(request):
     else:
         return HttpResponseBadRequest("No profile found")
     #return    
-    return HttpResponse(json.dumps({'results': results, 'terms': unicode(terms), 'valid': True, 'status': 200}, ensure_ascii=False, encoding='utf-8'),
-                         mimetype="application/json")
+    return {'results': results, 'terms': unicode(terms)}
 
-@api_call()
+@api_call(data=['queued'])
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""
     update_profile.delay(request.profile,
@@ -89,13 +87,11 @@ def end_session(request):
                          request.REQUEST.getlist('docs'),
                          lang=request.REQUEST.get('lang', 'en'),
                          terms=request.REQUEST.get('t', False))       
-    return HttpResponse(json.dumps({'valid': True, 'status': 200}), mimetype="application/json")
-
-
+    return {'queued':True}
 
 
 @basic_auth()
-@api_call(required=['appId'])
+@api_call(required=['appId'], data=['added'])
 @require_POST
 def register_users(request, bulk=False):
     """Register a user or a list of users. If bulk, then it will be asynchronous"""
@@ -115,34 +111,31 @@ def register_users(request, bulk=False):
     
     if bulk:
         add_bulk_users.delay(users, app, request.build_absolute_uri('/api/getUsers/'))
-        return HttpResponse(json.dumps({'queued': True, 'status': 200, 'valid': True}), mimetype="application/json")
+        return {'added': True}
     else:
         #just get the first, then
         user = users[0]
         try:
             u, created = ClientUser.objects.get_or_create(app=app, clientId=user)
-            return HttpResponse(json.dumps({'created': created, 'status': 200, 'valid': True}), mimetype="application/json")
+            return {'added': created}
         except:
-            return HttpResponse(json.dumps({'created': False, 'status': 500, 'valid': False}), mimetype="application/json")
+            return HttpResponseServerError('Could not add user')
          
 
 #register_users = api_call(required=['appId'])(register_users)
 
 
-@api_call(required=['appId'])
+@api_call(required=['appId'], data=['users'])
 @require_GET
 def app_users(request):
     """Return a dump of all the users in an app"""
     from profile.models import ClientApp   
     
-    return HttpResponse(json.dumps({'users': [{'id': e.clientId, 'added': str(e.added)} 
-                                              for e in ClientApp.get_for_token(request.GET.get('appId')).users.iterator()], 
-                                    'status': 200,
-                                    'valid': True }, ensure_ascii=False), mimetype="application/json")
-    
-    
-@basic_auth()
-@api_call(required=['appId'])
+    return {'users': [{'id': e.clientId, 'added': str(e.added)} 
+                                              for e in ClientApp.get_for_token(request.GET.get('appId')).users.iterator()]} 
+                                    
+@basic_auth()    
+@api_call(required=['appId'], data=['deleted'])  
 @require_POST
 def delete_user(request):
     """Remove a single user"""
@@ -164,7 +157,7 @@ def delete_user(request):
     try:
         u = ClientUser.objects.get(app=app, clientId=user)
         u.delete()
-        return HttpResponse(json.dumps({'deleted': True, 'status': 200, 'valid': True}), mimetype="application/json")
+        return {'deleted': True}
     except:
-        return HttpResponse(json.dumps({'deleted': False, 'status': 500, 'valid': False}), mimetype="application/json")
+        return HttpResponseServerError('Could not delete user')
     
