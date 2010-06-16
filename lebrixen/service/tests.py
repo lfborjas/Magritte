@@ -23,10 +23,22 @@ from djapian.space import IndexSpace
 
 index_set = False
 def _reset_index():
+    """Create a djapian index for the test data
+    
+        Note that the djapian space needs to be reset because that attribute is set BEFORE
+        the test runner call. 
+        
+        An index is created and then loaded. This method is guaranteed  [in non weird situations]
+        to be only performed once in a test run, so it's safe to call it from a setUp
+    """
+    
+    
     global index_set
     if not index_set:
+        #RESET the djapian space attribute to point to the correct db 
         djapian.space = IndexSpace(settings.DJAPIAN_DATABASE_PATH, "global")
         djapian.add_index = djapian.space.add_index
+        #Create the index
         try:
             #as explained in http://code.google.com/p/djapian/wiki/RunningTheIndexer
             retcode = subprocess.call(['%s/manage.py'%settings.ROOT_PATH, 'index', '--rebuild'])
@@ -36,8 +48,9 @@ def _reset_index():
                 logging.debug("Update index returned")            
         except OSError:
             logging.error("Execution of update_index failed")            
+        #load the indices
         djapian.load_indexes()                
-        DocumentSurrogate.indexer.update()
+        #ensure that this method won't be called again in a test run
         index_set = True
 
 class WebExtractionTest(TestCase):
