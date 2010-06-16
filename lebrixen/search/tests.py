@@ -3,7 +3,7 @@ Search tests: test the search method and the classification method
 """
 
 from django.test import TestCase
-from search.models import DmozCategory
+from search.models import DmozCategory, DocumentSurrogate
 from django.test.simple import run_tests
 from django.conf import settings
 import logging
@@ -11,7 +11,8 @@ import logging
 def custom_run_tests(test_labels, verbosity=1, interactive=True, extra_tests=[]):
     """Set the test indices"""
     settings.CATEGORY_CLASSIFIER_DATA = settings.TEST_CLASSIFIER_DATA
-    #set the search index too?
+    settings.DJAPIAN_DATABASE_PATH = settings.DJAPIAN_TEST_PATH
+          
     return run_tests(test_labels, verbosity, interactive, extra_tests)
 
 class ClassifierTest(TestCase):

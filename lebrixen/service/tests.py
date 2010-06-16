@@ -8,10 +8,37 @@ Replace these with more appropriate tests for your application.
 
 from django.test import TestCase
 from profile.models import ClientUser
+from search.models import DocumentSurrogate, DmozCategory
 import logging
 from service import WebServiceException, web_extract_terms, build_query
 from django.contrib.webdesign import lorem_ipsum
 import urllib
+from profile.tasks import update_profile
+from search.views import do_search
+from service import re_rank
+import subprocess
+from django.conf import settings
+import djapian
+from djapian.space import IndexSpace
+
+index_set = False
+def _reset_index():
+    global index_set
+    if not index_set:
+        djapian.space = IndexSpace(settings.DJAPIAN_DATABASE_PATH, "global")
+        djapian.add_index = djapian.space.add_index
+        try:
+            #as explained in http://code.google.com/p/djapian/wiki/RunningTheIndexer
+            retcode = subprocess.call(['%s/manage.py'%settings.ROOT_PATH, 'index', '--rebuild'])
+            if retcode < 0:
+                logging.debug("Update index terminated by signal")
+            else:
+                logging.debug("Update index returned")            
+        except OSError:
+            logging.error("Execution of update_index failed")            
+        djapian.load_indexes()                
+        DocumentSurrogate.indexer.update()
+        index_set = True
 
 class WebExtractionTest(TestCase):
     """Test the helper methods for text extraction by web services
@@ -39,7 +66,7 @@ class WebExtractionTest(TestCase):
         Test terms extraction with tagthe
         """
         terms = web_extract_terms(self.query, service='tagthe')
-        logging.debug("Tagthe returned these terms: %s" % terms)
+        
         self.assert_(set(self.expected_terms) & set(terms))
         
     def test_yahoo_extraction(self):
@@ -51,9 +78,7 @@ class WebExtractionTest(TestCase):
     def test_alchemy_extraction(self):
         """Test term extraction with alchemy"""
         terms = web_extract_terms(self.query, service='alchemy')
-        
-        logging.debug("Alchemy returned these terms: %s" % terms)
-        
+                       
         self.assert_(set(self.expected_terms) & set(terms))
         
     def test_spanish_query_tagthe(self):
@@ -200,11 +225,54 @@ class TestQueryBuilding(TestCase):
         
         self.assert_(build_query(txt, language='en', fail_silently=True))
         
+
            
 
-#class ReRankingTest(TestCase):
-#    """Test the re ranking method"""
-#    pass
+class ReRankingTest(TestCase):
+    """Test the re ranking method"""
+    
+    fixtures = ['testData.json', 'testApp.json']
+    
+    def setUp(self):
+        self.profile = ClientUser.objects.get(clientId='testUser1')        
+        #HACK: re-index the test documents EVERY time a test is performed:
+        _reset_index()
+        
+    def test_re_ranking(self):
+        """Given a profile and some search results, test that preferred categories are ranked high"""
+        
+        #'matter' yields only physics as it's category
+        categories = DmozCategory.get_for_query(query="matter", lang='en')
+        docs = list(DocumentSurrogate.objects.filter(category__in=categories).values_list('pk', flat=True))
+        
+        r = update_profile.apply(args=[self.profile, 'matter', []], kwargs={'lang': 'en', 'terms': True})
+        
+        #'study' yields both physics and computer science as it's categories
+        results = do_search('study')
+        re_ranked = re_rank(self.profile, results)
+        re_ranked = [e['id'] for e in re_ranked]
+        logging.debug('Results: %s' % results)
+        logging.debug('ReRanked: %s' % re_ranked)                
+        self.assertEqual(sorted(re_ranked[:len(docs)]), sorted(docs))
+    
+    def test_re_ranking_spanish(self):
+        """Given a profile and some search results in spanish, test that preferred categories are ranked high"""
+        #'computación' yields only computer science as it's category
+        categories = DmozCategory.get_for_query(query="computación", lang='es')
+        docs = list(DocumentSurrogate.objects.filter(category__in=categories, lang='es').values_list('pk', flat=True))
+        
+        r = update_profile.apply(args=[self.profile, 'computación', []], kwargs={'lang': 'es', 'terms': True})
+        
+        #'sistema' yields both science and computer science as it's categories
+        results = do_search('sistemas OR sistemáticamente')
+        logging.debug('Results: %s' % results)
+        re_ranked = re_rank(self.profile, results)
+        logging.debug('ReRanked: %s' % re_ranked)
+        re_ranked = [e['id'] for e in re_ranked]
+        
+                        
+        self.assertEqual(sorted(re_ranked[:len(docs)]), sorted(docs))
+        
 #
 #class DecoratorsTest(TestCase):
 #    """Test the auth and api calls decorators """
