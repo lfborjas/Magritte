@@ -21,10 +21,11 @@ from django.conf import settings
 import djapian
 from djapian.space import IndexSpace
 import base64
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseNotModified
 from service.auth_backend import basic_auth
 from django.utils.importlib import import_module
- 
+import re
+import json 
 
 index_set = False
 def _reset_index():
@@ -343,3 +344,165 @@ class AuthDecoratorTest(TestCase):
         decorated_dummy = basic_auth()(dummy_function) 
         self.assertContains(response=decorated_dummy(DummyRequest(auth=self.credentials)),
                             text='made it!')
+
+class ApiCallDecoratorTest(TestCase):
+    """Test the api_call decorator"""
+    
+    def _assertJson(self, json_string='', callback=None, status=200, message='', data=None):
+        """Assertions for json data"""
+        if callback:
+            m=re.match(r'%s\((?P<d>.*)\)'%callback, json_string)
+            json_string= m.group('d')
+        
+        json_data= json.loads(json_string)        
+        return json_data['status']==status and json_data['message']==message and json_data['data']==data 
+             
+    
+    def test_invalid_callback(self):
+        """Test that, if an invalid callback is provided, return a 400"""
+        
+        dummy_function = lambda request: HttpResponse()
+        decorated_dummy = api_call()(dummy_function) 
+        self.assertContains(response=decorated_dummy(DummyRequest(request={'callback': '9$'})),
+                            text='9$ is not a valid jsonp callback identifier', status_code=400)
+    
+    def test_missing_required(self):
+        """Test that if a required parameter is missing, is a bad request in json"""
+        dummy_function = lambda request: HttpResponse()
+        decorated_dummy = api_call(required=['arg'])(dummy_function) 
+        
+        response=decorated_dummy(DummyRequest())
+        
+        self._assertJson(json_string=response.content, status=400, message='The following arguments are required for this call: arg')
+       
+                            
+    
+    def test_missing_required_callback(self):
+        """Test that a bad request returns for a callback request without the required args"""
+        
+        dummy_function = lambda request: HttpResponse()
+        decorated_dummy = api_call(required=['arg'])(dummy_function) 
+        callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest(request={'callback':callback}))
+        
+        self._assertJson(json_string=response.content,
+                         status=400,
+                         message='The following arguments are required for this call: arg',
+                         callback=callback)
+    
+    def test_missing_required_callback_expected_data(self):
+        """Test that a bad request returns for a callback request without the required args and the data returns with
+           the expected structure"""
+        data = dict.fromkeys(['data', 'data2'])
+        dummy_function = lambda request: HttpResponse()
+        decorated_dummy = api_call(required=['arg'], data=['data', 'data2'] )(dummy_function) 
+        callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest(request={'callback':callback, 'arg': 2}))
+        
+        self._assertJson(json_string=response.content,
+                         status=400,
+                         message='The following arguments are required for this call: arg',
+                         callback=callback,
+                         data=data)
+           
+    
+    def test_error_encoding(self):
+        """Test that the decorator converts the http errors from the views in json objects"""
+        
+        error_message = 'whales killed those little birdies'
+        dummy_function = lambda request: HttpResponseServerError(error_message)
+        decorated_dummy = api_call(required=['arg'])(dummy_function) 
+        #callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest(
+                                              request={'arg':0}
+                                              ))
+        
+        self._assertJson(json_string=response.content,
+                         status=500,
+                         message=error_message,
+                         #callback=callback
+                         )
+    
+    def test_error_encoding_callback(self):
+        """Test that the decorator converts the http errors from the views in json objects when callbacks are used"""
+        
+        error_message = 'whales killed those little birdies'
+        dummy_function = lambda request: HttpResponseServerError(error_message)
+        decorated_dummy = api_call()(dummy_function) 
+        callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest(
+                                              request={'callback':callback}
+                                              ))
+        
+        self._assertJson(json_string=response.content,
+                         status=500,
+                         message=error_message,
+                         callback=callback
+                         )
+        
+    def test_error_encoding_expected_data(self):
+        """Test that the decorator converts the http errors from the views in json objects and respects expected data"""
+        data = dict.fromkeys(['data', 'data2'])
+        error_message = 'whales killed those little birdies'
+        dummy_function = lambda request: HttpResponseServerError(error_message)
+        decorated_dummy = api_call(required=['arg'], data=['data', 'data2'])(dummy_function) 
+        #callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest(
+                                              request={'arg':1}
+                                              ))
+        
+        self._assertJson(json_string=response.content,
+                         status=500,
+                         message=error_message,
+                         data=data
+                         )
+        
+    def test_indirect_success(self):
+        """Test that a json object is returned with the expected data from non-200 success pages"""
+        
+        dummy_function = lambda request: HttpResponseNotModified()
+        decorated_dummy = api_call()(dummy_function) 
+        #callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest())
+        
+        self._assertJson(json_string=response.content,
+                         status=304,
+                         message='',                         
+                         #callback=callback
+                         )
+
+        
+    def test_success(self):
+        """Test that a json view returns successfully"""
+        data = {'r': 0}
+        error_message = 'whales killed those little birdies'
+        dummy_function = lambda request: {'r': request.REQUEST['arg']}
+        decorated_dummy = api_call(required=['arg'], data=['r'])(dummy_function) 
+        #callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest(
+                                              request={'arg':0}
+                                              ))
+        
+        self._assertJson(json_string=response.content,
+                         status=200,
+                         message='',
+                         data=data
+                         )
+        
+    def test_success_callback(self):
+        """Test that a json view returns successfully with callback"""
+        data = {'r': 0}
+        error_message = 'whales killed those little birdies'
+        dummy_function = lambda request: {'r': request.REQUEST['arg']}
+        decorated_dummy = api_call(required=['arg'], data=['r'])(dummy_function) 
+        callback = 'jsonp123'
+        response=decorated_dummy(DummyRequest(
+                                              request={'arg':0, 'callback': callback}
+                                              ))
+        
+        self._assertJson(json_string=response.content,
+                         status=200,
+                         message='',
+                         data=data,
+                         callback=callback
+                         )
