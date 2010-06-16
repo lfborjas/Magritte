@@ -107,7 +107,7 @@ def unescape(text):
         return text # leave as is
     return unicode(re.sub("&#?\w+;", fixup, text))
 
-def web_extract_terms(text, raw_query='',service='yahoo'):
+def web_extract_terms(text, raw_query='',service='tagthe'):
     """
         Given a text, extract keyword terms with the selected web_service.
         Args:
@@ -242,7 +242,7 @@ def web_extract_terms(text, raw_query='',service='yahoo'):
     else:
         return ''
 
-def build_query(text, extra_query='', language='', use_web_service = False, web_service='yahoo'):
+def build_query(text, extra_query='', language='', use_web_service = False, web_service='tagthe'):
     """
         Given raw text and a language, build a query to submit to the search engine.
         The use of a web service is optional only for english. For other languages,

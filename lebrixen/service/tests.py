@@ -6,18 +6,26 @@ Replace these with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from profile.models import ClientUser
+import logging
+from service import WebServiceException, web_extract_terms, build_query
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+class ExtractionTest(TestCase):
+    """Test the helper methods for text extraction
+       Only the three major services are tested
+       (tagthe, yahoo, alchemy)
+    """
+    def setUp(self):
+        self.query = 'einstein is a scientist'
+        self.expected_terms = ['einstein', 'scientist']
+    
+    def test_tagthe_extraction(self):
         """
-        Tests that 1 + 1 always equals 2.
+        Test terms extraction with tagthe
         """
-        self.failUnlessEqual(1 + 1, 2)
+        
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
-
->>> 1 + 1 == 2
-True
-"""}
+class APITest(TestCase):
+    """Test the api methods"""
+    pass
 
