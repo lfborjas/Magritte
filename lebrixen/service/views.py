@@ -65,7 +65,10 @@ def get_recommendations(request):
     service = service if service in WEB_SERVICES.keys() or (not service and lang == 'en') else 'tagthe'
     use_service = bool(service)    
     
-    terms = build_query(context, language=lang, use_web_service=use_service, web_service=service)
+    try:
+        terms = build_query(context, language=lang, use_web_service=use_service, web_service=service, fail_silently=False)
+    except:
+        return HttpResponseServerError("Error extracting terms")
      
     #do the search
     results = do_search(terms, lang=lang)

@@ -121,7 +121,7 @@ def web_extract_terms(text, raw_query='',service='tagthe'):
     service = service.lower().strip()
 
     if not service in WEB_SERVICES.keys():
-        raise Exception('%s is an invalid web service, possible choices are %s' % (service, repr(WEB_SERVICES.keys())))
+        raise ValueError('%s is an invalid web service, possible choices are %s' % (service, repr(WEB_SERVICES.keys())))
 
     #1. Build the query:
     query = {}
@@ -189,14 +189,14 @@ def web_extract_terms(text, raw_query='',service='tagthe'):
     resp = None
     #logging.debug('requesting %s' % WEB_SERVICES[service]+'?%s'%urlencode(query))
     try:
-        #HACK: tagthe has issues con POST request, so try and do a GET
+        #HACK: tagthe has issues with POST requests, so try and do a GET
         #max length for a GET request is 2048:
         #http://stackoverflow.com/questions/1344616/max-length-of-query-string-in-an-ajax-get-request
-        if service == 'tagthe' and len(urlencode(query)) <= 2048:
+        if service == 'tagthe': # and len(urlencode(query)) <= 2048:
             resp_url = urlopen(WEB_SERVICES[service]+'?%s'%urlencode(query))       
         else:
             #HACK: fallback to yahoo if the request is too much for tagthe
-            service = 'yahoo' if service == 'tagthe' else service            
+            #service = 'yahoo' if service == 'tagthe' else service            
             resp_url = urlopen(WEB_SERVICES[service], urlencode(query))
         resp = resp_url.read()
         #this causes the exception...
@@ -242,7 +242,7 @@ def web_extract_terms(text, raw_query='',service='tagthe'):
     else:
         return ''
 
-def build_query(text, extra_query='', language='', use_web_service = False, web_service='tagthe'):
+def build_query(text, extra_query='', language='en', use_web_service = False, web_service='tagthe', fail_silently=True):
     """
         Given raw text and a language, build a query to submit to the search engine.
         The use of a web service is optional only for english. For other languages,
@@ -269,21 +269,25 @@ def build_query(text, extra_query='', language='', use_web_service = False, web_
         #if not in english, use a webservice to get the terms:
         #if the web service fails, fallback to another, do that at least four times before  
         fallback_services = [e for e in ['alchemy', 'yahoo', 'tagthe'] if e != web_service] + [web_service, ] 
-        
+        fail = False
         while fallback_services:
             #logging.debug(fallback_services)
             web_service = fallback_services.pop()
             try:
                 logging.debug('Trying to call %s' % web_service)
                 query_terms = web_extract_terms(text, extra_query, service=web_service)
+                fail = False
                 break
             except WebServiceException:
-                logging.error('Request to %s failed' % web_service, exc_info=True)                
+                logging.error('Request to %s failed' % web_service, exc_info=True)
+                fail = True                
                 continue
             except Exception, e:
                 logging.error("Other exception: %s" % e, exc_info=True)
+                fail = True
                 break
-
+        if fail and not fail_silently:
+            raise AttributeError
     return extra_query + u' '.join(query_terms)
 
      
