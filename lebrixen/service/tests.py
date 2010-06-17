@@ -767,6 +767,85 @@ class TestRegisterUser(AuthApiTest, TestCase):
         #check that it wasn't magically added:
         self.assertEqual(sorted(before), sorted(after))
         
+class TestBulkRegisterUsers(AuthApiTest, TestCase):
+    """Tests for the bulkRegisterUsers api call
+        
+       ideally, it has the same cases that the registerUser call, but because
+       they're both on the same method, those which are structurally identical
+       are not repeated here 
+    """
+    
+    def setUp(self):
+        super(TestBulkRegisterUsers, self).setUp()
+        self.url = '/api/bulkRegisterUsers/'
+        self.call = lambda url,request:self.client.post(url, request, HTTP_AUTHORIZATION=self.good_credentials)
+    
+    def test_call(self):
+        """Test that a list of users is correctly added"""
+        
+        test_users = ['newUser1', 'newUser2', 'newUser3']
+               
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId': self.app.get_token(), 'user': test_users})
+                                         
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        #check that users come in the response
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'added': True}
+                                     ))
+        #check that the user was actually added:
+        self.assert_(not (set(test_users) <= set(before))
+                     and  set(test_users) <= set(after), 'The user was not added')
+        
+        
+    def test_duplicate_addition(self):
+        """Test users are not added if it's a duplicate"""
+        
+        test_users = ['testUser1', 'testUser2', 'newUser3']
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId': self.app.get_token(), 'user': test_users})
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'added': True}
+                                     ))
+        #check that the user was actually added:
+        new_users = set(test_users) - set(before)
+        
+        self.assert_(new_users <= set(after)
+                     and len(after) == len(before)+len(new_users))
+       
+    def test_quota_respect(self):
+        """Test that the quota validation works"""
+        current = self.app.users.count()
+        limit = settings.FREE_USER_LIMIT - current
+        
+        test_users=[]
+        for i in range(limit):
+            test_users.append('newUser%s' %i)
+            
+        #get to the limit
+        response = self.call(self.url, {'appId': self.app.get_token(), 'user': test_users})
+        
+        #try to add one more:                
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(),
+                                               'user': 'newUserOverflow'})        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=403,
+                                      message='Impossible to add more users: user limit would be exceeded',
+                                      expected_data=['added']                                                                           
+                                      ))
+        
+        after = list(self.app.users.all().values_list('clientId', flat=True))        
+        #check that the length is actually the limit
+        self.assertEqual(len(after), settings.FREE_USER_LIMIT)
+        #check that it wasn't magically added:
+        self.assertEqual(sorted(before), sorted(after))
 
 
 
@@ -780,8 +859,10 @@ def suite():
     
     get_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestGetUsers)
     add_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestRegisterUser)
-    
+    bulk_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestBulkRegisterUsers)
     
     return unittest.TestSuite([auth_suite,
                                api_call_suite,
-                               get_users_suite]) 
+                               get_users_suite,
+                               add_user_suite,
+                               bulk_users_suite]) 
