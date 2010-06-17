@@ -105,8 +105,8 @@ def add_document(profile, doc):
                              
 def _bulk_add(users, app):
     
-    if app.users.count()-1 + len(users) > settings.FREE_USER_LIMIT:
-        return False, 'User quota exceeded'
+#    if app.users.count()-1 + len(users) > settings.FREE_USER_LIMIT:
+#        return False, 'User quota exceeded'
     
     from django.db import connection, transaction
     cursor = connection.cursor()

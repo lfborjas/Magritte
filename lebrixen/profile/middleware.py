@@ -46,7 +46,7 @@ class ProfileMiddleware(object):
                 request.session[APP_KEY] = a
                 request.__class__.profile = LazyProfile(request.session[APP_KEY])
                 if not hasattr(request, 'profile') and PROFILE_ID in request.REQUEST:
-                    message = "The requested user does not exist "
+                    message = "The requested user does not exist"
                     raise Exception('Not existent user')
                 #limit the number of requests:
                 #r=ClientRequest(date=date.today(), app=a, ip=request.META.get('REMOTE_ADDRESS', ''));r.save() 

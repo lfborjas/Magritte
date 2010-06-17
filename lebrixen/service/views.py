@@ -11,7 +11,7 @@ except ImportError:
     
 import logging
 from django.template.loader import render_to_string
-from profile.tasks import update_profile, add_bulk_users
+from profile.tasks import update_profile, _bulk_add
 from django.utils.translation import check_for_language
 from django.template.context import RequestContext
 from service.auth_backend import basic_auth
@@ -53,10 +53,8 @@ def start_session(request):
     return {'recommender_bar': unicode(raw_bar)}
     
 #Because the text might be too large, we accept POST or GET indistinctly #@require_GET
-@api_call(data=['results', 'terms'])
-def get_recommendations(request):
-    if not 'context' in request.REQUEST:
-        return HttpResponseBadRequest("No context provided")
+@api_call(required=['appId', 'appUser','context'], data=['results', 'terms'])
+def get_recommendations(request):    
     #get the terms
     context = request.REQUEST['context']
     lang = request.REQUEST.get('lang', 'en')
@@ -110,8 +108,9 @@ def register_users(request, bulk=False):
         return HttpResponseForbidden('Impossible to add more users: user limit would be exceeded')
     
     if bulk:
-        add_bulk_users.delay(users, app, request.build_absolute_uri('/api/getUsers/'))
-        return {'added': True}
+        #add_bulk_users.delay(users, app, request.build_absolute_uri('/api/getUsers/'))
+        bulk_added = _bulk_add(users, app)[0]
+        return {'added': bulk_added}
     else:
         #just get the first, then
         user = users[0]
@@ -124,7 +123,7 @@ def register_users(request, bulk=False):
 
 #register_users = api_call(required=['appId'])(register_users)
 
-
+@basic_auth()
 @api_call(required=['appId'], data=['users'])
 @require_GET
 def app_users(request):

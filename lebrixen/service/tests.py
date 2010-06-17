@@ -7,7 +7,7 @@ Replace these with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-from profile.models import ClientUser
+from profile.models import ClientUser, ClientApp
 from search.models import DocumentSurrogate, DmozCategory
 import logging
 from service import WebServiceException, web_extract_terms, build_query
@@ -25,7 +25,8 @@ from django.http import HttpResponse, HttpResponseServerError, HttpResponseNotMo
 from service.auth_backend import basic_auth
 from django.utils.importlib import import_module
 import re
-import json 
+import json
+import unittest 
 
 index_set = False
 def _reset_index():
@@ -355,7 +356,12 @@ class ApiCallDecoratorTest(TestCase):
             json_string= m.group('d')
         
         json_data= json.loads(json_string)        
-        return json_data['status']==status and json_data['message']==message and json_data['data']==data 
+        
+        data_cmp = (json_data['data']==data) if data else True
+        
+        return self.assert_(json_data['status']==status
+                            and json_data['message']==message
+                            and data_cmp) 
              
     
     def test_invalid_callback(self):
@@ -397,7 +403,7 @@ class ApiCallDecoratorTest(TestCase):
         dummy_function = lambda request: HttpResponse()
         decorated_dummy = api_call(required=['arg'], data=['data', 'data2'] )(dummy_function) 
         callback = 'jsonp123'
-        response=decorated_dummy(DummyRequest(request={'callback':callback, 'arg': 2}))
+        response=decorated_dummy(DummyRequest(request={'callback':callback}))
         
         self._assertJson(json_string=response.content,
                          status=400,
@@ -428,7 +434,7 @@ class ApiCallDecoratorTest(TestCase):
         
         error_message = 'whales killed those little birdies'
         dummy_function = lambda request: HttpResponseServerError(error_message)
-        decorated_dummy = api_call()(dummy_function) 
+        decorated_dummy = api_call(required=[])(dummy_function) 
         callback = 'jsonp123'
         response=decorated_dummy(DummyRequest(
                                               request={'callback':callback}
@@ -461,10 +467,10 @@ class ApiCallDecoratorTest(TestCase):
         """Test that a json object is returned with the expected data from non-200 success pages"""
         
         dummy_function = lambda request: HttpResponseNotModified()
-        decorated_dummy = api_call()(dummy_function) 
+        decorated_dummy = api_call(required=[])(dummy_function) 
         #callback = 'jsonp123'
         response=decorated_dummy(DummyRequest())
-        
+        logging.debug(response.content)
         self._assertJson(json_string=response.content,
                          status=304,
                          message='',                         
@@ -475,7 +481,7 @@ class ApiCallDecoratorTest(TestCase):
     def test_success(self):
         """Test that a json view returns successfully"""
         data = {'r': 0}
-        error_message = 'whales killed those little birdies'
+        
         dummy_function = lambda request: {'r': request.REQUEST['arg']}
         decorated_dummy = api_call(required=['arg'], data=['r'])(dummy_function) 
         #callback = 'jsonp123'
@@ -506,3 +512,155 @@ class ApiCallDecoratorTest(TestCase):
                          data=data,
                          callback=callback
                          )
+
+#now, the api calls!
+#this multiple inheritance hack: http://stackoverflow.com/questions/1323455/python-unit-test-with-base-and-sub-class
+class CommonApiTest(object):
+    """Test base common cases for all api calls
+    
+       Every child should define a setUp that sets the url
+       and the call method, which is expected to be one of the following methods from django.TestCase:
+       self.client.get
+       self.client.post
+       self.client.put
+       self.client.delete
+    """
+    
+    fixtures = ['testData.json', 'testApp.json']
+    
+    def _assertJson(self, json_string='', callback=None, status=200, message='', data=None, expected_data=[]):
+        """Assertions for json data"""
+        if callback:
+            m=re.match(r'%s\((?P<d>.*)\)'%callback, json_string)
+            json_string= m.group('d')
+        
+        json_data= json.loads(json_string)
+        
+        #check the expected structure of the internal data        
+        if expected_data and 'data' in json_data:
+            contained = set(expected_data) == set(json_data['data'].keys())
+        else:
+            contained = True
+        
+        data_cmp = (json_data['data']==data) if data else True
+        
+        return json_data['status']==status and json_data['message']==message and data_cmp and contained 
+    
+    def setUp(self):
+        self.app = ClientApp.objects.get(url='fixtureapp.tmp').get_token()
+        self.user = ClientUser.objects.get(clientId='testUser1')
+        
+    def test_invalid_token(self):
+        """Test that passing non existing apps raises a 404"""
+        response = self.call(self.url, {'appId': 'lalo123'})
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=404,
+                                      message="No app with the given token is registered or the token is invalid",
+                                      ))
+        
+    def test_invalid_token_callback(self):
+        """Test that passing non existing apps raises a 404 in callbacks"""
+        callback = 'jsonp123'
+        response = self.call(self.url, {'appId': 'lalo123', 'callback': callback})
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=404,
+                                      message="No app with the given token is registered or the token is invalid",
+                                      callback=callback
+                                      ))
+    
+    def test_valid_token(self):
+        """Test that valid tokens return valid responses"""
+        response = self.call(self.url, {'appId': self.app})
+        self.assertNotEqual(response.status_code, 404)
+    
+
+class UserApiTest(CommonApiTest):
+    """Common tests for api calls that require both app and user"""
+    
+    def test_invalid_user(self):
+        """Test that non existing users raise a 404"""
+        response = self.call(self.url, {'appId': self.app, 'appUser': 'nonExistentUser'})
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=404,
+                                      message="The requested user does not exist",
+                                      ))
+        
+    def test_invalid_user_callback(self):
+        """Test that non existing users raises a 404 in callbacks"""
+        callback = 'jsonp123'
+        response = self.call(self.url, {'appId': self.app, 'appUser': 'nonExistentUser', callback: callback})
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=404,
+                                      message="The requested user does not exist",
+                                      callback=callback
+                                      ))
+    
+    def test_valid_user(self):
+        """Test that valid users don't raise 404s"""
+        response = self.call(self.url, {'appId': self.app, 'appUser': self.user.clientId})
+        self.assertNotEqual(response.status_code, 404)
+        
+class AuthApiTest(CommonApiTest):
+    """Test api calls that require authentication
+       
+       the decorator is tested in other test case, so don't go through that again...
+    """
+    
+    def setUp(self):
+        super(AuthApiTest, self).setUp()
+        self.good_credentials = "basic %s" % base64.b64encode('%s:%s' % ('fixtureapp.tmp', 'testapp'))
+        self.bad_credentials = "basic %s" % base64.b64encode('%s:%s' % ('nonexistent.tmp', 'FOOBAR'))
+    
+
+        
+class TestGetUsers(AuthApiTest, TestCase):
+    """Tests for the getUsers api call"""
+    
+    def setUp(self):
+        super(TestGetUsers, self).setUp()
+        self.url = '/api/getUsers/'
+        self.call = lambda url,request:self.client.get(url, request, HTTP_AUTHORIZATION=self.good_credentials)
+    
+    def test_call(self):
+        """Test that the users for a valid app are retrieved"""
+        response = self.call(self.url, {'appId':self.app})
+        #check that users come in the response
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      expected_data = ['users']
+                                      ))
+    def test_callback(self):
+        """Test that the users for a valid app are retrieved in callbacks"""
+        callback ='jsonp123'
+        response = self.call(self.url, {'appId':self.app, 'callback': callback})
+        #check that users come in the response
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      expected_data = ['users'],
+                                      callback = callback
+                                      ))
+    def test_bad_method(self):
+        """Test that the method validation works"""
+        response = self.client.post(self.url, {'appId':self.app}, HTTP_AUTHORIZATION=self.good_credentials)
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=405,
+                                      message="",                                                                           
+                                      ))
+
+
+def suite():
+    """The test suite only comprises the test cases directly related to the api.
+       
+       Term extraction and query building must be run individually, as they use lots of resources       
+    """
+    auth_suite = unittest.TestLoader().loadTestsFromTestCase(AuthDecoratorTest)
+    api_call_suite = unittest.TestLoader().loadTestsFromTestCase(ApiCallDecoratorTest)
+    
+    get_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestGetUsers)
+    
+    return unittest.TestSuite([auth_suite,
+                               api_call_suite,
+                               get_users_suite]) 
