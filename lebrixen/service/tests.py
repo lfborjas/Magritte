@@ -847,7 +847,126 @@ class TestBulkRegisterUsers(AuthApiTest, TestCase):
         #check that it wasn't magically added:
         self.assertEqual(sorted(before), sorted(after))
 
-
+class TestDeleteUser(AuthApiTest, TestCase):
+    """Tests for the deleteUser api call"""
+    
+    def setUp(self):
+        super(TestDeleteUser, self).setUp()
+        self.url = '/api/deleteUser/'
+        self.call = lambda url,request:self.client.post(url, request, HTTP_AUTHORIZATION=self.good_credentials)
+    
+    def test_missing_required(self):
+        """Test that if a required parameter is missing, is a bad request in json, and callback"""
+        response = self.call(self.url, {'appId': self.app.get_token()})
+                
+        self.assert_(self._assertJson(json_string=response.content,
+                          status=400, message='The following arguments are required for this call: appId, user'))
+        
+        callback = 'jsonfunction'
+        response = self.call(self.url, {'appId': self.app.get_token(), 'callback': callback})
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                          status=400, message='The following arguments are required for this call: appId, user',
+                          callback=callback))
+        
+    
+    def test_call(self):
+        """Test that a user is correctly removed"""
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(), 'user':self.user.clientId})
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'deleted': True}
+                                     ))
+        #check that the user was actually added:
+        self.assert_(self.user.clientId in before
+                     and self.user.clientId not in after, 'The user was not deleted')
+        
+    def test_call_invalid_user(self):
+        """Test the non-existent user escenario"""
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(), 'user':'idonotexist'})
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'deleted': False}
+                                     ))
+        #check that the user was actually added:
+        self.assertEqual(sorted(before), sorted(after))
+        
+    def test_callback(self):
+        """Test that callbacks also delete users"""
+        callback ='jsonp123'
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(), 'user':self.user.clientId, 'callback': callback})
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        #check that users come in the response
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'deleted': True},
+                                      callback = callback
+                                     ))
+        #check that the user was actually added:
+        self.assert_(self.user.clientId in before
+                     and self.user.clientId not in after, 'The user was not deleted')
+        
+    def test_bad_method(self):
+        """Test that the method validation works for user deletion"""
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.client.get(self.url, {'appId':self.app.get_token(), 'user': self.user.clientId},
+                                    HTTP_AUTHORIZATION=self.good_credentials)
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=405,
+                                      message="",
+                                      expected_data=['deleted']                                                                           
+                                      ))
+        #check that it wasn't magically added:
+        self.assertEqual(sorted(before), sorted(after))
+        
+    def test_quota_respect(self):
+        """Test that, for delete, the quota validation works: reach it, then delete a user and see if now we can add"""
+        current = self.app.users.count()
+        limit = settings.FREE_USER_LIMIT - current
+        for i in range(limit):
+            response = self.call('/api/registerUser/', {'appId':self.app.get_token(),
+                                                   'user': 'newUser%s'%i})
+        #try to add one more:        
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call('/api/registerUser/', {'appId':self.app.get_token(),
+                                               'user': 'newUserOverflow'})
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=403,
+                                      message='Impossible to add more users: user limit would be exceeded',
+                                      expected_data=['added']                                                                           
+                                      ))
+        
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        #check that the length is actually the limit
+        self.assertEqual(len(after), settings.FREE_USER_LIMIT)
+        #check that it wasn't magically added:
+        self.assertEqual(sorted(before), sorted(after))
+        
+        #now, delete a user:
+        response = self.call(self.url, {'appId':self.app.get_token(), 'user':self.user.clientId})
+        new_before = list(self.app.users.all().values_list('clientId', flat=True))
+        #check that now there's space:
+        self.assert_(self.user.clientId in after and self.user.clientId not in new_before, 'could not delete an old user')
+        
+        #add a user: it should work!
+        response = self.call('/api/registerUser/', {'appId':self.app.get_token(), 'user':'userOverflow'})
+        new_after = list(self.app.users.all().values_list('clientId', flat=True))
+        self.assert_('userOverflow' not in new_before and 'userOverflow' in new_after)
+        
 
 def suite():
     """The test suite only comprises the test cases directly related to the api.
@@ -860,6 +979,7 @@ def suite():
     get_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestGetUsers)
     add_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestRegisterUser)
     bulk_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestBulkRegisterUsers)
+    delete_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestDeleteUser)
     
     return unittest.TestSuite([auth_suite,
                                api_call_suite,
