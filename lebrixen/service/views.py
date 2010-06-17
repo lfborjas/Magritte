@@ -89,20 +89,17 @@ def end_session(request):
 
 
 @basic_auth()
-@api_call(required=['appId'], data=['added'])
+@api_call(required=['appId','user'], data=['added'])
 @require_POST
 def register_users(request, bulk=False):
     """Register a user or a list of users. If bulk, then it will be asynchronous"""
     from profile.models import ClientApp, ClientUser
+    #it MUST exist, otherwise the middleware would have intercepted it
+    app = ClientApp.get_for_token(request.POST.get('appId'))
     
-    try:
-        app = ClientApp.get_for_token(request.POST.get('appId'))
-    except:
-        return HttpResponseNotFound("App not found")
-
     users = request.POST.getlist('user')
-    if not users:
-        return HttpResponseBadRequest("Expected at least one 'user' argument, none given")
+#    if not users:
+#        return HttpResponseBadRequest("Expected at least one 'user' argument, none given")
     
     if app.users.count() - 1 + len(users) >= settings.FREE_USER_LIMIT:
         return HttpResponseForbidden('Impossible to add more users: user limit would be exceeded')

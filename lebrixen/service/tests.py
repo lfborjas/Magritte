@@ -547,7 +547,7 @@ class CommonApiTest(object):
         return json_data['status']==status and json_data['message']==message and data_cmp and contained 
     
     def setUp(self):
-        self.app = ClientApp.objects.get(url='fixtureapp.tmp').get_token()
+        self.app = ClientApp.objects.get(url='fixtureapp.tmp')
         self.user = ClientUser.objects.get(clientId='testUser1')
         
     def test_invalid_token(self):
@@ -570,7 +570,7 @@ class CommonApiTest(object):
     
     def test_valid_token(self):
         """Test that valid tokens return valid responses"""
-        response = self.call(self.url, {'appId': self.app})
+        response = self.call(self.url, {'appId': self.app.get_token()})
         self.assertNotEqual(response.status_code, 404)
     
 
@@ -579,7 +579,7 @@ class UserApiTest(CommonApiTest):
     
     def test_invalid_user(self):
         """Test that non existing users raise a 404"""
-        response = self.call(self.url, {'appId': self.app, 'appUser': 'nonExistentUser'})
+        response = self.call(self.url, {'appId': self.app.get_token(), 'appUser': 'nonExistentUser'})
         self.assert_(self._assertJson(json_string=response.content,
                                       status=404,
                                       message="The requested user does not exist",
@@ -588,7 +588,7 @@ class UserApiTest(CommonApiTest):
     def test_invalid_user_callback(self):
         """Test that non existing users raises a 404 in callbacks"""
         callback = 'jsonp123'
-        response = self.call(self.url, {'appId': self.app, 'appUser': 'nonExistentUser', callback: callback})
+        response = self.call(self.url, {'appId': self.app.get_token(), 'appUser': 'nonExistentUser', callback: callback})
         self.assert_(self._assertJson(json_string=response.content,
                                       status=404,
                                       message="The requested user does not exist",
@@ -597,7 +597,7 @@ class UserApiTest(CommonApiTest):
     
     def test_valid_user(self):
         """Test that valid users don't raise 404s"""
-        response = self.call(self.url, {'appId': self.app, 'appUser': self.user.clientId})
+        response = self.call(self.url, {'appId': self.app.get_token(), 'appUser': self.user.clientId})
         self.assertNotEqual(response.status_code, 404)
         
 class AuthApiTest(CommonApiTest):
@@ -623,17 +623,20 @@ class TestGetUsers(AuthApiTest, TestCase):
     
     def test_call(self):
         """Test that the users for a valid app are retrieved"""
-        response = self.call(self.url, {'appId':self.app})
+        response = self.call(self.url, {'appId':self.app.get_token()})
         #check that users come in the response
         self.assert_(self._assertJson(json_string=response.content,
                                       status=200,
-                                      message="",
-                                      expected_data = ['users']
+                                      message="",                                      
+                                      data = {'users': [{'id': e.clientId, 'added': str(e.added)} 
+                                              for e in self.app.users.iterator()]}
                                       ))
+        
+        
     def test_callback(self):
         """Test that the users for a valid app are retrieved in callbacks"""
         callback ='jsonp123'
-        response = self.call(self.url, {'appId':self.app, 'callback': callback})
+        response = self.call(self.url, {'appId':self.app.get_token(), 'callback': callback})
         #check that users come in the response
         self.assert_(self._assertJson(json_string=response.content,
                                       status=200,
@@ -643,12 +646,128 @@ class TestGetUsers(AuthApiTest, TestCase):
                                       ))
     def test_bad_method(self):
         """Test that the method validation works"""
-        response = self.client.post(self.url, {'appId':self.app}, HTTP_AUTHORIZATION=self.good_credentials)
+        response = self.client.post(self.url, {'appId':self.app.get_token()}, HTTP_AUTHORIZATION=self.good_credentials)
         
         self.assert_(self._assertJson(json_string=response.content,
                                       status=405,
-                                      message="",                                                                           
+                                      message="",               
+                                      expected_data = ['users'],                                                            
                                       ))
+
+class TestRegisterUser(AuthApiTest, TestCase):
+    """Tests for the registerUser api call"""
+    
+    def setUp(self):
+        super(TestRegisterUser, self).setUp()
+        self.url = '/api/registerUser/'
+        self.call = lambda url,request:self.client.post(url, request, HTTP_AUTHORIZATION=self.good_credentials)
+    
+    def test_missing_required(self):
+        """Test that if a required parameter is missing, is a bad request in json, and callback"""
+        response = self.call(self.url, {'appId': self.app.get_token()})
+                
+        self.assert_(self._assertJson(json_string=response.content,
+                          status=400, message='The following arguments are required for this call: appId, user'))
+        
+        callback = 'jsonfunction'
+        response = self.call(self.url, {'appId': self.app.get_token(), 'callback': callback})
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                          status=400, message='The following arguments are required for this call: appId, user',
+                          callback=callback))
+        
+    
+    def test_call(self):
+        """Test that a user is correctly added"""
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(), 'user':'newUser'})
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        #check that users come in the response
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'added': True}
+                                     ))
+        #check that the user was actually added:
+        self.assert_('newUser' not in before
+                     and 'newUser' in after, 'The user was not added')
+        
+        
+    def test_duplicate_addition(self):
+        """Test that a user is not added if it's a duplicate"""
+        
+        duplicate = self.user.clientId
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(), 'user':duplicate})
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'added': False}
+                                     ))
+        #check that the user was actually added:
+        self.assert_(duplicate in before
+                     and len(before) == len(after), 'The user is duplicate!')
+        
+        
+    def test_callback(self):
+        """Test that callbacks also add users"""
+        callback ='jsonp123'
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(), 'user':'newUser', 'callback': callback})
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        #check that users come in the response
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'added': True},
+                                      callback = callback
+                                     ))
+        #check that the user was actually added:
+        self.assert_('newUser' not in before
+                     and 'newUser' in after, 'The user was not added')
+        
+    def test_bad_method(self):
+        """Test that the method validation works"""
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.client.get(self.url, {'appId':self.app.get_token(), 'user': 'newUser'}, HTTP_AUTHORIZATION=self.good_credentials)
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=405,
+                                      message="",
+                                      expected_data=['added']                                                                           
+                                      ))
+        #check that it wasn't magically added:
+        self.assertEqual(sorted(before), sorted(after))
+        
+    def test_quota_respect(self):
+        """Test that the quota validation works"""
+        current = self.app.users.count()
+        limit = settings.FREE_USER_LIMIT - current
+        for i in range(limit):
+            response = self.call(self.url, {'appId':self.app.get_token(),
+                                                   'user': 'newUser%s'%i})
+        #try to add one more:        
+        before = list(self.app.users.all().values_list('clientId', flat=True))
+        response = self.call(self.url, {'appId':self.app.get_token(),
+                                               'user': 'newUserOverflow'})
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                                      status=403,
+                                      message='Impossible to add more users: user limit would be exceeded',
+                                      expected_data=['added']                                                                           
+                                      ))
+        
+        after = list(self.app.users.all().values_list('clientId', flat=True))
+        
+        #check that the length is actually the limit
+        self.assertEqual(len(after), settings.FREE_USER_LIMIT)
+        #check that it wasn't magically added:
+        self.assertEqual(sorted(before), sorted(after))
+        
+
 
 
 def suite():
@@ -660,6 +779,8 @@ def suite():
     api_call_suite = unittest.TestLoader().loadTestsFromTestCase(ApiCallDecoratorTest)
     
     get_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestGetUsers)
+    add_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestRegisterUser)
+    
     
     return unittest.TestSuite([auth_suite,
                                api_call_suite,
