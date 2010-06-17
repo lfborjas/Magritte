@@ -12,7 +12,8 @@ def custom_run_tests(test_labels, verbosity=1, interactive=True, extra_tests=[])
     """Set the test indices"""
     settings.CATEGORY_CLASSIFIER_DATA = settings.TEST_CLASSIFIER_DATA
     settings.DJAPIAN_DATABASE_PATH = settings.DJAPIAN_TEST_PATH
-          
+    #run celery in eager mode (don't depend on the daemon)
+    settings.CELERY_ALWAYS_EAGER = True      
     return run_tests(test_labels, verbosity, interactive, extra_tests)
 
 class ClassifierTest(TestCase):

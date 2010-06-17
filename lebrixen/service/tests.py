@@ -588,7 +588,8 @@ class UserApiTest(CommonApiTest):
     def test_invalid_user_callback(self):
         """Test that non existing users raises a 404 in callbacks"""
         callback = 'jsonp123'
-        response = self.call(self.url, {'appId': self.app.get_token(), 'appUser': 'nonExistentUser', callback: callback})
+        response = self.call(self.url, {'appId': self.app.get_token(), 'appUser': 'nonExistentUser','callback': callback})
+        logging.debug(response.content)
         self.assert_(self._assertJson(json_string=response.content,
                                       status=404,
                                       message="The requested user does not exist",
@@ -967,7 +968,116 @@ class TestDeleteUser(AuthApiTest, TestCase):
         new_after = list(self.app.users.all().values_list('clientId', flat=True))
         self.assert_('userOverflow' not in new_before and 'userOverflow' in new_after)
         
-
+class TestUpdateProfile(UserApiTest, TestCase):
+    """Test the profile update
+    
+        For more thorough tests, use the profile evolution test case
+    """
+    
+    def setUp(self):
+        super(TestUpdateProfile, self).setUp()
+               
+        self.url = '/api/updateProfile/'
+               
+        self.call = lambda url,request:self.client.get(url, request)
+        #this method also allows calls by post, so test that also!
+        self.call_post = lambda url,request:self.client.post(url, request)
+        
+        self.terms_context = 'study'
+        self.context = "Einstein and the quantum mechanics"
+        self.es_terms_context = 'estudio'
+        self.es_context = 'Einstein y la mecánica cuántica'
+        self.docs = list(DocumentSurrogate.objects.filter(category__title="Computer Science").values_list(
+                                                                                                          'pk',flat=True))
+                
+    def _assertEvolution(self, request):
+        """common method to check that a profile evolves
+            
+            does a get and a post and checks 'em
+        """
+        get_response = self.call(self.url, request)
+        self.assert_(self._assertJson(json_string=get_response.content,
+                                      status=200,
+                                      message="",
+                                      data = {'queued': True},                                      
+                                     ))
+        post_response = self.call_post(self.url, request)
+        
+        self.assertEqual(get_response.content, post_response.content)
+        
+    def test_only_context(self):
+        """Test that the profile evolves only with a context"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'context': self.context})
+        
+    def test_terms_context(self):
+        """Test that the profile evolves with a terms context"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'context': self.terms_context,
+                               't': True})
+        
+    def test_spanish_context(self):
+        """Test evolution in spanish"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'context': self.es_context,
+                               'lang': 'es'})
+        
+    def test_spanish_terms_context(self):
+        """Test evolution with spanish terms context"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'context': self.es_terms_context,
+                               't': True,
+                               'lang': 'es'})
+        
+    
+    def test_invalid_lang_context(self):
+        """Test evolution for invalid languages"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'context': self.context,
+                               'lang': 'fr'})
+    
+    def test_docs_context(self):
+        """Test evolution with a context and documents involved"""        
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'docs': self.docs,
+                               'context': self.context
+                               })
+        
+    def test_docs_spanish_context(self):
+        """Test evolution with docs and a spanish context"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'docs': self.docs,
+                               'context': self.es_context,
+                               'lang': 'es'                               
+                               })
+        
+    def test_docs_terms_context(self):
+        """Test evolution with a terms context and documents involved"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'docs': self.docs,
+                               'context': self.context,
+                               't': True
+                               }) 
+        
+    def test_docs_terms_spanish_context(self):
+        """Test evolution with a spanish terms context and documents involved"""
+        self._assertEvolution({'appId': self.app.get_token(),
+                               'appUser': self.user.clientId,
+                               'docs': self.docs,
+                               'context': self.es_terms_context,
+                               't': True,
+                               'lang': 'es'
+                               }) 
+    
+        
 def suite():
     """The test suite only comprises the test cases directly related to the api.
        
@@ -980,9 +1090,12 @@ def suite():
     add_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestRegisterUser)
     bulk_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestBulkRegisterUsers)
     delete_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestDeleteUser)
+    update_profile_suite = unittest.TestLoader.loadTestsFromTestCase(TestUpdateProfile)
     
     return unittest.TestSuite([auth_suite,
                                api_call_suite,
                                get_users_suite,
                                add_user_suite,
-                               bulk_users_suite]) 
+                               bulk_users_suite,
+                               delete_user_suite,
+                               update_profile_suite]) 

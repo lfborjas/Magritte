@@ -80,11 +80,16 @@ def get_recommendations(request):
 @api_call(data=['queued'])
 def end_session(request):
     """When a user's session ends, push a task on the queue to evolve his profile"""
-    update_profile.delay(request.profile,
+    
+    r = update_profile.delay(request.profile,
                          request.REQUEST.get('context', []),
                          request.REQUEST.getlist('docs'),
                          lang=request.REQUEST.get('lang', 'en'),
-                         terms=request.REQUEST.get('t', False))       
+                         terms=request.REQUEST.get('t', False))
+    #return the actual success result if the daemon is not running
+    if hasattr(settings, 'CELERY_ALWAYS_EAGER') and settings.CELERY_ALWAYS_EAGER:
+        logging.debug("running celery in eager mode!")
+        return {'queued': r.successful()}       
     return {'queued':True}
 
 
