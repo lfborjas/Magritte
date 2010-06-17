@@ -1076,7 +1076,35 @@ class TestUpdateProfile(UserApiTest, TestCase):
                                't': True,
                                'lang': 'es'
                                }) 
+
+class TestGetRecommendations(UserApiTest, TestCase):    
+    """Test get recommendations"""
     
+    def setUp(self):
+        super(TestGetRecommendations, self).setUp()
+               
+        self.url = '/api/getRecommendations/'
+               
+        self.call = lambda url,request:self.client.get(url, request)
+        #this method also allows calls by post, so test that also!
+        self.call_post = lambda url,request:self.client.post(url, request)
+        
+        
+                
+    def _assertGetRecommendations(self, request):
+        """common method to check that recommendations are received
+            
+            does a get and a post and checks 'em
+        """
+        get_response = self.call(self.url, request)
+        self.assert_(self._assertJson(json_string=get_response.content,
+                                      status=200,
+                                      message="",
+                                      expected_data = ['terms', 'results'],                                      
+                                     ))
+        post_response = self.call_post(self.url, request)
+        
+        self.assertEqual(get_response.content, post_response.content)
         
 def suite():
     """The test suite only comprises the test cases directly related to the api.
@@ -1091,6 +1119,7 @@ def suite():
     bulk_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestBulkRegisterUsers)
     delete_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestDeleteUser)
     update_profile_suite = unittest.TestLoader.loadTestsFromTestCase(TestUpdateProfile)
+    get_recommendations_suite = unittest.TestLoader.loadTestsFromTestCase(TestGetRecommendations)
     
     return unittest.TestSuite([auth_suite,
                                api_call_suite,
