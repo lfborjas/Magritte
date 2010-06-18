@@ -271,8 +271,8 @@ class ReRankingTest(TestCase):
         results = do_search('study')
         re_ranked = re_rank(self.profile, results)
         re_ranked = [e['id'] for e in re_ranked]
-        logging.debug('Results: %s' % results)
-        logging.debug('ReRanked: %s' % re_ranked)                
+#        logging.debug('Results: %s' % results)
+#        logging.debug('ReRanked: %s' % re_ranked)                
         self.assertEqual(sorted(re_ranked[:len(docs)]), sorted(docs))
     
     def test_re_ranking_spanish(self):
@@ -285,9 +285,9 @@ class ReRankingTest(TestCase):
         
         #'sistema' yields both science and computer science as it's categories
         results = do_search('sistemas OR sistemáticamente')
-        logging.debug('Results: %s' % results)
+        #logging.debug('Results: %s' % results)
         re_ranked = re_rank(self.profile, results)
-        logging.debug('ReRanked: %s' % re_ranked)
+        #logging.debug('ReRanked: %s' % re_ranked)
         re_ranked = [e['id'] for e in re_ranked]
         
                         
@@ -1081,6 +1081,7 @@ class TestGetRecommendations(UserApiTest, TestCase):
     """Test get recommendations"""
     
     def setUp(self):
+        _reset_index()
         super(TestGetRecommendations, self).setUp()
                
         self.url = '/api/getRecommendations/'
@@ -1090,12 +1091,22 @@ class TestGetRecommendations(UserApiTest, TestCase):
         self.call_post = lambda url,request:self.client.post(url, request)
         
         
+        #self.context = "Einstein and the quantum mechanics"
+        self.context = 'einstein quantum'
+        self.expected_terms = ['einstein', 'quantum', 'mechanics', 'quantum mechanics', 'mechanic', 'Einstein']
+        self.doc = DocumentSurrogate.objects.get(title='Quantum Physics')
+                
+        #self.es_context = 'Einstein y la mecánica cuántica'
+        self.es_context = 'Einstein cuántica'
+        self.es_expected_terms = ['Einstein', 'mecánica', 'cuántica', 'mecánica cuántica']
+        self.es_doc = DocumentSurrogate.objects.get(title='Física Cuántica')
                 
     def _assertGetRecommendations(self, request):
         """common method to check that recommendations are received
             
             does a get and a post and checks 'em
         """
+        request.update({'appId': self.app.get_token(), 'appUser': self.user.clientId})
         get_response = self.call(self.url, request)
         self.assert_(self._assertJson(json_string=get_response.content,
                                       status=200,
@@ -1105,6 +1116,93 @@ class TestGetRecommendations(UserApiTest, TestCase):
         post_response = self.call_post(self.url, request)
         
         self.assertEqual(get_response.content, post_response.content)
+        
+        #now, test with callbacks
+        callback = 'jsonp8123'
+        request.update({'callback': callback})
+        callback_get_response = self.call(self.url, request)
+        self.assert_(self._assertJson(json_string=callback_get_response.content,
+                                      status=200,
+                                      message="",
+                                      expected_data = ['terms', 'results'],
+                                      callback=callback                                      
+                                     ))
+        callback_post_response = self.call_post(self.url, request)
+        
+        self.assertEqual(callback_get_response.content, callback_post_response.content)
+        
+        return json.loads(get_response.content)['data']
+        
+    def test_missing_context(self):
+        """Test that an error arises if no context is provided"""
+        response = self.call(self.url, {'appId': self.app.get_token(), 'appUser': self.user.clientId})
+                
+        self.assert_(self._assertJson(json_string=response.content,
+                          status=400, message='The following arguments are required for this call: appId, appUser, context'))
+        
+        callback = 'jsonfunction'
+        response = self.call(self.url, {'appId': self.app.get_token(), 'appUser':self.user.clientId,
+                                        'callback': callback})
+        
+        self.assert_(self._assertJson(json_string=response.content,
+                          status=400, message='The following arguments are required for this call: appId, appUser, context',
+                          callback=callback))
+    
+    def test_get_recommendations(self):
+        """Test that recommendations are provided and are as expected"""
+        data = self._assertGetRecommendations({'context': self.context})
+        
+        self.assert_(set(self.expected_terms) & set(data['terms'].split()))
+        self.assert_([e for e in data['results'] if e['url']==self.doc.origin])
+    
+    def test_get_spanish_recommendations(self):
+        """Test that recommendations are provided in spanish"""
+        data = self._assertGetRecommendations({'context': self.es_context, 'lang': 'es'})
+        
+        self.assert_(set(self.es_expected_terms) & set(data['terms'].split()))
+        self.assert_([e for e in data['results'] if e['url']==self.es_doc.origin])
+        
+    def test_get_invalid_lang_recommendations(self):
+        """Test that recommendations are provided in the default language for invalid ones"""
+        data = self._assertGetRecommendations({'context': self.context, 'lang': 'fr'})
+        
+        self.assert_(set(self.expected_terms) & set(data['terms'].split()))
+        self.assert_([e for e in data['results'] if e['url']==self.doc.origin])
+    
+    def test_personalization(self):
+        """Test that recommendations are re-ranked"""        
+        docs = list(DocumentSurrogate.objects.filter(category__title='Physics').values_list('pk', flat=True))
+        self.call('/api/updateProfile/', {'appId': self.app.get_token(),
+                                         'appUser': self.user.clientId,
+                                         'docs': docs})
+        
+        data = self._assertGetRecommendations({'context': 'study'})
+        re_ranked = [e['id'] for e in data['results']]
+        self.assertEqual(sorted(re_ranked[:len(docs)]), sorted(docs))
+    
+    def test_personalization_spanish(self):
+        """Test that recommendations in spanish are re-ranked"""
+        docs = list(DocumentSurrogate.objects.filter(category__title='Computer Science').values_list('pk', flat=True))
+        self.call('/api/updateProfile/', {'appId': self.app.get_token(),
+                                         'appUser': self.user.clientId,
+                                         'docs': docs,
+                                         'lang': 'es'})
+        
+        data = self._assertGetRecommendations({'context': 'ciencia', 'lang': 'es'})
+        
+        re_ranked = [e['id'] for e in data['results']]
+        self.assertEqual(sorted(re_ranked[:len(docs)]), sorted(docs))
+        
+    
+    def test_bad_context(self):
+        """Test that no terms or recommendations are provided if the context presents no useful/known terms"""
+        data = self._assertGetRecommendations({'context': lorem_ipsum.words(5), 'lang': 'en'})
+        self.assertFalse(data['terms'] and data['results'])
+    
+    def test_empty_context(self):
+        """Test that no terms or documents come with empty contexts"""
+        data = self._assertGetRecommendations({'context': '', 'lang': 'en'})
+        self.assertFalse(data['terms'] and data['results'])
         
 def suite():
     """The test suite only comprises the test cases directly related to the api.
@@ -1127,4 +1225,5 @@ def suite():
                                add_user_suite,
                                bulk_users_suite,
                                delete_user_suite,
-                               update_profile_suite]) 
+                               update_profile_suite,
+                               get_recommendations_suite]) 

@@ -58,6 +58,8 @@ def get_recommendations(request):
     #get the terms
     context = request.REQUEST['context']
     lang = request.REQUEST.get('lang', 'en')
+    #default to a supported language:
+    lang = lang if lang in [e[0] for e in settings.LANGUAGES] else 'en'
     service = request.REQUEST.get('service', '')    
     service = service if service in WEB_SERVICES.keys() or (not service and lang == 'en') else 'tagthe'
     use_service = bool(service)    
