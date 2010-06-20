@@ -12,6 +12,8 @@ all: test
 test:
 	fl-run-test test_api.py -v $(FLOPS)
 
+test_recommendations:
+	fl-run-test test_api.py -e '![A-Za-z_]+user_api' -v $(FLOPS)
 # benching
 bench: bench_fast_multicpu
 
@@ -27,7 +29,8 @@ bench_fast:
 # fast on all available cpu
 bench_fast_multicpu:
 	@$(MONCTL) restart
-	-fl-run-bench -c 1:2:3:4:5:6:8:10:16 --simple-fetch test_api.py ApiTest $(FLOPS)
+	-fl-run-bench -c 1:2:3:4:5:6:8:10:16 --simple-fetch --label=all-cpu test_api.py ApiTest.test_get_recommendations $(FLOPS)
+	#-fl-run-bench -c 1:2 -e '![A-Za-z_]+user_api' --simple-fetch test_api.py ApiTest.test_get_recommendations $(FLOPS)
 	@$(MONCTL) stop
 	-fl-build-report api-bench.xml --html
 

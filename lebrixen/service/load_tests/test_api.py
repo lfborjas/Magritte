@@ -8,7 +8,7 @@ from random import random
 from funkload.FunkLoadTestCase import FunkLoadTestCase
 import json
 import re
-import time
+from uuid import uuid4
 
 class ApiTest(FunkLoadTestCase):
     """This test uses the configuration file ApiTest.conf."""
@@ -21,10 +21,10 @@ class ApiTest(FunkLoadTestCase):
         self.password = self.conf_get('main', 'password')
         self.user = self.conf_get('main', 'user')        
         self.build_url = lambda url: '%s/%s/'%(self.server_url, url)
-        self.limit = self.conf_get('main', 'users_limit')
+        self.limit = self.conf_getInt('main', 'users_limit')
            
     def _generate_user(self):
-        return "%testUser_%s" % (self.user_prefix, time.time())   
+        return "testUser_%s" % (uuid4())   
         
     def _assertJson(self, json_string='', callback=None, status=200, message='', data=None, expected_data=[]):
         """Assertions for json data"""
@@ -50,9 +50,11 @@ class ApiTest(FunkLoadTestCase):
         """Get data from a json string, if no key is passed, the whole object is returned"""
         data = json.loads(json_string)
         if key:
-            return data['data']['key'] 
+            return data['data'][key] 
+        else:
+            return data['data']
 
-    def test_register(self):                
+    def test_register__user_api(self):                
         self.setBasicAuth(self.app, self.password)
         #add the user:
         user = self._generate_user()
@@ -67,26 +69,26 @@ class ApiTest(FunkLoadTestCase):
         #check if it was added:
         list_response = self.get(self.build_url('getUsers'), params={'appId': self.token},
                                  description="Get the users for %s" %self.app)
-        self._assertJson(json_string=response.body,
+        
+        self._assertJson(json_string=list_response.body,
                                       status=200,
                                       message="",
                                       expected_data = ['users']
-                                     )
-        
+                                     )        
         raw_users = self._get_json_data(list_response.body, 'users')
         users = [e['id'] for e in raw_users]
         self.assert_(user in users)
         self.clearBasicAuth()
     
-    def test_bulk(self):                
+    def test_bulk__user_api(self):                
         self.setBasicAuth(self.app, self.password)
         before = self.get(self.build_url('getUsers'), params={'appId': self.token},
                                  description="Get the users for %s" %self.app)
         limit = self.limit - len(self._get_json_data(before.body, 'users'))
         
-        if limit: #add the user:
+        if limit: 
             users = [self._generate_user() for i in range(1,limit)]
-            response = self.post(self.build_url('bulkRegisterUsers'), params={'appId':self.token, 'user': [users]},
+            response = self.post(self.build_url('bulkRegisterUsers'), params={'appId':self.token, 'user': users},
                                  description="Register a user whose name is the current timestamp")
             
             self._assertJson(json_string=response.body,
@@ -94,10 +96,10 @@ class ApiTest(FunkLoadTestCase):
                                           message="",
                                           data = {'added': True}
                                          )
-            #check if it was added:
+            #check if they were added:
             list_response = self.get(self.build_url('getUsers'), params={'appId': self.token},
                                      description="Get the users for %s" %self.app)
-            self._assertJson(json_string=response.body,
+            self._assertJson(json_string=list_response.body,
                                           status=200,
                                           message="",
                                           expected_data = ['users']
@@ -105,7 +107,7 @@ class ApiTest(FunkLoadTestCase):
             
             raw_users = self._get_json_data(list_response.body, 'users')
             user_list = [e['id'] for e in raw_users]
-            self.assert_(set(users)  & set(user_list))
+            self.assert_(set(users)  <= set(user_list))
         else: #try to push the limit:
             response = self.post(self.build_url('bulkRegisterUsers'), params={'appId':self.token, 'user': [self._generate_user(),]},
                                  description="Register a user whose name is the current timestamp")
@@ -118,14 +120,14 @@ class ApiTest(FunkLoadTestCase):
             
         self.clearBasicAuth()
         
-    def test_delete(self):                
+    def test_delete__user_api(self):                
         self.setBasicAuth(self.app, self.password)
         
         #get a user:        
         before = self.get(self.build_url('getUsers'), params={'appId': self.token},
                                  description="Get the users for %s" %self.app)
         
-        user =self._get_json_data(before.body, 'users')[0]['id']
+        user =[e['id'] for e in self._get_json_data(before.body, 'users') if e['id']!=self.user][0]        
         if not user:
             self.fail('No more users to delete')
         
@@ -140,7 +142,7 @@ class ApiTest(FunkLoadTestCase):
         #check if it was deleted:
         list_response = self.get(self.build_url('getUsers'), params={'appId': self.token},
                                  description="Get the users for %s" %self.app)
-        self._assertJson(json_string=response.body,
+        self._assertJson(json_string=list_response.body,
                                       status=200,
                                       message="",
                                       expected_data = ['users']
@@ -152,10 +154,40 @@ class ApiTest(FunkLoadTestCase):
         self.clearBasicAuth()
     
     def test_get_recommendations(self):
-        pass
+        ctx = """Scientists maintain that scientific investigation must adhere to the scientific method,
+         a rigorous process for properly developing and evaluating natural explanations for observable phenomena
+         based on reliable empirical evidence and neutral, unbiased independent verification, and not on arguments
+         from authority or popular preferences. Science therefore bypasses supernatural explanations; 
+         it instead only considers natural explanations that may be falsifiable.
+         Fields of science are distinguished as pure science or applied science. 
+         Pure science is principally involved with the discovery of new truths with little or no regard to their practical applications.
+         Applied science is principally involved with the application of existing knowledge in new ways,
+         including advances in technology.
+         Mathematics is the language in which scientific information is best presented,
+         often it is the only way to formulate and present scientific knowledge. 
+         Therefore whether mathematics is a science in itself or the framework of science is a matter of perspective."""
+         
+        response = self.get(self.build_url('getRecommendations'), params={'appId': self.token, 'appUser': self.user,                                                                          
+                                                                          'context': ctx})
+        self.logd(response.body)
+        self._assertJson(json_string=response.body,
+                                      status=200,
+                                      message="",
+                                      expected_data = ['terms', 'results']
+                                     )
+
+        
     
     def test_update_profile(self):
-        pass
+        response = self.get(self.build_url('updateProfile'), params={'appId': self.token, 'appUser': self.user,                                                                          
+                                                                          'context': 'science physics', 't': True})
+        self.logd(response.body)
+        self._assertJson(json_string=response.body,
+                                      status=200,
+                                      message="",
+                                      data = {'queued': True}
+                                     )
+        
 
 
 if __name__ in ('main', '__main__'):
