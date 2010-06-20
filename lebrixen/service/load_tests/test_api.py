@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 """Simple FunkLoad test
 
 $Id: test_Simple.py 54228 2010-04-14 22:11:52Z bdelbosc $
@@ -10,7 +10,7 @@ import json
 import re
 from uuid import uuid4
 
-class ApiTest(FunkLoadTestCase):
+class ApiTest(object):
     """This test uses the configuration file ApiTest.conf."""
     
     def setUp(self):
@@ -54,7 +54,14 @@ class ApiTest(FunkLoadTestCase):
         else:
             return data['data']
 
-    def test_register__user_api(self):                
+
+    
+        
+
+class UserApiTest(ApiTest, FunkLoadTestCase):
+    """User related tests"""
+    
+    def test_register(self):                
         self.setBasicAuth(self.app, self.password)
         #add the user:
         user = self._generate_user()
@@ -80,7 +87,7 @@ class ApiTest(FunkLoadTestCase):
         self.assert_(user in users)
         self.clearBasicAuth()
     
-    def test_bulk__user_api(self):                
+    def test_bulk(self):                
         self.setBasicAuth(self.app, self.password)
         before = self.get(self.build_url('getUsers'), params={'appId': self.token},
                                  description="Get the users for %s" %self.app)
@@ -120,7 +127,7 @@ class ApiTest(FunkLoadTestCase):
             
         self.clearBasicAuth()
         
-    def test_delete__user_api(self):                
+    def test_delete(self):                
         self.setBasicAuth(self.app, self.password)
         
         #get a user:        
@@ -152,7 +159,10 @@ class ApiTest(FunkLoadTestCase):
         users = [e['id'] for e in raw_users]
         self.assert_(user not in users)
         self.clearBasicAuth()
-    
+
+
+class RecommendationsApiTest(ApiTest, FunkLoadTestCase):
+    """Recommendations related tests"""
     def test_get_recommendations(self):
         ctx = """Scientists maintain that scientific investigation must adhere to the scientific method,
          a rigorous process for properly developing and evaluating natural explanations for observable phenomena
@@ -175,6 +185,25 @@ class ApiTest(FunkLoadTestCase):
                                       message="",
                                       expected_data = ['terms', 'results']
                                      )
+        
+    def test_get_recommendations_spanish(self):
+        ctx = u"""La ciencia (del latín scientia, "conocimiento") es un conjunto de métodos
+         y técnicas para la adquisición y organización de conocimientos sobre la estructura de un conjunto de hechos objetivos
+         y accesibles a varios observadores. La aplicación de esos métodos y conocimientos conduce a la generación de más conocimiento
+         objetivo en forma de predicciones concretas, cuantitativas y comprobables referidas a hechos observables pasados, presentes y 
+         futuros.
+         Con frecuencia esas predicciones pueden ser formuladas mediante razonamientos y son estructurables en forma de reglas o
+         leyes universales, que dan cuenta del comportamiento de un sistema y predicen cómo actuará dicho sistema en determinadas
+         circunstancias.""".encode('utf-8')
+         
+        response = self.get(self.build_url('getRecommendations'), params={'appId': self.token, 'appUser': self.user,                                                                          
+                                                                          'context': ctx, 'lang':'es'})
+        self.logd(response.body)
+        self._assertJson(json_string=response.body,
+                                      status=200,
+                                      message="",
+                                      expected_data = ['terms', 'results']
+                                     )
 
         
     
@@ -187,7 +216,10 @@ class ApiTest(FunkLoadTestCase):
                                       message="",
                                       data = {'queued': True}
                                      )
-        
+    def _bench_test(self):
+        self.test_get_recommendations()
+        self.test_get_recommendations_spanish()
+        self.test_update_profile()
 
 
 if __name__ in ('main', '__main__'):
