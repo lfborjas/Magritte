@@ -14,6 +14,7 @@
 		</script>
 		<script type="text/javascript" src="/static/js/diff_match_patch.js" ></script>
 		<script type="text/javascript" src="/static/js/service/recommender.js" ></script>
+		<script type="text/javascript" src="/static/js/prototype/lastMinute.js" ></script>
 	{%endif%}
 		
 	<script>
@@ -111,7 +112,7 @@
 		</div>				
 	</div>
 	<div id="footer">
-			<a href="demo/">{%trans "So, how does this work?"%}</a>
+			<a href="demo/" id="demo-link">{%trans "So, how does this work?"%}</a>
 	</div>
 	{#{%include "recommender_bar.html"%}#}
 {%endblock%}
