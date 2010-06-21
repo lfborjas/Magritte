@@ -5,12 +5,30 @@
   <!-- <script src="http://code.jquery.com/jquery-latest.js"></script>  -->
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery.min.js"></script>
+  <script type="text/javascript" src="../diff_match_patch.js"></script>
+  <script type="text/javascript" src="../service/recommender.js"></script>
   <link rel="stylesheet" href="http://github.com/jquery/qunit/raw/master/qunit/qunit.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="../../css/service/recommender.css" type="text/css" media="screen" />
   <script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
 
   <script>
 	$(document).ready(function(){
-	    
+	/*Configure the recommender*/
+	var _service_root="http://localhost:8000/";
+	RECOMMENDER._options.data.content='#content';
+	$(RECOMMENDER._options.data.content).bind('keyup',RECOMMENDER.detectContextChange);
+	$(RECOMMENDER._options.data.content).bind('paste', function(e){
+		setTimeout("RECOMMENDER.detectContextChange()", 20);
+	});
+	//change doQuery with a dummy function:
+	RECOMMENDER.doQuery = $.noop ;
+	
+	/*End of recommender configuration*/ 
+
+	/**Tests for the contextChange function. Success or error are determined by changes to the RECOMMENDER
+	*  variables _lastLength and _lastContext: if they're equal to the new value, then the query was done, 
+	*  if not, then something went wrong.
+	*/
 	test("a basic test example", function() {
 	  ok( true, "this test is fine" );
 	  var value = "hello";
@@ -44,5 +62,8 @@
  <h2 id="qunit-banner"></h2>
  <h2 id="qunit-userAgent"></h2>
  <ol id="qunit-tests"></ol>
+ <div id="test-interface">
+	<textarea id="content"></textarea>	
+ </div>
 </body>
 </html>
