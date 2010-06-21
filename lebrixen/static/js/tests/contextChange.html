@@ -54,9 +54,8 @@
 	}
 	
 	/**Get a random number within a range*/
-	function getRand(low, high){
-		 var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
-	         return Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+	function getRand(ceil){
+	         return Math.floor(Math.random()*ceil);
 	}
 
 	/**Test that the context detection is not triggered by 'empty' conditions*/	
@@ -254,11 +253,44 @@
 		teardown: commonTearDown 
 	});
 	
-	test("Test that changing a few words doesn't change the context", function(){});
+	test("Test that changing a few words doesn't change the context", function(){
+		var cnt = makeipsum({type: 'paragraph', amount:1});
+		var cntArr = cnt.split(' ');		
+		for(i=0;i<parseInt(cntArr.length*0.33); i++){
+			cntArr[getRand(cntArr.length)] = makeipsum({type: 'words', amount:1});
+		}
+		var cnt2 = cntArr.join(' ');
+		$('#content').val(cnt);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		$('#content').val(cnt2);
+		ok(!_contextChanged(pe), 'Changing 33% of the text should not change the context');		
+	});
 	
-	test("Test that changing half the words changes the context", function(){});
+	test("Test that changing half the words changes the context", function(){
+		var cnt = makeipsum({type: 'paragraph', amount:1});
+		var cntArr = cnt.split(' ');		
+		for(i=0;i<parseInt(cntArr.length*0.50); i++){
+			cntArr[getRand(cntArr.length)] = makeipsum({type: 'words', amount:1});
+		}
+		var cnt2 = cntArr.join(' ');
+		$('#content').val(cnt);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		$('#content').val(cnt2);
+		ok(_contextChanged(pe), 'Changing 50% of the text should change the context');		
+	});
 	
-	test("Test that changing more than half the words changes the context", function(){});
+	test("Test that changing more than half the words changes the context", function(){
+		var cnt = makeipsum({type: 'paragraph', amount:1});
+		var cntArr = cnt.split(' ');		
+		for(i=0;i<parseInt(cntArr.length*0.70); i++){
+			cntArr[getRand(cntArr.length)] = makeipsum({type: 'words', amount:1});
+		}
+		var cnt2 = cntArr.join(' ');
+		$('#content').val(cnt);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		$('#content').val(cnt2);
+		ok(_contextChanged(pe), 'Changing 70% of the text should change the context');		
+	});
 	
    });//end of document ready
   </script>
