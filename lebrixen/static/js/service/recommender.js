@@ -203,8 +203,8 @@ if(!window.RECOMMENDER){
 				   var d = _pm.diff_main(_lastContext, cnt); //the diff timeout is 1 second...				  			   
 				   _pm.diff_cleanupEfficiency(d);
 				   var l = _pm.diff_levenshtein(d);
-				   //if the differences consist of more than 40% of the new text, do query:
-				   if(l > 0 && (l/cntLen)*100 >= 40.0){
+				   //if the differences consist of more than a third of the new text, do query:
+				   if(l > 0 && (l/cntLen) >= 0.33){
 					   _lastLength = cntLen; 
 					   _lastContext = cnt;
 					   RECOMMENDER.doQuery();

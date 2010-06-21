@@ -256,27 +256,27 @@
 	test("Test that changing a few words doesn't change the context", function(){
 		var cnt = makeipsum({type: 'paragraph', amount:1});
 		var cntArr = cnt.split(' ');		
-		for(i=0;i<parseInt(cntArr.length*0.33); i++){
+		for(i=0;i<parseInt(cntArr.length*0.20); i++){
 			cntArr[getRand(cntArr.length)] = makeipsum({type: 'words', amount:1});
 		}
 		var cnt2 = cntArr.join(' ');
 		$('#content').val(cnt);
 		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
 		$('#content').val(cnt2);
-		ok(!_contextChanged(pe), 'Changing 33% of the text should not change the context');		
+		ok(!_contextChanged(pe), 'Changing 20% of the text should not change the context');		
 	});
 	
-	test("Test that changing half the words changes the context", function(){
+	test("Test that changing more than a third changes the context", function(){
 		var cnt = makeipsum({type: 'paragraph', amount:1});
 		var cntArr = cnt.split(' ');		
-		for(i=0;i<parseInt(cntArr.length*0.50); i++){
+		for(i=0;i<parseInt(cntArr.length*0.40); i++){
 			cntArr[getRand(cntArr.length)] = makeipsum({type: 'words', amount:1});
 		}
 		var cnt2 = cntArr.join(' ');
 		$('#content').val(cnt);
 		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
 		$('#content').val(cnt2);
-		ok(_contextChanged(pe), 'Changing 50% of the text should change the context');		
+		ok(_contextChanged(pe), 'Changing 40% of the text should change the context');		
 	});
 	
 	test("Test that changing more than half the words changes the context", function(){
