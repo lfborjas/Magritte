@@ -7,14 +7,15 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery.min.js"></script>
   <script type="text/javascript" src="../diff_match_patch.js"></script>
   <script type="text/javascript" src="../service/recommender.js"></script>
+  <script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
+  <script type="text/javascript" src="jquery.lorem.js"></script>
   <link rel="stylesheet" href="http://github.com/jquery/qunit/raw/master/qunit/qunit.css" type="text/css" media="screen" />
   <link rel="stylesheet" href="../../css/service/recommender.css" type="text/css" media="screen" />
-  <script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
-
   <script>
 	$(document).ready(function(){
 	/*Configure the recommender*/
 	var _service_root="http://localhost:8000/";
+	RECOMMENDER._options.data = {} ;
 	RECOMMENDER._options.data.content='#content';
 	$(RECOMMENDER._options.data.content).bind('keyup',RECOMMENDER.detectContextChange);
 	$(RECOMMENDER._options.data.content).bind('paste', function(e){
@@ -22,47 +23,254 @@
 	});
 	//change doQuery with a dummy function:
 	RECOMMENDER.doQuery = $.noop ;
-	
+	//a shorter alias for the function:
+	testee = RECOMMENDER.detectContextChange;
 	/*End of recommender configuration*/ 
 
 	/**Tests for the contextChange function. Success or error are determined by changes to the RECOMMENDER
 	*  variables _lastLength and _lastContext: if they're equal to the new value, then the query was done, 
 	*  if not, then something went wrong.
 	*/
-	test("a basic test example", function() {
-	  ok( true, "this test is fine" );
-	  var value = "hello";
-	  equals( "hello", value, "We expect value to be hello" );
+
+	//create a keyup and paste events:
+	var ke = $.Event('keyup');
+	ke.which = 32;
+	var pe = $.Event('paste');
+	
+	/**Return true if the last context or lastLength changes after a call to the testee function*/
+	function _contextChanged(evt){
+		console.log("content: %s",$('#content').val());
+		before = _lastContext;
+		testee(evt);
+		after = _lastContext;
+		console.log("before: %s\nafter: %s", before, after);  
+		return before != after;
+	}
+
+	function commonTearDown(){
+		_lastContext = "";
+		_lastLength=0;
+		$('#content').val("");
+	}
+	
+	/**Get a random number within a range*/
+	function getRand(low, high){
+		 var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+	         return Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+	}
+
+	/**Test that the context detection is not triggered by 'empty' conditions*/	
+	/*Set a teardown to leave the context the same for each subsequent test*/
+	module("Safeguards", {
+		teardown: commonTearDown 
+	});
+	
+	test("Test that with keyup only the spacebar is accepted", function() {
+		var e = $.Event('keyup');
+		e.which = 39;	  
+		ok(!_contextChanged(e), 'Should only accept 32 (the spacebar code)')
+	});
+	
+	test("Test that it exits if the raw content is too small", function(){
+		//put some lorem ipsum in the content area:
+		var li = makeipsum({type: 'words', amount:_triggerWords-1});
+		//ensure that it's less than the treshold:
+		while(li >= _triggerWords*_avgWordLen ){
+			li = makeipsum({type: 'words', amount:_triggerWords-1});
+		}			
+		$('#content').val(li);
+		
+		//the context shouldn't change
+		ok(!_contextChanged(ke), 'The context should not have changed with a keyup');  
+		ok(!_contextChanged(pe), 'The context should not have changed with a paste');
 	});
 
-	module("Module A");
-
-	test("first test within module", function() {
-	  ok( true, "all pass" );
+	test("Test that it exits after URL and blank space cleanup", function(){
+		//put some lorem ipsum in the content area:
+		var li = makeipsum({type: 'words', amount:_triggerWords-1});
+		//ensure that it's less than the treshold:
+		while(li >= _triggerWords*_avgWordLen ){
+			li = makeipsum({type: 'words', amount:_triggerWords-1});
+		}			
+		//pad it with a url:
+		$('#content').val('    '+li+'                http://www.trecs.com/#usage    ');
+		
+		//the context shouldn't change
+		ok(!_contextChanged(ke), 'The context should not have changed with a keyup');  
+		ok(!_contextChanged(pe), 'The context should not have changed with a paste');
+	});
+	
+	test("Test that words with length less than trigger but more chars than avg change the context", function(){
+		var ln = parseInt(_avgWordLen*4);
+		var longWordArray = new Array(ln);
+		for(i=0; i<ln; i++){
+			longWordArray[i]='a';
+		}
+		var txt = longWordArray.join('');
+		$('#content').val(txt);
+		
+		ok(_contextChanged(ke), 'Keyup changed the context');
+		_lastContext = "";
+		_lastLength=0;
+		ok(_contextChanged(pe), 'Paste changed the context');
 	});
 
-	test("second test within module", function() {
-	  ok( true, "all pass" );
+	test("Test that new, but empty, content won't change the context", function(){
+		var cnt1 = makeipsum({type: 'words', amount: _triggerWords+1});
+		//the first content should change the context:
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Random treshold words changed the context');
+		$('#content').val("     ");
+		ok(!_contextChanged(ke), 'Empty content did not change the context');
+	});
+	
+	/**NON-DETERMINISTIC tests: they depend on the character length*/
+	module("Treshold changes", {
+		teardown: commonTearDown 
+	});
+	test("Test that different contents with the same word length change the context", function(){
+		var cnt1 = makeipsum({type: 'words', amount: _triggerWords*2});
+		var cnt2 = makeipsum({type: 'words', amount: _triggerWords*2});
+		while(cnt1==cnt2){
+			cnt1 = makeipsum({type: 'words', amount: _triggerWords*2});
+			cnt2 = makeipsum({type: 'words', amount: _triggerWords*2});
+		}
+		//the first content should change the context:
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Random treshold words changed the context');
+		//the second content, being different, should change it too!
+		$('#content').val(cnt2);
+		ok(_contextChanged(ke), 'New, but same amount, of random treshold words, changed the context');
 	});
 
-	module("Module B");
+	test("Test that adding new content in threshold length changes the context", function(){
+		var cnt1 = makeipsum({type: 'words', amount: _triggerWords});
+		var cnt2 = makeipsum({type: 'words', amount: _triggerWords});
+		while(cnt1==cnt2){
+			cnt1 = makeipsum({type: 'words', amount: _triggerWords});
+			cnt2 = makeipsum({type: 'words', amount: _triggerWords});
+		}
+		//the first content should change the context:
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Random treshold words changed the context');
+		//the second content, being different, should change it too!
+		$('#content').val(cnt1+" "+cnt2);
+		ok(_contextChanged(ke), 'If the new words seem empty, fails (if their length is < avgWordLen*treshold)');
+	});
+	
+	test("Test that removing content in treshold length changes the context", function(){
+		var cnt1 = makeipsum({type: 'words', amount: _triggerWords*2});
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Random treshold words changed the context');
+		var cnt2 = cnt1.split(' ').slice(0,_triggerWords).join(' ');
+		$('#content').val(cnt2);
+		ok(_contextChanged(ke), 'Removing treshold words changed the context');
+		
+	});
+	//module("change by paste");
 
-	test("some other test", function() {
-	  expect(2);
-	  equals( true, false, "failing test" );
-	  equals( true, true, "passing test" );
+	/**Test that normal (non-treshold or safeguarded) behavior is as expected */
+	module("Paragraph additions/deletions", {
+		teardown: commonTearDown 
+	});
+	
+	test("Test that adding new content at the end changes the context", function(){
+		var cnt1 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+		var cnt2 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+		while(cnt1==cnt2){
+			var cnt1 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+			var cnt2 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+		}
+		//the first content should change the context:
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		//the second content, being different, should change it too!
+		$('#content').val(cnt1+cnt2);
+		ok(_contextChanged(pe), 'Adding a second paragraph should change the context');
+	});
+	
+	test("Test that removing content from the end changes the context", function(){
+		var cnt1 = makeipsum({type: 'paragraph', amount:2});
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		var cnt2 = cnt1.split('</p>')[0];
+		$('#content').val(cnt2);
+		ok(_contextChanged(ke), 'Removing a paragraph should change the context');		
 	});
 
-	  });
+	
+	test("Test that adding new content at the beginning changes the context", function(){
+		var cnt1 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+		var cnt2 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+		while(cnt1==cnt2){
+			var cnt1 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+			var cnt2 = makeipsum({type: 'paragraph', amount:1, ptags: false});
+		}
+		//the first content should change the context:
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		//the second content, being different, should change it too!
+		$('#content').val(cnt2+cnt1);
+		ok(_contextChanged(pe), 'Adding a second paragraph should change the context');
+	});
+	
+	test("Test that removing content from the beginning changes the context", function(){
+		var cnt1 = makeipsum({type: 'paragraph', amount:2});
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		var cnt2 = cnt1.split('</p>')[1];
+		$('#content').val(cnt2);
+		ok(_contextChanged(ke), 'Removing a paragraph should change the context');		
+	});
+
+	
+	test("Test that adding new content at the middle changes the context", function(){
+		var cnt1 = makeipsum({type: 'paragraph', amount:2});
+		var cnt2 = makeipsum({type: 'paragraph', amount:1});
+		while(cnt1==cnt2){
+			var cnt1 = makeipsum({type: 'paragraph', amount:2});
+			var cnt2 = makeipsum({type: 'paragraph', amount:1});
+		}
+		//the first content should change the context:
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		//the second content, being different, should change it too!
+		var cnt1Arr = cnt1.split('</p>');
+		$('#content').val([cnt1Arr[0],cnt2,cnt1Arr[1]].join(''));
+		ok(_contextChanged(pe), 'Adding a second paragraph in the middle should change the context');
+	});
+	
+	test("Test that removing content from the middle changes the context", function(){
+		var cnt1 = makeipsum({type: 'paragraph', amount:3});
+		$('#content').val(cnt1);
+		ok(_contextChanged(ke), 'Adding a paragraph changed the context');
+		var cnt1Arr = cnt1.split('</p>');		
+		$('#content').val([cnt1Arr[0], cnt1Arr[2]].join(''));
+		ok(_contextChanged(ke), 'Removing a paragraph should change the context');		
+	});
+	
+	/**Test that changing some of the words at random works as expected*/
+	module("Word additions/deletions", {
+		teardown: commonTearDown 
+	});
+	
+	test("Test that changing a few words doesn't change the context", function(){});
+	
+	test("Test that changing half the words changes the context", function(){});
+	
+	test("Test that changing more than half the words changes the context", function(){});
+	
+   });//end of document ready
   </script>
   
 </head>
 <body>
-  <h1 id="qunit-header">QUnit example</h1>
+  <h1 id="qunit-header">T-Recs widget context change detection test suite</h1>
  <h2 id="qunit-banner"></h2>
  <h2 id="qunit-userAgent"></h2>
  <ol id="qunit-tests"></ol>
- <div id="test-interface">
+ <!--COOL HACK: hide the main area as to not interfere with the test results!-->
+ <div id="main" style="position: absolute; top: -10000px; left: -10000px;">
 	<textarea id="content"></textarea>	
  </div>
 </body>
