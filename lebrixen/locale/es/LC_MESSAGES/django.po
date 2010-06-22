@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-26 15:12-0600\n"
+"POT-Creation-Date: 2010-06-22 00:08-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,13 +16,167 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: app_dashboard/views.py:35
+#, python-format
+msgid "Duplicate user: %s\n"
+msgstr "Usuario duplicado: %s\n"
+
+#: app_dashboard/views.py:38
+msgid "User limit exceeded"
+msgstr "Límite de usuarios excedido"
+
+#: app_dashboard/views.py:41
+msgid "Error saving users"
+msgstr "Error registrando usuarios"
+
+#: app_dashboard/views.py:68
+msgid "Error deleting user"
+msgstr "Error borrando usuario"
+
+#: app_dashboard/templates/dashboard_base.html:14
+msgid "Your Dashboard"
+msgstr "Panel de Control"
+
+#: app_dashboard/templates/dashboard_base.html:30
+msgid "T-Recs Dashboard"
+msgstr "Panel de control de T-Recs"
+
+#: app_dashboard/templates/dashboard_base.html:40
+msgid "Logout"
+msgstr "Cerrar Sesión"
+
+#: app_dashboard/templates/dashboard_base.html:41
+msgid "T-Recs. An onTology-based RECommender Service"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:41
+msgid "Add another"
+msgstr "Agregar otro"
+
+#: app_dashboard/templates/dashboard_index.html:42
+msgid "Remove"
+msgstr "Quitar"
+
+#: app_dashboard/templates/dashboard_index.html:60
+#: app_dashboard/templates/dashboard_users.html:16
+msgid "Delete"
+msgstr "Borrar"
+
+#: app_dashboard/templates/dashboard_index.html:77
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: app_dashboard/templates/dashboard_index.html:90
+msgid "Delete user?"
+msgstr "¿Borrar usuario?"
+
+#: app_dashboard/templates/dashboard_index.html:93
+msgid ""
+"This user will be permanently deleted and cannot be recovered. Are you sure?"
+msgstr "Este usuario será permanentemente eliminado y no puede ser recuperado. ¿Está seguro?"
+
+#: app_dashboard/templates/dashboard_index.html:98
+#, python-format
+msgid ""
+"You have %(user_count)s users registered. The current limit is %(user_limit)"
+"s: you can add %(user_delta)s more\n"
+"\t   "
+msgstr "Actualmente tiene %(user_count)s usuarios registrados. El límite es %(user_limit)s: puede agregar %(user_delta)s más"
+
+#: app_dashboard/templates/dashboard_index.html:104
+msgid "Register Users"
+msgstr "Registrar Usuarios"
+
+#: app_dashboard/templates/dashboard_index.html:105
+msgid "All Users"
+msgstr "Usuarios"
+
+#: app_dashboard/templates/dashboard_index.html:109
+msgid "User limit exceeded. You cannot register more users"
+msgstr "Límite de usuarios excedido. No puede agregar más"
+
+#: app_dashboard/templates/dashboard_index.html:111
+msgid ""
+"Fill this list with the unique identifiers your application will be passing "
+"to the recommendation service. With these,\n"
+"\t\twe'll know which user is performing a task and give her/him personalized "
+"recommendations\n"
+"\t\t"
+msgstr "Llene esta lista con los identificadores únicos con los cuales distinguirá los usuarios de su aplicación"
+
+#: app_dashboard/templates/dashboard_index.html:129
+msgid "Register"
+msgstr "Registrar"
+
+#: app_dashboard/templates/dashboard_login.html:4
+msgid ""
+"Once you get an app key, you can use this dashboard to manage the users in "
+"your app which use our service."
+msgstr "Una vez que tenga una clave de aplicación, puede usar este panel de control para administrar a sus usuarios"
+
+#: app_dashboard/templates/dashboard_login.html:5
+msgid "If you don't have an app key yet, and are interested in our service"
+msgstr "Si aún no tiene una clave de aplicación y está interesado en el servicio"
+
+#: app_dashboard/templates/dashboard_login.html:5
+msgid "get one"
+msgstr "obtenga una"
+
+#: app_dashboard/templates/dashboard_login.html:6
+msgid "it's easy!"
+msgstr "¡es fácil!"
+
+#: app_dashboard/templates/dashboard_login.html:9
+msgid "Your application name or password didn't match. Please try again."
+msgstr "Su nombre de aplicación o contraseña son incorrectos. Revíselos e intente otra vez"
+
+#: app_dashboard/templates/dashboard_login.html:24
+msgid "login"
+msgstr "acceder"
+
+#: app_dashboard/templates/dashboard_login.html:27
+msgid "Forgot your password?"
+msgstr "¿Olvidó su contraseña?"
+
+#: app_dashboard/templates/dashboard_pwd_reset.html:4
+msgid ""
+"A new password will be sent to your email.\n"
+"If all goes well, you will be redirected to the main page, check your e-mail "
+"in the next 24 hours, \n"
+"if you don't get it, make sure it was not sent to your spam folder and ask "
+"for reset again."
+msgstr "Una nueva contraseña será enviada a su correo electrónico"
+
+#: app_dashboard/templates/dashboard_pwd_reset.html:7
+msgid ""
+"Note that you must provide the email with which you registered your "
+"application."
+msgstr "Debe proveer el correo con el que se registró en el servicio"
+
+#: app_dashboard/templates/dashboard_pwd_reset.html:29
+#: app_dashboard/templates/dashboard_pwd_reset_confirm.html:15
+msgid "reset"
+msgstr "restablecer"
+
+#: app_dashboard/templates/dashboard_pwd_reset_confirm.html:4
+msgid ""
+"Reset your password here. If all goes well, you'll be redirected to the main "
+"page, there\n"
+"you can try and login with your new password."
+msgstr "Restablezca su contraseña aquí. Será redirigido a la página de inicio."
+
+#: app_dashboard/templates/dashboard_users.html:4 prototype/forms.py:29
+#: prototype/forms.py:42
+msgid "User"
+msgstr "Usuario"
+
+#: app_dashboard/templates/dashboard_users.html:5
+msgid "Date Added"
+msgstr "Fecha de agregación"
+
 #: prototype/forms.py:23
 msgid "Content"
 msgstr "Contenido"
-
-#: prototype/forms.py:29 prototype/forms.py:42
-msgid "User"
-msgstr "Usuario"
 
 #: prototype/forms.py:30
 msgid "Feedback"
@@ -55,10 +209,12 @@ msgstr "Demostración del funcionamiento interno"
 #: prototype/templates/demo_base.html:16
 msgid ""
 "To demonstrate how the profiles evolve and the recommendations are built"
-msgstr "Para mostrar cómo evolucionan los perfiles y cómo son hechas las recomendaciones"
+msgstr ""
+"Para mostrar cómo evolucionan los perfiles y cómo son hechas las "
+"recomendaciones"
 
 #: prototype/templates/demo_base.html:22
-#: prototype/templates/prototype_base.html:99
+#: prototype/templates/prototype_base.html:100
 msgid "Set"
 msgstr "Establecer"
 
@@ -78,31 +234,35 @@ msgstr "Página de demostración, no es parte del producto final"
 msgid "Example Client"
 msgstr "Aplicación cliente de ejemplo"
 
-#: prototype/templates/prototype_base.html:92
+#: prototype/templates/prototype_base.html:93
 msgid "Client application example"
 msgstr "Aplicación cliente de ejemplo"
 
-#: prototype/templates/prototype_base.html:93
+#: prototype/templates/prototype_base.html:94
 msgid "To show how the web service or the widget could be used"
 msgstr "Para mostrar cómo podrían ser usuados el widget o el servicio web"
 
-#: prototype/templates/prototype_base.html:105
+#: prototype/templates/prototype_base.html:106
 msgid "Save and Reset"
 msgstr "Guardar y Reiniciar"
 
-#: prototype/templates/prototype_base.html:109
+#: prototype/templates/prototype_base.html:110
 msgid "References"
 msgstr "Referencias"
 
-#: prototype/templates/prototype_base.html:109
-#: service/templates/recommender_bar.html:10
-#: service/templates/recommender_bar.html:14
+#: prototype/templates/prototype_base.html:110
+#: service/templates/recommender_bar.html:11
+#: service/templates/recommender_bar.html:15
 msgid "Recommendations"
 msgstr "Recomendaciones"
 
-#: prototype/templates/prototype_base.html:114
+#: prototype/templates/prototype_base.html:115
 msgid "So, how does this work?"
 msgstr "y ¿cómo funciona esto?"
+
+#: service/templates/recommender_bar.html:3
+msgid "Hide the recommendations panel"
+msgstr "Ocultar el panel de recomendaciones"
 
 #: service/templates/recommender_bar.html:3
 msgid "Hide"
@@ -112,6 +272,14 @@ msgstr "Ocultar"
 msgid "Average relevance"
 msgstr "Relevancia Promedio"
 
+#: service/templates/recommender_bar.html:5
+msgid "Average relevance of the present recommendations"
+msgstr "Relevancia promedio de las recomendaciones actuales"
+
 #: service/templates/recommender_bar.html:7
 msgid "Keywords"
 msgstr "Términos Clave"
+
+#: service/templates/recommender_bar.html:8
+msgid "Key terms found in the content"
+msgstr "Términos clave encontrados en el contenido"

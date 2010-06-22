@@ -1,7 +1,8 @@
 {%extends "dashboard_base.html"%}
+{%load i18n%}
 {%block content%}
-<p>Reset your password here. If all goes well, you'll be redirected to the main page, there
-you can try and login with your new password. 
+<p>{%blocktrans%}Reset your password here. If all goes well, you'll be redirected to the main page, there
+you can try and login with your new password.{%endblocktrans%} 
 </p>
 {% if form.errors %}
 {#<p>Your application name and password didn't match. Please try again.</p>#}
@@ -11,7 +12,7 @@ you can try and login with your new password.
 <table>
 {{form}}
 </table>
-<input type="submit" value="reset" id="login-submit"/>
+<input type="submit" value="{%trans 'reset'%}" id="login-submit"/>
 {#<input type="hidden" name="next" value="{{ next }}" />#}
 </form>
 

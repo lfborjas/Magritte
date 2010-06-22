@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-26 15:12-0600\n"
+"POT-Creation-Date: 2010-06-22 00:08-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,166 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: prototype/forms.py:23
-msgid "Content"
+#: app_dashboard/views.py:35
+#, python-format
+msgid "Duplicate user: %s\n"
 msgstr ""
 
-#: prototype/forms.py:29 prototype/forms.py:42
+#: app_dashboard/views.py:38
+msgid "User limit exceeded"
+msgstr ""
+
+#: app_dashboard/views.py:41
+msgid "Error saving users"
+msgstr ""
+
+#: app_dashboard/views.py:68
+msgid "Error deleting user"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_base.html:14
+msgid "Your Dashboard"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_base.html:30
+msgid "T-Recs Dashboard"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_base.html:40
+msgid "Logout"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_base.html:41
+msgid "T-Recs. An onTology-based RECommender Service"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:41
+msgid "Add another"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:42
+msgid "Remove"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:60
+#: app_dashboard/templates/dashboard_users.html:16
+msgid "Delete"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:77
+msgid "Cancel"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:90
+msgid "Delete user?"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:93
+msgid ""
+"This user will be permanently deleted and cannot be recovered. Are you sure?"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:98
+#, python-format
+msgid ""
+"You have %(user_count)s users registered. The current limit is %(user_limit)"
+"s: you can add %(user_delta)s more\n"
+"\t   "
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:104
+msgid "Register Users"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:105
+msgid "All Users"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:109
+msgid "User limit exceeded. You cannot register more users"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:111
+msgid ""
+"Fill this list with the unique identifiers your application will be passing "
+"to the recommendation service. With these,\n"
+"\t\twe'll know which user is performing a task and give her/him personalized "
+"recommendations\n"
+"\t\t"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_index.html:129
+msgid "Register"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_login.html:4
+msgid ""
+"Once you get an app key, you can use this dashboard to manage the users in "
+"your app which use our service."
+msgstr ""
+
+#: app_dashboard/templates/dashboard_login.html:5
+msgid "If you don't have an app key yet, and are interested in our service"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_login.html:5
+msgid "get one"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_login.html:6
+msgid "it's easy!"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_login.html:9
+msgid "Your application name or password didn't match. Please try again."
+msgstr ""
+
+#: app_dashboard/templates/dashboard_login.html:24
+msgid "login"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_login.html:27
+msgid "Forgot your password?"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_pwd_reset.html:4
+msgid ""
+"A new password will be sent to your email.\n"
+"If all goes well, you will be redirected to the main page, check your e-mail "
+"in the next 24 hours, \n"
+"if you don't get it, make sure it was not sent to your spam folder and ask "
+"for reset again."
+msgstr ""
+
+#: app_dashboard/templates/dashboard_pwd_reset.html:7
+msgid ""
+"Note that you must provide the email with which you registered your "
+"application."
+msgstr ""
+
+#: app_dashboard/templates/dashboard_pwd_reset.html:29
+#: app_dashboard/templates/dashboard_pwd_reset_confirm.html:15
+msgid "reset"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_pwd_reset_confirm.html:4
+msgid ""
+"Reset your password here. If all goes well, you'll be redirected to the main "
+"page, there\n"
+"you can try and login with your new password."
+msgstr ""
+
+#: app_dashboard/templates/dashboard_users.html:4 prototype/forms.py:29
+#: prototype/forms.py:42
 msgid "User"
+msgstr ""
+
+#: app_dashboard/templates/dashboard_users.html:5
+msgid "Date Added"
+msgstr ""
+
+#: prototype/forms.py:23
+msgid "Content"
 msgstr ""
 
 #: prototype/forms.py:30
@@ -58,7 +212,7 @@ msgid ""
 msgstr ""
 
 #: prototype/templates/demo_base.html:22
-#: prototype/templates/prototype_base.html:99
+#: prototype/templates/prototype_base.html:100
 msgid "Set"
 msgstr ""
 
@@ -78,30 +232,34 @@ msgstr ""
 msgid "Example Client"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:92
+#: prototype/templates/prototype_base.html:93
 msgid "Client application example"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:93
+#: prototype/templates/prototype_base.html:94
 msgid "To show how the web service or the widget could be used"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:105
+#: prototype/templates/prototype_base.html:106
 msgid "Save and Reset"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:109
+#: prototype/templates/prototype_base.html:110
 msgid "References"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:109
-#: service/templates/recommender_bar.html:10
-#: service/templates/recommender_bar.html:14
+#: prototype/templates/prototype_base.html:110
+#: service/templates/recommender_bar.html:11
+#: service/templates/recommender_bar.html:15
 msgid "Recommendations"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:114
+#: prototype/templates/prototype_base.html:115
 msgid "So, how does this work?"
+msgstr ""
+
+#: service/templates/recommender_bar.html:3
+msgid "Hide the recommendations panel"
 msgstr ""
 
 #: service/templates/recommender_bar.html:3
@@ -112,6 +270,14 @@ msgstr ""
 msgid "Average relevance"
 msgstr ""
 
+#: service/templates/recommender_bar.html:5
+msgid "Average relevance of the present recommendations"
+msgstr ""
+
 #: service/templates/recommender_bar.html:7
 msgid "Keywords"
+msgstr ""
+
+#: service/templates/recommender_bar.html:8
+msgid "Key terms found in the content"
 msgstr ""

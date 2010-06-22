@@ -1,4 +1,5 @@
 {%extends "dashboard_base.html"%}
+{%load i18n%}
 {%block scripts%}
 <script type="text/javascript" src= "/static/js/jquery.formset.min.js"></script>
 <script>
@@ -15,7 +16,11 @@
 					}
 				);
 			}
-		}});
+		},
+		{%if request.GET.ul%}
+			selected: 1		
+		{%endif%}
+		});
 		
 		
 		$('#register-users-form tbody tr').formset({
@@ -32,7 +37,9 @@
 				},
 			removed: function(row){
 				$('.dynamic-form-add', $('#register-users-form')).show();
-			}
+			},
+			addText: '{%trans "Add another"%}',
+			deleteText: '{%trans "Remove"%}'
 			}
 		);
 		
@@ -50,14 +57,15 @@
 			width: 400,
 			modal: true,
 			buttons: {
-				Delete: function() {
+				'{%trans "Delete"%}': function() {
 					$.post('/dashboard/users/remove/',
 							$('#remove-form').serialize(),
 							function(data){
 								if(data.valid){
 									$('#user_'+data.id).remove();
 									dlg.dialog('close');
-									window.location.reload();
+									//window.location.reload();
+									window.location.replace(window.location.href.replace(window.location.search, '?ul=1'));
 								}else{
 									$('#feedback').text(data.message);
 								}
@@ -66,7 +74,7 @@
 							);
 					
 				},
-				Cancel: function() {
+				'{%trans "Cancel"%}': function() {
 					$(this).dialog('close');
 				}
 			}
@@ -79,27 +87,30 @@
 {%endblock%}
 
 {%block content%}
-<div id="dialog-confirm" title="Delete user?">
+<div id="dialog-confirm" title="{%trans 'Delete user?'%}">
 	<p><span id="feedback"></span></p>
 	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-	This user will be permanently deleted and cannot be recovered. Are you sure?</p>
+	{%trans "This user will be permanently deleted and cannot be recovered. Are you sure?"%}</p>
 	<form id="remove-form">
 		<input type="hidden" id="remove-user-id" value="" name="uid"/>
 	</form>
 </div>
-	<p>You have {{user_count}} users registered. The current limit is {{user_limit}}: you can add {{user_delta}} more</p>
+	<p>{%blocktrans%}You have {{user_count}} users registered. The current limit is {{user_limit}}: you can add {{user_delta}} more
+	   {%endblocktrans%}
+	</p>
 	
 	<div id="tabs">
 		<ul>
-			<li><a href="#register-users">Register Users</a></li>
-			<li><a href="/dashboard/users/">All Users</a></li>
+			<li><a href="#register-users">{%trans "Register Users"%}</a></li>
+			<li><a href="/dashboard/users/">{%trans "All Users"%}</a></li>
 		</ul>
 		<div id="register-users">
 		{%ifequal user_delta 0%}
-				<span class="warning">User limit exceeded. You cannot register more users</span>
+				<span class="warning">{% trans "User limit exceeded. You cannot register more users"%}</span>
 		{%else%}
-		<p>Fill this list with the unique identifiers your application will be passing to the recommendation service. With these,
-		we'll know which user is performing a task and give her/him personalized recommendations</p>
+		<p>{%blocktrans%}Fill this list with the unique identifiers your application will be passing to the recommendation service. With these,
+		we'll know which user is performing a task and give her/him personalized recommendations
+		{%endblocktrans%}</p>
 		{%if message%}
 			<span class="warning">{{message}}</span>
 		{%endif%}		
@@ -115,7 +126,7 @@
     				</tbody>
   				</table>
   				{{ formset.management_form }}
-  				<input type="submit" class="trecs-submit" value="Register"/>
+  				<input type="submit" class="trecs-submit" value="{%trans 'Register'%}"/>
 			</form>
 		{%endifequal%}			
 		</div>

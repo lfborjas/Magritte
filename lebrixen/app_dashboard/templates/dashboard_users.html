@@ -1,7 +1,8 @@
+{%load i18n%}
 <table id="app-users">
 <tr>
-	<th>User</th>
-	<th>Date Added</th>
+	<th>{%trans "User"%}</th>
+	<th>{%trans "Date Added"%}</th>
 	<th>&nbsp;</th>
 </tr>
 {%for user in users%}
@@ -12,7 +13,7 @@
 	{%endif%}
 		<td class="app-user">{{user.clientId}} </td>
 		<td class="app-user-date">{{user.added}}</td>
-		<td><button type="button" class="user-remove" id="{{user.id}}">Delete</button></td>
+		<td><button type="button" class="user-remove" id="{{user.id}}">{%trans "Delete"%}</button></td>
 	</tr>
 {%endfor%}
 </table>

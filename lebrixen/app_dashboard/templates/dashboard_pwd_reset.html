@@ -1,9 +1,10 @@
 {%extends "dashboard_base.html"%}
+{%load i18n%}
 {%block content%}
-<p>A new password will be sent to your email.
+<p>{%blocktrans%}A new password will be sent to your email.
 If all goes well, you will be redirected to the main page, check your e-mail in the next 24 hours, 
-if you don't get it, make sure it was not sent to your spam folder and ask for reset again. 
-<em>Note that you must provide the email with which you registered your application.</em>
+if you don't get it, make sure it was not sent to your spam folder and ask for reset again.{%endblocktrans%} 
+<em>{%trans "Note that you must provide the email with which you registered your application."%}</em>
  
 </p>
 {% if form.errors %}
@@ -25,7 +26,7 @@ if you don't get it, make sure it was not sent to your spam folder and ask for r
 {{form}}
 </table>
 
-<input type="submit" value="reset" id="login-submit"/>
+<input type="submit" value="{%trans 'reset'%}" id="login-submit"/>
 {#<input type="hidden" name="next" value="{{ next }}" />#}
 </form>
 

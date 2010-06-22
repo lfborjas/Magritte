@@ -15,6 +15,7 @@ import logging
 from app_dashboard.forms import UserFormset
 from profile.models import ClientUser
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 @login_required
 def dashboard(request):
@@ -26,14 +27,18 @@ def dashboard(request):
             if request.user.get_profile().users.count() + formset.total_form_count() <= settings.FREE_USER_LIMIT: 
                 for form in formset.forms:
                     if 'name' in form.cleaned_data:
-                        u, created = ClientUser.objects.get_or_create(clientId = form.cleaned_data['name'],
+                        try:
+                            u, created = ClientUser.objects.get_or_create(clientId = form.cleaned_data['name'],
                                                                        app = request.user.get_profile())
+                        except:
+                            #logging.error('Error adding user', exc_info=True)
+                            message+=_('Duplicate user: %s\n' % form.cleaned_data['name'])
                         #u.save() 
             else:
-                message = "User limit exceeded"
+                message = _("User limit exceeded")
             formset = UserFormset()
         else:
-            message = "Error saving users"
+            message = _("Error saving users")
             
     else:
         formset  = UserFormset()
@@ -60,5 +65,5 @@ def remove_user(request):
         return HttpResponse(json.dumps({'id': uid, 'valid': True, 'message': ''}), mimetype="application/json")
     except:
         logging.info("Error deleting user", exc_info=True)
-        return HttpResponse(json.dumps({'valid': False, 'message': 'Error deleting user'}), mimetype="application/json")
+        return HttpResponse(json.dumps({'valid': False, 'message': _('Error deleting user')}), mimetype="application/json")
     

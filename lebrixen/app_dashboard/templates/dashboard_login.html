@@ -1,10 +1,12 @@
 {%extends "dashboard_base.html"%}
+{%load i18n%}
 {%block content%}
-<p>Once you get an app key, you can use this dashboard to manage the users in your app which use our service.</p>
-   <p>If you don't have an app key yet, and are interested in our service, <a href="/register/">get one</a>, it's easy!
+<p>{%trans "Once you get an app key, you can use this dashboard to manage the users in your app which use our service."%}</p>
+   <p>{%trans "If you don't have an app key yet, and are interested in our service"%}, <a href="/register/">{%trans "get one"%}</a>,
+    {%trans "it's easy!"%}
 </p>
 {% if form.errors %}
-<p class="warning">Your application name and password didn't match. Please try again.</p>
+<p class="warning"> {%trans "Your application name or password didn't match. Please try again."%}</p>
 {% endif %}
 
 <form method="post" action="{% url django.contrib.auth.views.login %}" id="login-form">
@@ -19,9 +21,9 @@
 </tr>
 </table>
 
-<input type="submit" value="login" id="login-submit"/>
+<input type="submit" value="{%trans 'login'%}" id="login-submit"/>
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
-<a href="/dashboard/password_reset/">Forgot your password?</a>
+<a href="/dashboard/password_reset/">{%trans "Forgot your password?"%}</a>
 
 {%endblock%}

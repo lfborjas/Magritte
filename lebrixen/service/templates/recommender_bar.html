@@ -1,11 +1,12 @@
 {%load i18n%}
 <div id ="lebrixen-recommendations-bar" class="lebrixen-panel">
-			<a href="#" id="lebrixen-hide-panel">{% trans "Hide" %} >></a>
+			<a href="#" id="lebrixen-hide-panel" title='{%trans "Hide the recommendations panel"%}'>{% trans "Hide" %} >></a>
 			<h2 id="lebrixen-average-rel-title">{%trans "Average relevance"%} <span id="lebrixen-average-rel"></span></h2>
-			<div id="lebrixen-average-rel-slider"></div>
-			<div id ="lebrixen-terms-container">	
+			<div id="lebrixen-average-rel-slider" title="{%trans 'Average relevance of the present recommendations'%}"></div>
+			<div id ="lebrixen-terms-container" >	
 				<h2 id="lebrixen-terms-title">{%trans "Keywords"%}</h2>		
-				<textarea rows="2" cols="20" id="lebrixen-terms" readonly="readonly"></textarea>
+				<textarea rows="2" cols="20" id="lebrixen-terms" readonly="readonly" title="{%trans 'Key terms found in the content'%}">
+				</textarea>
 			</div>
 			<h2 id="lebrixen-docs-title">{%trans "Recommendations"%}<span id="lebrixen-docs-q"></span></h2>
 			<div id="lebrixen-docs-container">						
