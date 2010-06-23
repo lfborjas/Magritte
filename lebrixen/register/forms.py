@@ -50,7 +50,12 @@ class RegisterForm(forms.Form):
         from profile.models import ClientApp
         from django.contrib.auth.models import User
         """Register the app"""
-        super(RegisterForm, self).clean()        
+        super(RegisterForm, self).clean()
+        #in automated tests, the captcha is ignored:
+        if settings.IGNORE_CAPTCHA and 'recaptcha' in self._errors:
+            #logging.debug(self._errors)
+            del self._errors['recaptcha']
+            self.cleaned_data['recaptcha'] = 'test'                    
         if any(self.errors):
             return self.cleaned_data
         if ClientApp.objects.filter(url__iexact=self.cleaned_data['url']).count() > 0:
@@ -72,5 +77,6 @@ class RegisterForm(forms.Form):
                 self.cleaned_data['key'] = key
                 self.cleaned_data['pass']= raw_pass
             except:
-                pass
+                pass                       
+            
             return self.cleaned_data
