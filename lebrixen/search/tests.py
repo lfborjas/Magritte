@@ -5,7 +5,7 @@ Search tests: test the search method and the classification method
 from django.test import TestCase
 from search.models import DmozCategory, DocumentSurrogate
 from django.test.simple import run_tests
-#from dstest.test_runner import run_tests 
+from dstest.test_runner import run_tests as sel_tests 
 from django.conf import settings
 import logging
 
@@ -15,8 +15,13 @@ def custom_run_tests(test_labels, verbosity=1, interactive=True, extra_tests=[])
     settings.DJAPIAN_DATABASE_PATH = settings.DJAPIAN_TEST_PATH
     settings.IGNORE_CAPTCHA = True
     #run celery in eager mode (don't depend on the daemon)
-    settings.CELERY_ALWAYS_EAGER = True      
-    return run_tests(test_labels, verbosity, interactive, extra_tests)
+    settings.CELERY_ALWAYS_EAGER = True
+    
+    #the selenium test runner has problems with qualified names, so default to the normal runner if that is the case          
+    if '.' in str(test_labels):        
+        return run_tests(test_labels, verbosity, interactive, extra_tests)
+    else:
+        return sel_tests(test_labels, verbosity, interactive, extra_tests)
 
 class ClassifierTest(TestCase):
     """ Tests for the classifier module
