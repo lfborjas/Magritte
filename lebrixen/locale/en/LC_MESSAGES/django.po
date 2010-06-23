@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-22 00:08-0600\n"
+"POT-Creation-Date: 2010-06-23 00:50-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Duplicate user: %s\n"
 msgstr ""
 
-#: app_dashboard/views.py:38
+#: app_dashboard/views.py:38 register/templates/trecs_usage.html:55
 msgid "User limit exceeded"
 msgstr ""
 
@@ -41,11 +41,11 @@ msgstr ""
 msgid "T-Recs Dashboard"
 msgstr ""
 
-#: app_dashboard/templates/dashboard_base.html:40
+#: app_dashboard/templates/dashboard_base.html:41
 msgid "Logout"
 msgstr ""
 
-#: app_dashboard/templates/dashboard_base.html:41
+#: app_dashboard/templates/dashboard_base.html:42
 msgid "T-Recs. An onTology-based RECommender Service"
 msgstr ""
 
@@ -105,6 +105,7 @@ msgid ""
 msgstr ""
 
 #: app_dashboard/templates/dashboard_index.html:129
+#: register/templates/trecs_home.html:11
 msgid "Register"
 msgstr ""
 
@@ -256,6 +257,281 @@ msgstr ""
 
 #: prototype/templates/prototype_base.html:115
 msgid "So, how does this work?"
+msgstr ""
+
+#: register/forms.py:26
+msgid "Invalid captcha"
+msgstr ""
+
+#: register/forms.py:45
+msgid "Your app's url/name"
+msgstr ""
+
+#: register/forms.py:46
+msgid "E-mail"
+msgstr ""
+
+#: register/forms.py:46
+msgid "Write a valid email, we will send your app key there!"
+msgstr ""
+
+#: register/forms.py:47
+msgid "Are you human enough?"
+msgstr ""
+
+#: register/forms.py:57
+msgid "There is an app with that name already registered"
+msgstr ""
+
+#: register/views.py:22
+msgid "Your T-Recs App key"
+msgstr ""
+
+#: register/templates/404.html:12
+msgid "Page not found"
+msgstr ""
+
+#: register/templates/404.html:43
+msgid "We seem to have lost a page!"
+msgstr ""
+
+#: register/templates/500.html:12
+msgid "Internal Error"
+msgstr ""
+
+#: register/templates/500.html:43
+msgid "Sorry to interrupt the festivities, but it seems we have a problem"
+msgstr ""
+
+#: register/templates/register_base.html:38
+msgid "Go to your dashboard"
+msgstr ""
+
+#: register/templates/trecs_home.html:3
+msgid "Home"
+msgstr ""
+
+#: register/templates/trecs_home.html:5
+msgid "What is it?"
+msgstr ""
+
+#: register/templates/trecs_home.html:6
+msgid ""
+"T-Recs is a recommender service to help enhance user experience in "
+"applications for information production"
+msgstr ""
+
+#: register/templates/trecs_home.html:7
+msgid "Check out a"
+msgstr ""
+
+#: register/templates/trecs_home.html:7
+msgid "sample application"
+msgstr ""
+
+#: register/templates/trecs_home.html:8
+msgid "How to use it?"
+msgstr ""
+
+#: register/templates/trecs_home.html:10
+msgid "Get your"
+msgstr ""
+
+#: register/templates/trecs_home.html:10
+msgid "Api key"
+msgstr ""
+
+#: register/templates/trecs_home.html:11
+msgid "some users"
+msgstr ""
+
+#: register/templates/trecs_home.html:12
+msgid "Implement it fast with the"
+msgstr ""
+
+#: register/templates/trecs_home.html:13
+msgid "or as you like with the full"
+msgstr ""
+
+#: register/templates/trecs_home.html:13
+msgid "REST API"
+msgstr ""
+
+#: register/templates/trecs_register.html:3
+msgid "Get API key"
+msgstr ""
+
+#: register/templates/trecs_register.html:22
+msgid "Get your app key"
+msgstr ""
+
+#: register/templates/trecs_register.html:23
+msgid ""
+"Write your app's name and an email where we could send you your app key, our "
+"capacity isn't infinite\n"
+"\t   so we're forced to make you fill out this form to register. After you "
+"fill it out successfully, you'll\n"
+"\t   be redirected to the usage page, so you can get started"
+msgstr ""
+
+#: register/templates/trecs_register.html:34
+msgid "Ready!"
+msgstr ""
+
+#: register/templates/trecs_usage.html:3 register/templates/trecs_usage.html:5
+msgid "Usage"
+msgstr ""
+
+#: register/templates/trecs_usage.html:6
+msgid ""
+"You can use T-recs in any kind of application, from a desktop text processor "
+"to a full web course management system.\n"
+"   The easiest way is to use the <a href=\"#widget\">javascript widget</a>, "
+"but, if it doesn't meet your needs, you can\n"
+"   always use the <a href=\"#api\">REST API</a>"
+msgstr ""
+
+#: register/templates/trecs_usage.html:10
+msgid "User registration"
+msgstr ""
+
+#: register/templates/trecs_usage.html:11
+msgid ""
+"You can use the <a href=\"/dashboard/\">dashboard</a> or implement your own "
+"user management with\n"
+"the API calls for <a href=\"#admin\">User administration</a>"
+msgstr ""
+
+#: register/templates/trecs_usage.html:15
+msgid ""
+"Include the file <tt>http://trecs.com/static/js/service/recommender.js</tt>"
+msgstr ""
+
+#: register/templates/trecs_usage.html:16
+msgid "Include a script with the configuration"
+msgstr ""
+
+#: register/templates/trecs_usage.html:19
+msgid ""
+"The API always returns a JSON text with the same structure: only the "
+"<em>data</em> property depends\n"
+"on the call"
+msgstr ""
+
+#: register/templates/trecs_usage.html:21
+msgid "Get Recommendations call"
+msgstr ""
+
+#: register/templates/trecs_usage.html:22
+#: register/templates/trecs_usage.html:27
+#: register/templates/trecs_usage.html:38
+#: register/templates/trecs_usage.html:40
+#: register/templates/trecs_usage.html:41
+msgid "your-app-id"
+msgstr ""
+
+#: register/templates/trecs_usage.html:22
+#: register/templates/trecs_usage.html:27
+msgid "registered-user"
+msgstr ""
+
+#: register/templates/trecs_usage.html:23
+#: register/templates/trecs_usage.html:28
+msgid "free-text-to-analyze"
+msgstr ""
+
+#: register/templates/trecs_usage.html:24
+#: register/templates/trecs_usage.html:29
+msgid "content-language"
+msgstr ""
+
+#: register/templates/trecs_usage.html:25
+#: register/templates/trecs_usage.html:31
+#: register/templates/trecs_usage.html:39
+#: register/templates/trecs_usage.html:40
+#: register/templates/trecs_usage.html:42
+msgid "(for jsonp calls)"
+msgstr ""
+
+#: register/templates/trecs_usage.html:26
+msgid "Update profile call"
+msgstr ""
+
+#: register/templates/trecs_usage.html:30
+msgid "feedback-documents"
+msgstr ""
+
+#: register/templates/trecs_usage.html:32
+msgid "User administration"
+msgstr ""
+
+#: register/templates/trecs_usage.html:34
+msgid ""
+"All of these calls require <a href=\"http://www.w3.org/Protocols/HTTP/1.0/"
+"spec.html#AA\">basic http authentication</a>:\n"
+"   the username is the name that you registered as your application name/url "
+"and the password is the one sent to you when you registered\n"
+msgstr ""
+
+#: register/templates/trecs_usage.html:38
+msgid "user-to-register"
+msgstr ""
+
+#: register/templates/trecs_usage.html:41
+msgid "user-to-delete"
+msgstr ""
+
+#: register/templates/trecs_usage.html:43
+msgid "Errors"
+msgstr ""
+
+#: register/templates/trecs_usage.html:46
+msgid "Code"
+msgstr ""
+
+#: register/templates/trecs_usage.html:47
+msgid "Reason"
+msgstr ""
+
+#: register/templates/trecs_usage.html:51
+msgid "A parameter is missing"
+msgstr ""
+
+#: register/templates/trecs_usage.html:53
+msgid "Authentication failed"
+msgstr ""
+
+#: register/templates/trecs_usage.html:57
+msgid "Invalid user or application token"
+msgstr ""
+
+#: register/templates/trecs_usage.html:59
+msgid "Internal error"
+msgstr ""
+
+#: register/templates/trecs_usage.html:62
+msgid ""
+"For detailed documentation, refer to the <a href=\"#\">Developer's Manual</a>"
+msgstr ""
+
+#: register/templates/mail/appkey.html:2
+#, python-format
+msgid ""
+"\n"
+"Hello, \n"
+"here is the app key for trecs.com you requested to use in %(app)s; be sure "
+"to keep it to yourself!\n"
+"%(key)s\n"
+"\n"
+"You can start using our services by registering some of your users. You can "
+"do it programatically via the API \n"
+"(requires basic http authentication) or by using our application dashboard.\n"
+"Either way, you'll need to authenticate, so your credentials are:\n"
+"username: %(app)s\n"
+"password: %(pass)s\n"
+"\n"
+"When you're ready to start using T-Recs, refer to %(url)s for more detailed "
+"usage instructions.\n"
 msgstr ""
 
 #: service/templates/recommender_bar.html:3

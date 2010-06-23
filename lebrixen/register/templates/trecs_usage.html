@@ -1,17 +1,69 @@
 {%extends "register_base.html"%}
-{%block title%}Usage{%endblock%}
+{%load i18n%}
+{%block title%}{%trans "Usage"%}{%endblock%}
 {%block content%}
-<h2>Usage</h2>
-<p>You can use T-recs in any kind of application, from a desktop text processor to a full web course management system.
+<h2>{%trans "Usage"%}</h2>
+<p>{%blocktrans%}You can use T-recs in any kind of application, from a desktop text processor to a full web course management system.
    The easiest way is to use the <a href="#widget">javascript widget</a>, but, if it doesn't meet your needs, you can
-   always use the <a href="#api">REST API</a>
+   always use the <a href="#api">REST API</a>{%endblocktrans%}   
 </p>
-<h3>Widget</h3>
-<h4>Requirements</h4>
-<h4>Options</h4>
-<h3>API</h3>
-<h4>Widget call</h4>
-<tt>http://trecs.com/api/getWidget?appId=<em>your-app-id</em>&appUser=<em>user-id</em>[&callback=<em>(for jsonp calls)</em>]</tt>
-<h4>Get Recommendations call</h4>
-<h4>Update profile call</h4>
+<h3 name="registration">{%trans "User registration"%}</h3>
+<p>{%blocktrans%}You can use the <a href="/dashboard/">dashboard</a> or implement your own user management with
+the API calls for <a href="#admin">User administration</a>{%endblocktrans%}</p>
+<h3 name="widget">Widget</h3>
+<ul>
+<li>{%trans "Include the file <tt>http://trecs.com/static/js/service/recommender.js</tt>"%}</li>
+<li>{%trans "Include a script with the configuration"%}</li>
+</ul>
+<h3 name="api">API</h3>
+<p>{%blocktrans%}The API always returns a JSON text with the same structure: only the <em>data</em> property depends
+on the call{%endblocktrans%}</p>
+<h4>{%trans "Get Recommendations call"%}</h4>
+<tt>http://trecs.com/api/getRecommendations?appId=<em>{%trans "your-app-id"%}</em>&appUser=<em>{%trans "registered-user"%}</em>
+&context=<em>{%trans "free-text-to-analyze"%}</em>
+&lang=<em>{%trans "content-language"%}</em>
+[&callback=<em>{%trans "(for jsonp calls)"%}</em>]</tt>
+<h4>{%trans "Update profile call"%}</h4>
+<tt>http://trecs.com/api/getRecommendations?appId=<em>{%trans "your-app-id"%}</em>&appUser=<em>{%trans "registered-user"%}</em>
+&context=<em>{%trans "free-text-to-analyze"%}</em>
+&lang=<em>{%trans "content-language"%}</em>
+&docs=<em>{%trans "feedback-documents"%}</em>
+[&callback=<em>{%trans "(for jsonp calls)"%}</em>]</tt>
+<h4 name="admin">{%trans "User administration"%}</h4>
+<p>
+{%blocktrans%}All of these calls require <a href="http://www.w3.org/Protocols/HTTP/1.0/spec.html#AA">basic http authentication</a>:
+   the username is the name that you registered as your application name/url and the password is the one sent to you when you registered
+{%endblocktrans%}
+</p>
+<tt>http://trecs.com/api/registerUser?appId=<em>{%trans "your-app-id"%}</em>&user=<em>{%trans "user-to-register"%}</em>
+[&callback=<em>{%trans "(for jsonp calls)"%}</em>]</tt>
+<tt>http://trecs.com/api/getUsers?appId=<em>{%trans "your-app-id"%}</em>[&callback=<em>{%trans "(for jsonp calls)"%}</em>]</tt>
+<tt>http://trecs.com/api/deleteUser?appId=<em>{%trans "your-app-id"%}</em>&user=<em>{%trans "user-to-delete"%}
+</em>[&callback=<em>{%trans "(for jsonp calls)"%}</em>]</tt>
+<h4 name="errors">{% trans "Errors"%}</h4>
+<table class="usage-table">
+	<tr>
+		<th>{%trans "Code"%}</th>
+		<th>{%trans "Reason"%}</th>
+	</tr>
+	<tr>
+		<td>400</td>
+		<td>{%trans "A parameter is missing"%}</td>
+	</tr>
+	<tr>	
+		<td>401</td>
+		<td>{%trans "Authentication failed"%}</td>
+	</tr>
+	<tr>
+		<td>403</td>
+		<td>{%trans "User limit exceeded"%}</td>
+	</tr>
+		<td>404</td>
+		<td>{%trans "Invalid user or application token"%}</td>
+	<tr>
+		<td>500</td>
+		<td>{%trans "Internal error"%}</td>
+	</tr>
+</table>
+<strong>{%blocktrans%}For detailed documentation, refer to the <a href="#">Developer's Manual</a>{%endblocktrans%}</strong>
 {%endblock%}

@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.utils.translation import ugettext as _
+from django.template.context import RequestContext
 
 def register(request):
     if request.method == 'POST':
@@ -18,7 +20,7 @@ def register(request):
                                                             'url': request.build_absolute_uri('/usage/'),
                                                             'pass': p})
             send_mail(
-                'Your T-Recs App key',
+                _('Your T-Recs App key'),
                 message, 'noreply@trecs.com',
                 [recipient, ]
             )
@@ -27,4 +29,4 @@ def register(request):
             return render_to_response('trecs_register.html', {'form': form})
     else:
         form = RegisterForm()
-    return render_to_response('trecs_register.html', {'form': form})
+    return render_to_response('trecs_register.html', {'form': form}, context_instance=RequestContext(request))

@@ -1,4 +1,4 @@
-{#{%load i18n%}#}
+{%load i18n%}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -9,7 +9,7 @@
         <meta name="description" content="T-Recs: onTology-based Recommender System, a web service
         that enables you to enhance user experience in text edition and other tasks by offering 
         intelligent reference suggestions" />
-        <title>{%block title%}Internal Error{%endblock%} :: T-Recs </title>
+        <title>{%block title%}{%trans "Internal Error"%}{%endblock%} :: T-Recs </title>
         <!--[if IE]>
 	    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->        
@@ -40,7 +40,7 @@
     <div id="error-header">
     	<a class="branding-link" href="/" title="T-Recs: an onTology-based Recommender Service">T-Recs</a>
     	<div id="branding-content">
-    		<h1 class="error-title">Sorry to interrupt the festivities, but it seems we have a problem</h1>    		
+    		<h1 class="error-title">{%trans "Sorry to interrupt the festivities, but it seems we have a problem"%}</h1>    		
     	</div>   	
     </div>
     <div id="content">

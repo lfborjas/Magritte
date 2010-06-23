@@ -32,6 +32,7 @@
     		{%endif%}</h1>    		
     	</div>   	
     </div>
+    <div id="wrapper">
     <div id="content">
 		{%block content%}		
 		{%endblock%}
@@ -40,4 +41,5 @@
 		{%if user.is_authenticated%}<a href="/dashboard/logout/">{%trans "Logout"%}</a>{%endif%}
 		<br />&#x00a9;{%now "Y"%}{%trans "T-Recs. An onTology-based RECommender Service"%} </div>
     </body>
+    </div>
 </html>

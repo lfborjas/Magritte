@@ -1,4 +1,4 @@
-{#{%load i18n%}#}
+{%load i18n%}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -29,13 +29,15 @@
     		<span class="accr">REC</span>ommender <span class="accr">S</span>ervice</h1>    		
     	</div>   	
     </div>
+    <div id="wrapper">
     <div id="content">
 		{%block content%}		
 		{%endblock%}
 	</div>
 	<div id="footer">
-		<a href="/dashboard/"> Go to your dashboard </a>
+		<a href="/dashboard/">{%trans "Go to your dashboard"%}</a>
 		<p>&#x00a9;{%now "Y"%} T-Recs. An onTology-based Recommender Service</p>
+	</div>
 	</div>
     </body>
 </html>

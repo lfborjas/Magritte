@@ -1,14 +1,15 @@
-{#{%load i18n%}#}
 {%extends "register_base.html"%}
-{%block title%}Home{%endblock%}
+{%load i18n%}
+{%block title%}{%trans "Home"%}{%endblock%}
 {%block content%}
-	<h2 name="introduction">What is it?</h2>
-	<p>T-Recs is a recommender service</p>
-	<em>Check out a <a href="/prototype/">sample application</a></em>
-	<h2 name="usage">How to use it?</h2>
+	<h2 name="introduction">{%trans "What is it?"%}</h2>
+	<p>{%trans "T-Recs is a recommender service to help enhance user experience in applications for information production"%}</p>
+	<em>{%trans "Check out a"%} <a href="/prototype/">{%trans "sample application"%}</a></em>
+	<h2 name="usage">{% trans "How to use it?"%}</h2>
 	<ol id="usage-steps">
-		<li><span class="content">Get your <a href="/register/">Api key</a></span></li>
-		<li><span class="content">Use it fast with the <a href="/usage/#widget">Widget</a> 
-		    or as you like with the full <a href="/usage/#api">REST API</a></span></li>
+		<li><span class="content">{%trans "Get your"%} <a href="/register/">{%trans "Api key"%}</a></span></li>
+		<li><span class="content"><a href="/usage/#registration">{%trans "Register"%}</a> {%trans "some users"%}</span></li>
+		<li><span class="content">{%trans "Implement it fast with the"%} <a href="/usage/#widget">Widget</a> 
+		    {%trans "or as you like with the full"%} <a href="/usage/#api">{%trans "REST API"%}</a></span></li>
 	</ol>		
 {%endblock%}

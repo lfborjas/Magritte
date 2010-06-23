@@ -1,27 +1,28 @@
 {%extends "register_base.html"%}
-{%block title%}Get API key{%endblock%}
+{%load i18n%}
+{%block title%}{%trans "Get API key"%}{%endblock%}
 {%block scripts%}
 
 <script>
 $(function(){
 	$("form").submit(function(e) {
     	$('input[type=submit]').attr('disabled', 'disabled');
-    }
     });
+});
 </script>
 
 <script>
 	var RecaptchaOptions = {
    		theme : 'clean',   		
-   		lang: 'en'
+   		lang: '{{request.LANGUAGE_CODE}}'
 		};
 </script>
 {%endblock%}
 {%block content%}
-	<h2>Get your app key</h2>
-	<p>Write your app's name and an email where we could send you your app key, our capacity isn't infinite
+	<h2>{%trans "Get your app key"%}</h2>
+	<p>{%blocktrans%}Write your app's name and an email where we could send you your app key, our capacity isn't infinite
 	   so we're forced to make you fill out this form to register. After you fill it out successfully, you'll
-	   be redirected to the usage page, so you can get started</p>
+	   be redirected to the usage page, so you can get started{%endblocktrans%}</p>
 	<form id="register-form" action="#" method="post">
 		<table>
 		{% for field in form %}
@@ -30,7 +31,7 @@ $(function(){
          			<td>{{field}}</td><td> {{field.errors}} </td>
          	    </tr>                  
 		{% endfor %}
-			<tr id="submit-row"><td><input type="submit" id="register-submit" value="Ready!"/></td></tr>
+			<tr id="submit-row"><td><input type="submit" id="register-submit" value="{%trans 'Ready!'%}"/></td></tr>
 		</table>
 	</form>
 {%endblock%}

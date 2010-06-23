@@ -5,6 +5,7 @@ from django import forms
 from django.conf import settings
 from django.forms.util import ErrorList
 import logging
+from django.utils.translation import ugettext_lazy as _
 
 class ReCaptchaWidget(forms.widgets.Widget):
         """
@@ -22,7 +23,7 @@ class ReCaptchaWidget(forms.widgets.Widget):
             
 class ReCaptchaField(forms.CharField):
         default_error_messages = {
-            'captcha_invalid': u'Invalid captcha'
+            'captcha_invalid': _('Invalid captcha')
         }
     
         def __init__(self, *args, **kwargs):
@@ -41,9 +42,9 @@ class ReCaptchaField(forms.CharField):
             return values[0]
 
 class RegisterForm(forms.Form):
-    url = forms.CharField(label="Your app's url/name")
-    mail = forms.EmailField(label="E-mail", help_text="Write a valid email, we will send your app key there!")
-    recaptcha = ReCaptchaField(label="Are you human enough?")
+    url = forms.CharField(label=_("Your app's url/name"), max_length=512)
+    mail = forms.EmailField(label=_("E-mail"), help_text=_("Write a valid email, we will send your app key there!"))
+    recaptcha = ReCaptchaField(label=_("Are you human enough?"))
     
     def clean(self):
         from profile.models import ClientApp
@@ -53,7 +54,7 @@ class RegisterForm(forms.Form):
         if any(self.errors):
             return self.cleaned_data
         if ClientApp.objects.filter(url__iexact=self.cleaned_data['url']).count() > 0:
-            self._errors['url']=ErrorList(['There is an app with that name already registered',])
+            self._errors['url']=ErrorList([_('There is an app with that name already registered'),])
             del self.cleaned_data['url']
         else:
             key = ""

@@ -31,12 +31,6 @@ body{
 	color: #ffffff;	
 }
 
-#content{
-	/*position: relative;*/
-	height: 100%;
-	/*overflow: hidden;*/
-}
-
 #branding{
 	background-color: #459e00;
 	-moz-border-radius: 6px;
@@ -79,8 +73,12 @@ a {
 	margin: 0px auto;
 	padding-top: 10px;
 	padding-botom: 10px;	
-	min-height: 80%;
-	height: 80%;
+	min-height: 400px;	
+}
+
+#wrapper{
+	width: 100%;
+	min-height: 500px; 
 }
 
 
@@ -204,3 +202,16 @@ table#app-users th, table#app-users td{
 	color: #ffffff;	
 }
 
+table.usage-table{
+	width: 100%;
+	background-color: #fff;
+	color: #363636;	
+}
+
+table.usage-table th, table.usage-table td{
+	border: 1px solid #e8e1b5;
+}
+
+table.usage-table th{
+	background-color: #8dc262;
+}
