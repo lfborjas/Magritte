@@ -16,7 +16,7 @@ def custom_run_tests(test_labels, verbosity=1, interactive=True, extra_tests=[])
     settings.IGNORE_CAPTCHA = True
     #run celery in eager mode (don't depend on the daemon)
     settings.CELERY_ALWAYS_EAGER = True
-    
+    settings.DEBUG_STATIC= True
     #the selenium test runner has problems with qualified names, so default to the normal runner if that is the case          
     if '.' in str(test_labels):        
         return run_tests(test_labels, verbosity, interactive, extra_tests)

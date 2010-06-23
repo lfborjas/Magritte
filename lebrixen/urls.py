@@ -34,7 +34,7 @@ urlpatterns = patterns('',
 )
 
 #to serve static files only in development:
-if settings.DEBUG:
+if settings.DEBUG_STATIC or settings.DEBUG:
         urlpatterns += patterns('',
                 (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_DOC_ROOT}),
         )
