@@ -13,4 +13,5 @@ requires =[ 'django>=1.1.1',
 	    'gettext', #not a python pkg
 	    'xappy'	
 	    'xapian' #cf djapian install page for real pkgs
+	    'funkload'
 ]
