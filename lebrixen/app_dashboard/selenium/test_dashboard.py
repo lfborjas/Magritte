@@ -47,21 +47,28 @@ class TestDashboard(TransactionTestCase):
         
         limit = settings.FREE_USER_LIMIT - self.app.users.count() 
         if not limit or limit <=2:
-            self.fail("User limit exceeded") 
-        #register a couple of users:
+            self.fail("User limit exceeded")
+        #hack: http://jira.openqa.org/browse/SEL-683
+                     
+        #register a couple of users:              
         u1= "testUser_%s"%uuid4()
         u2= "testUser_%s"%uuid4()
         sel.type("id_form-0-name", u1 )
         #sel.click("//form[@id='register-users-form']/table/td/a[@class='add-row']")
-        sel.click("css=a.add-row")
-        sel.type("form-1-id_form-0-name", u2)
-        try: self.assert_(sel.is_element_present('css=a.add-row'), 'Should be present!')
+        #cf: http://thoughthaus.net/blog/?page_id=116
+        #und http://blog.vishnuiyengar.com/2009/08/testing-ajax-applications-with-selenium.html
+        sel.wait_for_condition('selenium.browserbot.getCurrentWindow().jQuery("#register-users-form a.add-row").trigger("click")', 3000)
+        #sel.click("css=#register-users-form a.add-row")                
+        try: self.assert_(sel.is_element_present('css=#form-1-id_form-0-name'), 'New input should be present!')
         except AssertionError, e: self.verificationErrors.append(str(e))
-        sel.click("//input[@value='Register']")        
+        sel.type("form-1-id_form-0-name", u2)
+        try: self.assert_(sel.is_element_present('css=#register-users-form a.add-row'), 'Should be present!')
+        except AssertionError, e: self.verificationErrors.append(str(e))
+        sel.click("css=input.trecs-submit")                
         sel.wait_for_page_to_load("30000")
         
         #check they're registered        
-        sel.open("/?ul=1")        
+        sel.open("/users/")        
         sel.wait_for_page_to_load("30000")
         try: self.failUnless(sel.is_text_present(u1))
         except AssertionError, e: self.verificationErrors.append(str(e))
