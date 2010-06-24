@@ -156,8 +156,8 @@ TEST_RUNNER = 'search.tests.custom_run_tests'
 IGNORE_CAPTCHA = False
 #for the selenium test runner:
 SELENIUM_TESTS_PATH = 'selenium'
-FIXTURES = ['testApp.json']
-DEBUG_STATIC = False #to serve static files when not in debug mode (in tests)
+#FIXTURES = ['testApp.json']
+
 try:
     from local_settings import *
 except:

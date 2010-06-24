@@ -14,7 +14,7 @@ from profile.models import ClientApp
 
 class test_register(TestCase):
     #fixtures = ['testApp.json']
-    
+    urls = 'register.test_urls'
     def setUp(self):
         self.verificationErrors = []
         self.selenium = selenium("localhost", 4444, "*chrome", "http://localhost:8000/")
