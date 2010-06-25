@@ -32,7 +32,7 @@ class TestDashboard(TransactionTestCase):
         
         #login for every test:
         sel = self.selenium
-        sel.open("/login/?next=/")
+        sel.open("/dashboard/login/?next=/dashboard/")
         sel.wait_for_page_to_load("30000")                
         sel.type("id_username", self.app.user.username)
         sel.type('id_password', self.pwd)        
@@ -74,7 +74,7 @@ class TestDashboard(TransactionTestCase):
         sel.wait_for_page_to_load("30000")
         
         #check they're registered        
-        sel.open("/users/")        
+        sel.open("/dashboard/users/")        
         sel.wait_for_page_to_load("30000")
         try: self.failUnless(sel.is_text_present(u1))
         except AssertionError, e: self.verificationErrors.append(str(e))
@@ -88,7 +88,8 @@ class TestDashboard(TransactionTestCase):
         for u in range(settings.FREE_USER_LIMIT/3):
             users.append(self.app.users.create(clientId="testUser_%s"%uuid4()))
         
-        sel.open("/users/")        
+        #sel.open("/users/")        
+        sel.open("/dashboard/?ul=1")
         sel.wait_for_page_to_load("30000")
 #        sel.wait_for_condition('selenium.browserbot.getCurrentWindow().jQuery("#tabs").tabs("select",1);\
 #        selenium.browserbot.getCurrentWindow().jQuery("#tabs").tabs("load",1);',
@@ -139,17 +140,55 @@ class TestDashboard(TransactionTestCase):
         except AssertionError, e: self.verificationErrors.append(str(e))
         
         #the users should be listed:
-        sel.open("/users/")        
+        sel.open("/dashboard/users/")        
         sel.wait_for_page_to_load("30000")
         for user in users:
             try: self.failUnless(sel.is_text_present(user))
             except AssertionError, e: self.verificationErrors.append(str(e))            
         
-#    def test_delete(self):
-#        """Test that an user can be deleted"""
-#        #has the impasse of the jquery tab...
-#        pass
-#        
+    def test_delete(self):
+        """Test that users can be deleted"""
+        sel = self.selenium
+        
+        #create users
+        users = []
+        for u in range(settings.FREE_USER_LIMIT/3):
+            users.append(self.app.users.create(clientId="testUser_%s"%uuid4()))
+        
+#       #click the tab
+        if sel.is_element_present("link=All Users"):
+            sel.click("link=All Users")
+        elif sel.is_element_present("link=Usuarios"):
+            sel.click("link=Usuarios")
+        else:
+            self.verificationErrors.append('No tab link is present!')
+        
+        #wait a second for the ajax
+        time.sleep(1)
+        
+        #try erasing a user, but cancel:
+        sel.click("%s" % users[0].pk)
+        sel.click("//div[3]/button[2]")
+        #sel.wait_for_page_to_load("30000")
+        time.sleep(1)
+        
+        #erase the others:
+        for user in users[1:]:
+            sel.click("%s" % user.pk)
+            sel.click("//div[3]/button[1]")
+            #sel.wait_for_page_to_load("30000")
+            time.sleep(1)
+            
+        #check that only the first one is present:
+        try: self.failUnless(sel.is_text_present(users[0].clientId), 'Should be present!')
+        except AssertionError, e: self.verificationErrors.append(str(e))
+        
+        #check that the other ones are not present
+        for user in users[1:]:
+            try: self.assertFalse(sel.is_text_present(user.clientId), 'Should NOT be present!')
+            except AssertionError, e: self.verificationErrors.append(str(e))
+            
+        
 #    def test_delete_update(self):
 #        #has the impasse of the jquery tab...
 #        """Test that, when an app is full, deleting n random users results in being able to add again"""
