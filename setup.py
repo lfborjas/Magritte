@@ -14,4 +14,5 @@ requires =[ 'django>=1.1.1',
 	    'xappy'	
 	    'xapian' #cf djapian install page for real pkgs
 	    'funkload'
+	    'django-selenium-test-runner',	    
 ]

@@ -1,0 +1,111 @@
+*** test_runner.py.old	2009-10-21 14:24:41.000000000 -0600
+--- test_runner.py	2010-06-23 18:34:22.000000000 -0600
+***************
+*** 186,195 ****
+  
+  class DjangoThread(threading.Thread):
+      """Django server control thread."""
+!     def __init__(self, testdb):
+          """Initialize CherryPy Django web server."""
+          super(DjangoThread, self).__init__()
+!         testdb.initialize_test_db()
+          self.setDaemon(True)
+  
+      def run(self):
+--- 186,196 ----
+  
+  class DjangoThread(threading.Thread):
+      """Django server control thread."""
+!     def __init__(self, testdb=None):
+          """Initialize CherryPy Django web server."""
+          super(DjangoThread, self).__init__()
+! 	if testdb:
+! 	    testdb.initialize_test_db()
+          self.setDaemon(True)
+  
+      def run(self):
+***************
+*** 212,218 ****
+              server.stop()
+  
+  
+! def get_selenium_tests(testdb, test_labels=None):
+      """Import selenium tests stored on path/SELENIUM_TESTS_PATH."""
+  
+      def load_tests(module_path):
+--- 213,219 ----
+              server.stop()
+  
+  
+! def get_selenium_tests(testdb=None, test_labels=None):
+      """Import selenium tests stored on path/SELENIUM_TESTS_PATH."""
+  
+      def load_tests(module_path):
+***************
+*** 226,232 ****
+  
+                  def decorated_setup():
+                      """Decorated test setup."""
+!                     testdb.reload_db()
+                      funct()
+                  return decorated_setup
+  
+--- 227,234 ----
+  
+                  def decorated_setup():
+                      """Decorated test setup."""
+! 		    if testdb:
+!                         testdb.reload_db()
+                      funct()
+                  return decorated_setup
+  
+***************
+*** 310,332 ****
+      dependencies = dependencies_met()
+      if dependencies and not extra_tests:
+          # Obtain a database test handler.
+!         testdb = TestDB(TEST_DB_NAME, FIXTURES, verbosity=0)
+!         extra_tests = get_selenium_tests(testdb, test_labels)
+      if dependencies and extra_tests:
+          print 'Preparing to run unittests and selenium tests.'
+          # Start selenium rc and Django servers.
+          selenium_rc = SeleniumRCThread(SELENIUM_RC_PATH)
+          selenium_rc.start()
+!         django_server = DjangoThread(testdb)
+          django_server.start()
+          # Wait a couple of seconds for the servers to initialize.
+          sleep(5)
+      else:
+          extra_tests = []
+          print 'Running unittests but not selenium tests.'
+      results = base_run_tests(test_labels, verbosity, interactive, extra_tests)
+      if extra_tests:
+          # Stop selenium server, and drop test database
+          selenium_rc.stop()
+!         testdb.drop()
+      return results
+--- 312,335 ----
+      dependencies = dependencies_met()
+      if dependencies and not extra_tests:
+          # Obtain a database test handler.
+!         #testdb = TestDB(TEST_DB_NAME, FIXTURES, verbosity=0)
+!         extra_tests = get_selenium_tests(test_labels=test_labels)
+      if dependencies and extra_tests:
+          print 'Preparing to run unittests and selenium tests.'
+          # Start selenium rc and Django servers.
+          selenium_rc = SeleniumRCThread(SELENIUM_RC_PATH)
+          selenium_rc.start()
+!         django_server = DjangoThread()
+          django_server.start()
+          # Wait a couple of seconds for the servers to initialize.
+          sleep(5)
+      else:
+          extra_tests = []
+          print 'Running unittests but not selenium tests.'
++     print "Calling the django test runner"
+      results = base_run_tests(test_labels, verbosity, interactive, extra_tests)
+      if extra_tests:
+          # Stop selenium server, and drop test database
+          selenium_rc.stop()
+!         #testdb.drop()
+      return results

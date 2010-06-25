@@ -108,6 +108,8 @@ INSTALLED_APPS = (
     'search',
     'service',		
     'profile',
+    'register',
+    'app_dashboard',
 )
 
 #settings for celery:
@@ -151,6 +153,10 @@ RECAPTCHA_PUBLIC_KEY = '6LdvY7oSAAAAANq2Lw2eZdwpkh1k1d181VCWdByL'
 FREE_USER_LIMIT = 10 #30 
 
 TEST_RUNNER = 'search.tests.custom_run_tests'
+IGNORE_CAPTCHA = False
+#for the selenium test runner:
+SELENIUM_TESTS_PATH = 'selenium'
+#FIXTURES = ['testApp.json']
 
 try:
     from local_settings import *
