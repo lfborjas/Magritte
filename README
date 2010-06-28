@@ -1,8 +1,9 @@
 Sistema de recomendación de documentos en un contexto académico
 
-Filosofías de diseño:
----------------------
+Instalación
+-----------
 
-1. Dado el tamaño de las bases de datos necesarias para el funcionamiento del mismo, éste funcionará como un servicio web cuya interfaz programática de interacción (API) serán las urls definidas en service.urls; en caso de ser considerado necesario, para pruebas y evaluación, se crearán algunas urls muy básicas definidas en el archivo principal.
+Se requiere tener instalado pip, virtualenv y fab.
+Correr fab bootstrap.py: instala requerimientos, crea el virtualenv, crea los local_settings con la DB en sqlite y hace el syncdb y las migraciones.
+Luego probar con yendo al directorio lebrixen y haciendo ./manage.py test
 
-2. El sistema anfitrión sólo debe preocuparse por enviar la información y mostrar los resultados, toda la lógica será manejada por el servicio. 
