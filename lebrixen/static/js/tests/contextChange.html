@@ -39,11 +39,11 @@
 	
 	/**Return true if the last context or lastLength changes after a call to the testee function*/
 	function _contextChanged(evt){
-		console.log("content: %s",$('#content').val());
+		//console.log("content: %s",$('#content').val());
 		before = _lastContext;
 		testee(evt);
 		after = _lastContext;
-		console.log("before: %s\nafter: %s", before, after);  
+		//console.log("before: %s\nafter: %s", before, after);  
 		return before != after;
 	}
 

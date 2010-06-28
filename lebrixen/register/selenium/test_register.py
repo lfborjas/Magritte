@@ -6,13 +6,13 @@ Created on 23/06/2010
 '''
 from selenium import selenium
 import time, re
-from django.test import TestCase
+from django.test import TransactionTestCase
 from django.core import mail
 import logging
 from profile.models import ClientApp
 #import unittest
 
-class test_register(TestCase):
+class test_register(TransactionTestCase):
     #fixtures = ['testApp.json']
     urls = 'register.test_urls'
     def setUp(self):
