@@ -4,6 +4,6 @@ Instalación
 -----------
 
 Se requiere tener instalado pip, virtualenv y fab.
-Correr fab bootstrap.py: instala requerimientos, crea el virtualenv, crea los local_settings con la DB en sqlite y hace el syncdb y las migraciones.
+Correr fab bootstrap.py: instala requerimientos, crea el virtualenv, crea los local_settings con la DB en sqlite, hace el syncdb y las migraciones y parcha el selenium-test-runner.
 Luego probar con yendo al directorio lebrixen y haciendo ./manage.py test
 
