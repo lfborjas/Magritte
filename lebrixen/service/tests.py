@@ -1216,8 +1216,8 @@ def suite():
     add_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestRegisterUser)
     bulk_users_suite = unittest.TestLoader().loadTestsFromTestCase(TestBulkRegisterUsers)
     delete_user_suite = unittest.TestLoader().loadTestsFromTestCase(TestDeleteUser)
-    update_profile_suite = unittest.TestLoader.loadTestsFromTestCase(TestUpdateProfile)
-    get_recommendations_suite = unittest.TestLoader.loadTestsFromTestCase(TestGetRecommendations)
+    update_profile_suite = unittest.TestLoader().loadTestsFromTestCase(TestUpdateProfile)
+    get_recommendations_suite = unittest.TestLoader().loadTestsFromTestCase(TestGetRecommendations)
     
     return unittest.TestSuite([auth_suite,
                                api_call_suite,
