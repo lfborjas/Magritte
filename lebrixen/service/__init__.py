@@ -18,7 +18,7 @@ import logging
 from django.utils.encoding import smart_unicode
 import re, htmlentitydefs
 from calais import Calais
-from extractor import ExtractorService
+#from extractor import ExtractorService
 import validate_jsonp
 from django.utils.encoding import smart_unicode
 from django.core.exceptions import ObjectDoesNotExist
@@ -169,19 +169,19 @@ def web_extract_terms(text, raw_query='',service='tagthe'):
             #raise WebServiceException(service, 'No topics or entities found')
             logging.info("OpenCalais didn't return topics|entities for %s" %text)
             return ["",]
-    elif service == 'extractor':
-        #use the python interface
-        #logging.debug('using the extractor interface with key %s' % apikey)
-        extractor=ExtractorService(key=apikey, url=WEB_SERVICES[service])
-        raw_response = extractor.extract(text + raw_query)
-        #logging.debug('The raw response: %s' % raw_response)
-
-        if raw_response.get('ExtractionStatus') == '-1':
-            print "failure!"
-            raise WebServiceException(service, "Failure in request")
-        else:
-            #TODO: what DOES it return?
-            return raw_response
+#    elif service == 'extractor':
+#        #use the python interface
+#        #logging.debug('using the extractor interface with key %s' % apikey)
+#        extractor=ExtractorService(key=apikey, url=WEB_SERVICES[service])
+#        raw_response = extractor.extract(text + raw_query)
+#        #logging.debug('The raw response: %s' % raw_response)
+#
+#        if raw_response.get('ExtractionStatus') == '-1':
+#            print "failure!"
+#            raise WebServiceException(service, "Failure in request")
+#        else:
+#            #TODO: what DOES it return?
+#            return raw_response
 
 
 
