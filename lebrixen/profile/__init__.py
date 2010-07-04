@@ -31,7 +31,7 @@ def get_profile(request, app_id):
             created = False
         except:
             u = None
-            logging.error("error retrieving", exc_info=True)
+            #logging.error("error retrieving", exc_info=True)
         
         if created:
             #Try to fill the other info

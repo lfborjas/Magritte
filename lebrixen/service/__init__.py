@@ -167,7 +167,7 @@ def web_extract_terms(text, raw_query='',service='tagthe'):
             return retval
         else:
             #raise WebServiceException(service, 'No topics or entities found')
-            logging.info("OpenCalais didn't return topics|entities for %s" %text)
+            #logging.info("OpenCalais didn't return topics|entities for %s" %text)
             return ["",]
 #    elif service == 'extractor':
 #        #use the python interface
@@ -274,7 +274,7 @@ def build_query(text, extra_query='', language='en', use_web_service = False, we
             #logging.debug(fallback_services)
             web_service = fallback_services.pop()
             try:
-                logging.debug('Trying to call %s' % web_service)
+                #logging.debug('Trying to call %s' % web_service)
                 query_terms = web_extract_terms(text, extra_query, service=web_service)
                 fail = False
                 break

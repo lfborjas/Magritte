@@ -64,6 +64,6 @@ def remove_user(request):
         u.delete()
         return HttpResponse(json.dumps({'id': uid, 'valid': True, 'message': ''}), mimetype="application/json")
     except:
-        logging.info("Error deleting user", exc_info=True)
+        #logging.info("Error deleting user", exc_info=True)
         return HttpResponse(json.dumps({'valid': False, 'message': _('Error deleting user')}), mimetype="application/json")
     

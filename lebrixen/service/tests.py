@@ -470,7 +470,7 @@ class ApiCallDecoratorTest(TestCase):
         decorated_dummy = api_call(required=[])(dummy_function) 
         #callback = 'jsonp123'
         response=decorated_dummy(DummyRequest())
-        logging.debug(response.content)
+        #logging.debug(response.content)
         self._assertJson(json_string=response.content,
                          status=304,
                          message='',                         
@@ -589,7 +589,7 @@ class UserApiTest(CommonApiTest):
         """Test that non existing users raises a 404 in callbacks"""
         callback = 'jsonp123'
         response = self.call(self.url, {'appId': self.app.get_token(), 'appUser': 'nonExistentUser','callback': callback})
-        logging.debug(response.content)
+        #logging.debug(response.content)
         self.assert_(self._assertJson(json_string=response.content,
                                       status=404,
                                       message="The requested user does not exist",

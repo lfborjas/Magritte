@@ -45,10 +45,10 @@ class ClientApp(models.Model):
             else:
                 return app            
         except MultipleObjectsReturned:
-            logging.error("Multiple apps match the token %s !" % token)
+            #logging.error("Multiple apps match the token %s !" % token)
             raise
         except cls.DoesNotExist:
-            logging.error("No app matches the token %s" % token)
+            #logging.error("No app matches the token %s" % token)
             raise
 
     def __unicode__(self):
