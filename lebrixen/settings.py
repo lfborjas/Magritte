@@ -178,6 +178,6 @@ else:
     logging.basicConfig(
         level = logging.DEBUG,
         format = '%(asctime)s %(levelname)s %(message)s',
-        filename = os.path.join(ROOT_PATH , 'lebrixen_%s.log' % date.today()),
+        filename = os.path.join(ROOT_PATH , 'lebrixen.log'),
         filemode = 'a'
    )

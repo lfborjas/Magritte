@@ -1,6 +1,6 @@
 import sys
 
-sys.path.insert(0, '/home/norman/Magritte/lebrixen')
+sys.path.insert(0, '/home/lfborjas/Magritte/lebrixen')
 
 import settings
 
