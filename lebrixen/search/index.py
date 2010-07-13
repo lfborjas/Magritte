@@ -16,4 +16,4 @@ space.add_index(DocumentSurrogate, DocumentIndexer, attach_as='indexer')
 try:
     DocumentSurrogate.indexer.update()
 except Exception, e:
-    logging.error(e.message)
+    logging.error("Error updating index", exc_info=True)
