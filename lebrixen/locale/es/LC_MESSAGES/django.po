@@ -252,7 +252,7 @@ msgstr "Aplicación cliente de ejemplo"
 
 #: prototype/templates/prototype_base.html:94
 msgid "To show how the web service or the widget could be used"
-msgstr "Para mostrar cómo podrían ser usuados el widget o el servicio web"
+msgstr "Para mostrar cómo podría ser usado el widget"
 
 #: prototype/templates/prototype_base.html:106
 msgid "Save and Reset"

@@ -14,7 +14,7 @@ except ImportError:
 except ImportError:
     import django.utils.simplejson as json
 from django.utils.http import urlencode
-DEFAULT_APP = {'key': "2f8c6f5b6f58aef9f371a2ff06d6fc20",
+DEFAULT_APP = {'key': "d9dca35a39d677885de20b80f2e27f42",
                'user': 'veteran'}
 
 def index(request):

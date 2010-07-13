@@ -106,7 +106,8 @@
 			<input type="submit" id="planning-submit" value="{%trans 'Save and Reset'%}"/>
 		</form>
 		</div>
-		<div id="planning-resources" {%if not uw%}style="float: right; width:35%; overflow:hidden;"{%endif%}>		
+		{#{%if not uw%}style="float: right; width:35%; overflow:hidden;"{%endif%}#}
+		<div id="planning-resources" style="clear:both;">		
 			<h2 class="resources-title">{%if uw%}{%trans 'References'%}{%else%}{%trans 'Recommendations'%}{%endif%} </h2>
 			<ul id="resources"></ul>		
 		</div>				
