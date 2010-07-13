@@ -12,8 +12,6 @@ ADMINS = (
      ('Luis Felipe Borjas', 'lfborjas@unitec.edu'),
 )
 
-CACHE_BACKEND = 'memcached://127.0.0.1:11211/'
-
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -80,13 +78,11 @@ TEMPLATE_CONTEXT_PROCESSORS =("django.core.context_processors.auth",
 
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'profile.middleware.ProfileMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'urls'#ROOT_URLCONF = 'lebrixen.urls'
