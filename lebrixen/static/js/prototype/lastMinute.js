@@ -1,5 +1,6 @@
-var esText = "La referencia freudiana en la investigación del inconsciente lleva la marca de cierto sello psíquico; los procesos psíquicos inconscientes que Freud circunscribió se encuentran en el principio del propio descubrimiento que el mismo hizo"
-var enText = "the conventional view of the research process is that we first derive a set of hypotheses from a theory, design and conduct a study to test these hypotheses, analyze the data to see if they were confirmed or disconfirmed, and then chronicle this sequence of events in the journal article"
+var esText = "No obstante, no parece que se pueda transmitir información clásica a velocidad superior a la de la luz mediante el entrelazamiento porque no se puede transmitir ninguna información útil a más velocidad que la de la luz. Sólo es posible la transmisión de información usando un conjunto de estados entrelazados en conjugación con un canal de información clásico, también llamado teleportación cuántica. Mas, por necesitar de ese canal clásico, la información útil no podrá superarla.";
+//var enText = "Yet another interpretation of this phenomenon is that quantum entanglement does not necessarily enable the transmission of classical information faster than the speed of light because a classical information channel is required to complete the process";
+var enText = esText;
 $(function(){
 		$(document).keydown(function(event){
 			var key = event.keyCode || event.which;
