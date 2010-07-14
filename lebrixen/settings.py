@@ -110,6 +110,7 @@ INSTALLED_APPS = (
     'profile',
     'register',
     'app_dashboard',
+    'prototype',
 )
 
 #settings for celery:
