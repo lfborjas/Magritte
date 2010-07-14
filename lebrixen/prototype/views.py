@@ -17,7 +17,7 @@ from django.utils.http import urlencode
 from django.conf import settings
 import os
 DEFAULT_APP = {'key': "2f8c6f5b6f58aef9f371a2ff06d6fc20",
-               'user': 'veteran'}
+               'user': 'novice'}
 
 def index(request):
     """Index view for the prototype page"""
