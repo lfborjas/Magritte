@@ -4,7 +4,7 @@ $(function(){
 		$(document).keydown(function(event){
 			var key = event.keyCode || event.which;
 			var element="";		
-			if(event.target.type !== 'text' && event.target.type !== 'select'){
+			if(event.target.type !== 'textarea' && event.target.type !== 'select'){
 				//UP=settings
 				if(key===38){
 					if($('#settings').is(':hidden')){
@@ -16,7 +16,8 @@ $(function(){
 				//DOWN = simulation
 				else if(key===40){
 					//$('#demo-link').click();
-					window.location.replace($('#demo-link').attr('href'));
+					//window.location.replace($('#demo-link').attr('href'));
+					window.open($('#demo-link').attr('href'), "_blank")
 				}
 				//RIGHT: spanish text:
 				else if(key===39){

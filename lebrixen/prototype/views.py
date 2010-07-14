@@ -14,6 +14,8 @@ except ImportError:
 except ImportError:
     import django.utils.simplejson as json
 from django.utils.http import urlencode
+from django.conf import settings
+import os
 DEFAULT_APP = {'key': "2f8c6f5b6f58aef9f371a2ff06d6fc20",
                'user': 'veteran'}
 
@@ -44,7 +46,7 @@ def demo(request):
                                 'simulation_form': DemoSimulationForm(initial={'hl': request.LANGUAGE_CODE})},
                                 context_instance=RequestContext(request))
 
-def _get_profile_graph(profile):
+def _get_profile_graph(profile, use_google=True):
     """Get a graphical representation of a profile's graph
     
        Uses the GraphViz DOT language: http://www.graphviz.org/doc/info/lang.html
@@ -63,12 +65,26 @@ def _get_profile_graph(profile):
         else:
             graph_data += r'%s;' % par_data
         
-    graph=r"graph{%s}" % graph_data    
+    graph=r"graph{%s}" % graph_data     
     if not graph_data:
         return '/static/images/nograph.png'
     else:
         #ils ont des restrictions: http://code.google.com/intl/es/apis/chart/docs/chart_params.html#gcharts_chs
-        return '%s?cht=gv&chl=%s' % (base_call, graph.replace('"', '%22'))
+        if len(graph+base_call+"?cht=gv&chl=")<2048 and use_google: #for the URI restrictions in browsers
+            return '%s?cht=gv&chl=%s' % (base_call, graph.replace('"', '%22'))
+        else:
+            #create a static doc:
+            try:
+                name = ("%s/images/%s" % (settings.STATIC_DOC_ROOT, profile)).replace(' ', '_').replace('.', '_')
+                f = open(name+".dot", 'w')
+                f.write(graph)
+                f.close()
+                os.system(' '.join(["dot", "-Tpng", "-o", name+".png", name+".dot"]))
+                return name.replace(settings.ROOT_PATH, '')+".png"                                 
+            except:
+                logging.debug("error creating graph", exc_info=True)
+                return '/static/images/error.png'
+                
         
         
         
