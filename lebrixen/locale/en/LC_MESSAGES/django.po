@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 00:50-0600\n"
+"POT-Creation-Date: 2010-07-13 18:29-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Duplicate user: %s\n"
 msgstr ""
 
-#: app_dashboard/views.py:38 register/templates/trecs_usage.html:55
+#: app_dashboard/views.py:38 register/templates/trecs_usage.html:59
 msgid "User limit exceeded"
 msgstr ""
 
@@ -127,15 +127,15 @@ msgstr ""
 msgid "it's easy!"
 msgstr ""
 
-#: app_dashboard/templates/dashboard_login.html:9
+#: app_dashboard/templates/dashboard_login.html:10
 msgid "Your application name or password didn't match. Please try again."
 msgstr ""
 
-#: app_dashboard/templates/dashboard_login.html:24
+#: app_dashboard/templates/dashboard_login.html:25
 msgid "login"
 msgstr ""
 
-#: app_dashboard/templates/dashboard_login.html:27
+#: app_dashboard/templates/dashboard_login.html:28
 msgid "Forgot your password?"
 msgstr ""
 
@@ -225,7 +225,15 @@ msgstr ""
 msgid "Query"
 msgstr ""
 
-#: prototype/templates/demo_base.html:49
+#: prototype/templates/demo_base.html:39
+msgid "Original results"
+msgstr ""
+
+#: prototype/templates/demo_base.html:43
+msgid "Re-ranked results"
+msgstr ""
+
+#: prototype/templates/demo_base.html:51
 msgid "Demo Page, not an actual part of the final product"
 msgstr ""
 
@@ -245,17 +253,17 @@ msgstr ""
 msgid "Save and Reset"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:110
+#: prototype/templates/prototype_base.html:111
 msgid "References"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:110
+#: prototype/templates/prototype_base.html:111
 #: service/templates/recommender_bar.html:11
 #: service/templates/recommender_bar.html:15
 msgid "Recommendations"
 msgstr ""
 
-#: prototype/templates/prototype_base.html:115
+#: prototype/templates/prototype_base.html:116
 msgid "So, how does this work?"
 msgstr ""
 
@@ -279,11 +287,11 @@ msgstr ""
 msgid "Are you human enough?"
 msgstr ""
 
-#: register/forms.py:57
+#: register/forms.py:62
 msgid "There is an app with that name already registered"
 msgstr ""
 
-#: register/views.py:22
+#: register/views.py:23
 msgid "Your T-Recs App key"
 msgstr ""
 
@@ -497,19 +505,19 @@ msgstr ""
 msgid "A parameter is missing"
 msgstr ""
 
-#: register/templates/trecs_usage.html:53
+#: register/templates/trecs_usage.html:55
 msgid "Authentication failed"
 msgstr ""
 
-#: register/templates/trecs_usage.html:57
+#: register/templates/trecs_usage.html:62
 msgid "Invalid user or application token"
 msgstr ""
 
-#: register/templates/trecs_usage.html:59
+#: register/templates/trecs_usage.html:65
 msgid "Internal error"
 msgstr ""
 
-#: register/templates/trecs_usage.html:62
+#: register/templates/trecs_usage.html:68
 msgid ""
 "For detailed documentation, refer to the <a href=\"#\">Developer's Manual</a>"
 msgstr ""

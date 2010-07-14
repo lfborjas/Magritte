@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-23 00:50-0600\n"
+"POT-Creation-Date: 2010-07-13 18:29-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Duplicate user: %s\n"
 msgstr "Usuario duplicado: %s\n"
 
-#: app_dashboard/views.py:38 register/templates/trecs_usage.html:55
+#: app_dashboard/views.py:38 register/templates/trecs_usage.html:59
 msgid "User limit exceeded"
 msgstr "Límite de usuarios excedido"
 
@@ -136,17 +136,17 @@ msgstr "obtenga una"
 msgid "it's easy!"
 msgstr "¡es fácil!"
 
-#: app_dashboard/templates/dashboard_login.html:9
+#: app_dashboard/templates/dashboard_login.html:10
 msgid "Your application name or password didn't match. Please try again."
 msgstr ""
 "Su nombre de aplicación o contraseña son incorrectos. Revíselos e intente "
 "otra vez"
 
-#: app_dashboard/templates/dashboard_login.html:24
+#: app_dashboard/templates/dashboard_login.html:25
 msgid "login"
 msgstr "acceder"
 
-#: app_dashboard/templates/dashboard_login.html:27
+#: app_dashboard/templates/dashboard_login.html:28
 msgid "Forgot your password?"
 msgstr "¿Olvidó su contraseña?"
 
@@ -238,7 +238,15 @@ msgstr "Grafo del perfil del usuario"
 msgid "Query"
 msgstr "Consultar"
 
-#: prototype/templates/demo_base.html:49
+#: prototype/templates/demo_base.html:39
+msgid "Original results"
+msgstr "Resultados originales"
+
+#: prototype/templates/demo_base.html:43
+msgid "Re-ranked results"
+msgstr "Resultados re-ordenados"
+
+#: prototype/templates/demo_base.html:51
 msgid "Demo Page, not an actual part of the final product"
 msgstr "Página de demostración, no es parte del producto final"
 
@@ -258,17 +266,17 @@ msgstr "Para mostrar cómo podría ser usado el widget"
 msgid "Save and Reset"
 msgstr "Guardar y Reiniciar"
 
-#: prototype/templates/prototype_base.html:110
+#: prototype/templates/prototype_base.html:111
 msgid "References"
 msgstr "Referencias"
 
-#: prototype/templates/prototype_base.html:110
+#: prototype/templates/prototype_base.html:111
 #: service/templates/recommender_bar.html:11
 #: service/templates/recommender_bar.html:15
 msgid "Recommendations"
 msgstr "Recomendaciones"
 
-#: prototype/templates/prototype_base.html:115
+#: prototype/templates/prototype_base.html:116
 msgid "So, how does this work?"
 msgstr "y ¿cómo funciona esto?"
 
@@ -292,11 +300,11 @@ msgstr "Escriba un correo válido, ¡ahí enviaremos sus credenciales!"
 msgid "Are you human enough?"
 msgstr "¿Es lo suficientemente humano?"
 
-#: register/forms.py:57
+#: register/forms.py:62
 msgid "There is an app with that name already registered"
 msgstr "¡Ya hay una aplicación registrada bajo ese nombre!"
 
-#: register/views.py:22
+#: register/views.py:23
 msgid "Your T-Recs App key"
 msgstr "Su clave de aplicación de T-Recs"
 
@@ -332,7 +340,9 @@ msgstr "¿Qué es?"
 msgid ""
 "T-Recs is a recommender service to help enhance user experience in "
 "applications for information production"
-msgstr "Es un servicio que permite construir aplicaciones que mejoren la experiencia de escritura"
+msgstr ""
+"Es un servicio que permite construir aplicaciones que mejoren la experiencia "
+"de escritura"
 
 #: register/templates/trecs_home.html:7
 msgid "Check out a"
@@ -385,7 +395,9 @@ msgid ""
 "\t   so we're forced to make you fill out this form to register. After you "
 "fill it out successfully, you'll\n"
 "\t   be redirected to the usage page, so you can get started"
-msgstr "Llene el formulario, recibirá un correo con sus credenciales; será redirigido a la página de uso para poder ir comenzando"
+msgstr ""
+"Llene el formulario, recibirá un correo con sus credenciales; será "
+"redirigido a la página de uso para poder ir comenzando"
 
 #: register/templates/trecs_register.html:34
 msgid "Ready!"
@@ -403,10 +415,10 @@ msgid ""
 "but, if it doesn't meet your needs, you can\n"
 "   always use the <a href=\"#api\">REST API</a>"
 msgstr ""
-"Puede usarlo en cualquier aplicación: desde una de escritorio"
-" hasta un sistema web.\n"
-"   La manera más fácil es mediante el <a href=\"#widget\">widget de javascript</a>, "
-"si no es suficiente, \n"
+"Puede usarlo en cualquier aplicación: desde una de escritorio hasta un "
+"sistema web.\n"
+"   La manera más fácil es mediante el <a href=\"#widget\">widget de "
+"javascript</a>, si no es suficiente, \n"
 "   puede usar la <a href=\"#api\">API REST</a>"
 
 #: register/templates/trecs_usage.html:10
@@ -419,28 +431,31 @@ msgid ""
 "user management with\n"
 "the API calls for <a href=\"#admin\">User administration</a>"
 msgstr ""
-"Puede usar el <a href=\"/dashboard/\">panel de control</a> o implementar su propia "
-"gestión de usuarios\n"
-"mediante las llamadas a la API para <a href=\"#admin\">administración de usuarios</a>"
+"Puede usar el <a href=\"/dashboard/\">panel de control</a> o implementar su "
+"propia gestión de usuarios\n"
+"mediante las llamadas a la API para <a href=\"#admin\">administración de "
+"usuarios</a>"
 
 #: register/templates/trecs_usage.html:15
 msgid ""
 "Include the file <tt>http://trecs.com/static/js/service/recommender.js</tt>"
 msgstr ""
-"Incluya el archivo de javascript <tt>http://trecs.com/static/js/service/recommender.js</tt>"
+"Incluya el archivo de javascript <tt>http://trecs.com/static/js/service/"
+"recommender.js</tt>"
 
 #: register/templates/trecs_usage.html:16
 msgid "Include a script with the configuration"
 msgstr "Y un script con la configuración"
 
 #: register/templates/trecs_usage.html:19
+#, fuzzy
 msgid ""
 "The API always returns a JSON text with the same structure: only the "
 "<em>data</em> property depends\n"
-"on the call\n"
+"on the call"
 msgstr ""
-"La API retorna un objeto JSON con la misma estructura para todas las llamadas"
-"sólo la propiedad <em>data</em> depende de la llamada\n"
+"La API retorna un objeto JSON con la misma estructura para todas las "
+"llamadassólo la propiedad <em>data</em> depende de la llamada\n"
 "\n"
 
 #: register/templates/trecs_usage.html:21
@@ -497,10 +512,10 @@ msgid ""
 "   the username is the name that you registered as your application name/url "
 "and the password is the one sent to you when you registered\n"
 msgstr ""
-"Todas estas llamadas requieren <a href=\"http://www.w3.org/Protocols/HTTP/1.0/"
-"spec.html#AA\">autenticación básica http</a>:\n"
-"El nombre de usuario es con el cual registró su aplicación"
-" la contraseña le fue enviada al registrarse\n"
+"Todas estas llamadas requieren <a href=\"http://www.w3.org/Protocols/"
+"HTTP/1.0/spec.html#AA\">autenticación básica http</a>:\n"
+"El nombre de usuario es con el cual registró su aplicación la contraseña le "
+"fue enviada al registrarse\n"
 
 #: register/templates/trecs_usage.html:38
 msgid "user-to-register"
@@ -526,22 +541,24 @@ msgstr "Razón"
 msgid "A parameter is missing"
 msgstr "Un parámetro falta"
 
-#: register/templates/trecs_usage.html:53
+#: register/templates/trecs_usage.html:55
 msgid "Authentication failed"
 msgstr "Autenticación fallida"
 
-#: register/templates/trecs_usage.html:57
+#: register/templates/trecs_usage.html:62
 msgid "Invalid user or application token"
 msgstr "Usuario o token de aplicación inválidos"
 
-#: register/templates/trecs_usage.html:59
+#: register/templates/trecs_usage.html:65
 msgid "Internal error"
 msgstr "Error interno"
 
-#: register/templates/trecs_usage.html:62
+#: register/templates/trecs_usage.html:68
 msgid ""
 "For detailed documentation, refer to the <a href=\"#\">Developer's Manual</a>"
-msgstr "Para documentación detallada, refiérase al <a href=\"#\">Manual del implementador</a>"
+msgstr ""
+"Para documentación detallada, refiérase al <a href=\"#\">Manual del "
+"implementador</a>"
 
 #: register/templates/mail/appkey.html:2
 #, python-format
@@ -564,17 +581,18 @@ msgid ""
 msgstr ""
 "\n"
 "Hola, \n"
-"aquí está la clave de aplicación que pidió para %(app)s; ¡no la divulgue! "
-"%(key)s\n"
+"aquí está la clave de aplicación que pidió para %(app)s; ¡no la divulgue! %"
+"(key)s\n"
 "\n"
-"Puede comenzar registrando algunos de sus usuarios, ya sea programáticamente mediante la API"
-"(requiere autenticación http básica) o mediante nuestro panel de control.\n"
+"Puede comenzar registrando algunos de sus usuarios, ya sea programáticamente "
+"mediante la API(requiere autenticación http básica) o mediante nuestro panel "
+"de control.\n"
 "Para autenticarse, sus credenciales son:\n"
 "nombre de usuario: %(app)s\n"
 "contraseña: %(pass)s\n"
 "\n"
-"Cuando esté listo para usar el servicio, refiérase a %(url)s para instrucciones más detalladas de uso "
-"\n"
+"Cuando esté listo para usar el servicio, refiérase a %(url)s para "
+"instrucciones más detalladas de uso \n"
 
 #: service/templates/recommender_bar.html:3
 msgid "Hide the recommendations panel"

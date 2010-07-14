@@ -65,11 +65,14 @@ $(function(){
 		$.getJSON('/search/',
 				$('#simulation-form').serialize(),
 				function(data){
-					$('#simulation-unranked').prepend('<h4 class="sim-results">Sin re-ordenar</h4>');
+					$(".sim-results").show();
+					//$('#simulation-unranked').prepend('<h4 class="sim-results">Sin re-ordenar</h4>');
+					$('#unranked-results').empty();
 					$.each(data.results, function(index, unranked){						
 						$('#unranked-results').append('<li><a target="_blank" href="'+unranked.url+'">'+unranked.title+'</a></li>');
 					});
-					$('#simulation-ranked').prepend('<h4 class="sim-results">Re-ordenando</h4>');
+					//$('#simulation-ranked').prepend('<h4 class="sim-results">Re-ordenando</h4>');
+					$('#ranked-results').empty();
 					$.each(data.reranked, function(index, ranked){
 						$('#ranked-results').append('<li><a target="_blank" href="'+ranked.url+'">'+ranked.title+'</a></li>');
 					});
