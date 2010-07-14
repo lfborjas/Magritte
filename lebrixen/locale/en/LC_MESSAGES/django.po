@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-13 18:29-0600\n"
+"POT-Creation-Date: 2010-07-13 21:57-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -203,38 +203,34 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: prototype/templates/demo_base.html:3 prototype/templates/demo_base.html:15
+#: prototype/templates/demo_base.html:3 prototype/templates/demo_base.html:16
 msgid "Internals Demo"
 msgstr ""
 
-#: prototype/templates/demo_base.html:16
+#: prototype/templates/demo_base.html:17
 msgid ""
 "To demonstrate how the profiles evolve and the recommendations are built"
 msgstr ""
 
-#: prototype/templates/demo_base.html:22
+#: prototype/templates/demo_base.html:23
 #: prototype/templates/prototype_base.html:100
 msgid "Set"
 msgstr ""
 
-#: prototype/templates/demo_base.html:29
+#: prototype/templates/demo_base.html:30
 msgid "User profile graph"
 msgstr ""
 
-#: prototype/templates/demo_base.html:36
+#: prototype/templates/demo_base.html:37
 msgid "Query"
 msgstr ""
 
-#: prototype/templates/demo_base.html:39
+#: prototype/templates/demo_base.html:40
 msgid "Original results"
 msgstr ""
 
-#: prototype/templates/demo_base.html:43
+#: prototype/templates/demo_base.html:44
 msgid "Re-ranked results"
-msgstr ""
-
-#: prototype/templates/demo_base.html:51
-msgid "Demo Page, not an actual part of the final product"
 msgstr ""
 
 #: prototype/templates/prototype_base.html:3

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-13 18:29-0600\n"
+"POT-Creation-Date: 2010-07-13 21:58-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,41 +214,37 @@ msgstr "Aplicación"
 msgid "Language"
 msgstr "Lenguaje"
 
-#: prototype/templates/demo_base.html:3 prototype/templates/demo_base.html:15
+#: prototype/templates/demo_base.html:3 prototype/templates/demo_base.html:16
 msgid "Internals Demo"
 msgstr "Demostración del funcionamiento interno"
 
-#: prototype/templates/demo_base.html:16
+#: prototype/templates/demo_base.html:17
 msgid ""
 "To demonstrate how the profiles evolve and the recommendations are built"
 msgstr ""
 "Para mostrar cómo evolucionan los perfiles y cómo son hechas las "
 "recomendaciones"
 
-#: prototype/templates/demo_base.html:22
+#: prototype/templates/demo_base.html:23
 #: prototype/templates/prototype_base.html:100
 msgid "Set"
 msgstr "Establecer"
 
-#: prototype/templates/demo_base.html:29
+#: prototype/templates/demo_base.html:30
 msgid "User profile graph"
 msgstr "Grafo del perfil del usuario"
 
-#: prototype/templates/demo_base.html:36
+#: prototype/templates/demo_base.html:37
 msgid "Query"
 msgstr "Consultar"
 
-#: prototype/templates/demo_base.html:39
+#: prototype/templates/demo_base.html:40
 msgid "Original results"
 msgstr "Resultados originales"
 
-#: prototype/templates/demo_base.html:43
+#: prototype/templates/demo_base.html:44
 msgid "Re-ranked results"
 msgstr "Resultados re-ordenados"
-
-#: prototype/templates/demo_base.html:51
-msgid "Demo Page, not an actual part of the final product"
-msgstr "Página de demostración, no es parte del producto final"
 
 #: prototype/templates/prototype_base.html:3
 msgid "Example Client"
@@ -448,15 +444,13 @@ msgid "Include a script with the configuration"
 msgstr "Y un script con la configuración"
 
 #: register/templates/trecs_usage.html:19
-#, fuzzy
 msgid ""
 "The API always returns a JSON text with the same structure: only the "
 "<em>data</em> property depends\n"
-"on the call"
+"on the call\n"
 msgstr ""
 "La API retorna un objeto JSON con la misma estructura para todas las "
-"llamadassólo la propiedad <em>data</em> depende de la llamada\n"
-"\n"
+"llamadas, sólo la propiedad <em>data</em> depende de la llamada\n"
 
 #: register/templates/trecs_usage.html:21
 msgid "Get Recommendations call"
@@ -617,3 +611,6 @@ msgstr "Términos Clave"
 #: service/templates/recommender_bar.html:8
 msgid "Key terms found in the content"
 msgstr "Términos clave encontrados en el contenido"
+
+#~ msgid "Demo Page, not an actual part of the final product"
+#~ msgstr "Página de demostración, no es parte del producto final"
