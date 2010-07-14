@@ -13,7 +13,7 @@ class DocumentIndexer(Indexer):
 
 space.add_index(DocumentSurrogate, DocumentIndexer, attach_as='indexer')
 
-try:
-    DocumentSurrogate.indexer.update()
-except Exception, e:
-    logging.error("Error updating index", exc_info=True)
+#try:
+#    DocumentSurrogate.indexer.update()
+#except Exception, e:
+#    logging.error("Error updating index", exc_info=True)
