@@ -46,7 +46,7 @@ def demo(request):
                                 'simulation_form': DemoSimulationForm(initial={'hl': request.LANGUAGE_CODE})},
                                 context_instance=RequestContext(request))
 
-def _get_profile_graph(profile, use_google=True):
+def _get_profile_graph(profile, use_google=False):
     """Get a graphical representation of a profile's graph
     
        Uses the GraphViz DOT language: http://www.graphviz.org/doc/info/lang.html
@@ -70,7 +70,7 @@ def _get_profile_graph(profile, use_google=True):
         return '/static/images/nograph.png'
     else:
         #ils ont des restrictions: http://code.google.com/intl/es/apis/chart/docs/chart_params.html#gcharts_chs
-        if len(graph+base_call+"?cht=gv&chl=")<2048 and use_google: #for the URI restrictions in browsers
+        if use_google and len(graph+base_call+"?cht=gv&chl=")<2048: #for the URI restrictions in browsers
             return '%s?cht=gv&chl=%s' % (base_call, graph.replace('"', '%22'))
         else:
             #create a static doc:
