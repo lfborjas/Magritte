@@ -30,6 +30,8 @@ body{
 
 textarea, input[type=text]{	
 	font-size:1.5em;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 
 label {
@@ -55,7 +57,7 @@ label {
 	color: #939598;
 }
 
-#planning-submit{
+#planning-submit, #simulation-submit{
 	-moz-border-radius:10px;
 	-webkit-border-radius:10px;
 	background:#494437;
@@ -66,7 +68,7 @@ label {
 	text-align:center;	
 }
 
-#settings{
+#settings, #tools{
 	background-color: #feeebd;
 	color: #383838;
 	border-color: #8e846b;
@@ -75,7 +77,7 @@ label {
 	clear: both;	
 }
 
-#settings-submit{
+#settings-submit, #tools-submit{
 	-moz-border-radius:10px;
 	-webkit-border-radius:10px;
 	background:#d19405;
