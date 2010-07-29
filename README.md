@@ -28,9 +28,9 @@ python-xapian (refiérase a <http://code.google.com/p/djapian/wiki/Installation>
     + **[OPCIONAL, sólo si no se utiliza la base de datos de prueba]** Deberá ejecutarse el web crawler de la siguiente manera (se utilizarán las urls del archivo data/topics_urls como urls iniciales):
     `scrapy-ctl.py crawl dmoz.org` 
       Esto actualizará las carpetas HTML y PDF. Luego, habrá de actualizar la ontología, llenar la colección documentar y ponderar la ontología, para ello, ejecute los siguientes comandos en orden (dada la gran cantidad de documentos, pueden tardar varias horas):
-    - `lebrixen/manage.py update_ontology`
-    - `lebrixen/manage.py update_documentdb`
-    - `lebrixen/manage.py ponder_categories`
+        - `lebrixen/manage.py update_ontology`
+        - `lebrixen/manage.py update_documentdb`
+        - `lebrixen/manage.py ponder_categories`
     + Entrenar los índices: luego de haber creado o cargado la base de datos de prueba, utilícese el siguiente comando para entrenar al clasificador de categorías
     `lebrixen/manage.py train_category_classifier`
      y para crear el índice documental
@@ -43,14 +43,16 @@ python-xapian (refiérase a <http://code.google.com/p/djapian/wiki/Installation>
 
 
 Téngase en mente también que este proyecto seguirá evolucionando luego de su entrega a UNITEC en Julio de 2010, por lo que podrá acceder a la versión más reciente del código fuente aquí:
-* <http://gitorious.org/magritte>
-* <http://github.com/lfborjas/Magritte>
+    <http://gitorious.org/magritte>
+    o
+    <http://github.com/lfborjas/Magritte>
 
 Cualquier consulta, puede contactar al autor en
-* <http://twitter.com/lfborjas>
-* <http://www.lfborjas.com>
+ [Twitter](http://twitter.com/lfborjas) o
+ [Sitio Personal](http://www.lfborjas.com)
 o mediante correo electrónico a 
-* me@lfborjas.com
-* luis.borjas@escolarea.com
-* lfborjas@unitec.edu
+ me@lfborjas.com, 
+ luis.borjas@escolarea.com, 
+ lfborjas@unitec.edu
+
 
