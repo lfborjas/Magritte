@@ -138,7 +138,7 @@ UPDATE_INDEX_INTERVAL = 10*60
 DJAPIAN_STEMMING_LANG = "multi"
 
 #central repository for the data
-DATA_PATH = os.path.join(os.environ.get('HOME', '/home/lfborjas'), 'Magritte', 'data')
+DATA_PATH = os.path.join(os.environ.get('HOME', '/home/<YOUR_HOME_FOLDER>'), 'Magritte', 'data')
 ONTOLOGY_FILE = os.path.join(DATA_PATH, '2010-03-04_science_sub-structure.rdf.u8')
 #settings for djapian:
 DJAPIAN_DATABASE_PATH = os.path.join(DATA_PATH, 'djapian_spaces')
