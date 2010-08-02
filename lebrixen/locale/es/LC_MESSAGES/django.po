@@ -270,7 +270,7 @@ msgstr "Referencias"
 #: service/templates/recommender_bar.html:11
 #: service/templates/recommender_bar.html:15
 msgid "Recommendations"
-msgstr "Recomendaciones"
+msgstr ""
 
 #: prototype/templates/prototype_base.html:116
 msgid "So, how does this work?"
@@ -594,11 +594,11 @@ msgstr "Ocultar el panel de recomendaciones"
 
 #: service/templates/recommender_bar.html:3
 msgid "Hide"
-msgstr "Ocultar"
+msgstr ""
 
 #: service/templates/recommender_bar.html:4
 msgid "Average relevance"
-msgstr "Relevancia Promedio"
+msgstr ""
 
 #: service/templates/recommender_bar.html:5
 msgid "Average relevance of the present recommendations"
@@ -606,11 +606,11 @@ msgstr "Relevancia promedio de las recomendaciones actuales"
 
 #: service/templates/recommender_bar.html:7
 msgid "Keywords"
-msgstr "Términos Clave"
+msgstr ""
 
 #: service/templates/recommender_bar.html:8
 msgid "Key terms found in the content"
-msgstr "Términos clave encontrados en el contenido"
+msgstr ""
 
 #~ msgid "Demo Page, not an actual part of the final product"
 #~ msgstr "Página de demostración, no es parte del producto final"

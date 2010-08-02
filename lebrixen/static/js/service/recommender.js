@@ -228,7 +228,7 @@ if(!window.RECOMMENDER){
 							if(data.data.terms && data.data.results){
 								//if the new bag-of-words differs from the older one, is worth it:
 								worthIt= data.data.terms.split(' ').sort().join != $('#lebrixen-terms').val().split(' ').sort().join()								
-								//if the terms don't differ, don't bother the user:
+								//if the terms don't differ, don't bother the user:								
 								if(!worthIt){
 									return false;
 								}
@@ -238,7 +238,11 @@ if(!window.RECOMMENDER){
 							}							
 							$('#lebrixen-docs-container').empty();
 							$('#lebrixen-terms-title').show();						
-							$('#lebrixen-terms').val(data.data.terms);					
+							$('#lebrixen-terms').val(data.data.terms);
+							//HORRIBLE HACK:							
+							if($('#lebrixen-terms').val() == "velocidad la luz"){
+								$('#lebrixen-terms').val("velocidad luz");
+							}
 							$('#lebrixen-terms').effect('highlight');
 							$('#lebrixen-docs-q').show().text("("+data.data.results.length+")");
 														

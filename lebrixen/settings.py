@@ -4,7 +4,7 @@ import logging
 from datetime import date
 #import socket
 # Django settings for lebrixen project.
-DEBUG = False 
+DEBUG = True 
 TEMPLATE_DEBUG = DEBUG
 DEFAULT_CHARSET = 'utf-8'
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))

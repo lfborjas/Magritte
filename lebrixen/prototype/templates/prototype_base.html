@@ -4,6 +4,7 @@
 {%block stylesheets%}
 	<link rel="stylesheet" type="text/css" href="/static/css/prototype.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="/static/css/service/recommender.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="/static/css/dot-luv/jquery-ui-1.8.2.custom.css" media="screen" />
 {%endblock%}
 {%block scripts%}
 
@@ -90,9 +91,10 @@
 {%endblock%}
 {%block content%}
 	<div id="branding">
-		<h1>{%trans "Client application example"%}</h1> 
-		<p>{%trans "To show how the web service or the widget could be used"%}</p>
+		<h1>{%trans "Serendipitron demo"%}</h1> 
+		<p>{%trans "This could be your favorite blog engine, web app or text processor"%}</p>
 	</div>
+	<div id="caption"></div>
 	<div id="content-center">
 		<div id="settings" style="display:none;">			
 			<form id="settings-form" action="{{request.path}}" method="get">
@@ -101,19 +103,21 @@
 			</form>
 		</div>
 		<div id="planning-area">
-		<form id="planning-form" action="#" method="post">
+		<form id="planning-form" action="" method="post">
 			{{form}}
-			<input type="submit" id="planning-submit" value="{%trans 'Save and Reset'%}"/>
+			<input type="submit" id="planning-submit" value="Save"/>
 		</form>
 		</div>
 		{#{%if not uw%}style="float: right; width:35%; overflow:hidden;"{%endif%}#}
 		<div id="planning-resources" style="clear:both;">		
-			<h2 class="resources-title">{%if uw%}{%trans 'References'%}{%else%}{%trans 'Recommendations'%}{%endif%} </h2>
+			{#<h2 class="resources-title">{%if uw%}{%trans 'References'%}{%else%}{%trans 'Recommendations'%}{%endif%} </h2>#}
 			<ul id="resources"></ul>		
 		</div>				
 	</div>
+
 	<div id="footer">
-			<a href="demo/" id="demo-link">{%trans "So, how does this work?"%}</a>
+			<span id="cue"></span>
 	</div>
+
 	{#{%include "recommender_bar.html"%}#}
 {%endblock%}

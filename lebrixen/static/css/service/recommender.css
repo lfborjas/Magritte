@@ -44,13 +44,13 @@ background-color:#222222;
 
 a.active{
 height: 60px;	
-background:#fcaf17 url(/static/images/book.png) no-repeat top;
+background:#fafafa url(/static/images/book.png) no-repeat top;
 filter: alpha(opacity=90);
 opacity: 0.9;
 }
 
 a.active:hover{
-	background-color:#f7941e;
+	background-color:#fafafa;
 }
 
 /*a.active.trigger {
@@ -74,11 +74,11 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 
 #lebrixen-hide-panel{
 	text-decoration: none;
-	color: #fcaf17;
+	color: #0b58a2;
 	display:block;
 	padding: 10px 10px 5px 25px;
 	font-weight: bold;
-	border: 1px solid #fcaf17;
+	border: 1px solid #0b58a2;
 }
 
 #lebrixen-terms{
@@ -97,7 +97,7 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 }
 
 #lebrixen-docs-container a{	
-	color: #0074c7;
+	color: #98d2fb;
 	font-size: 1em;
 }
 
@@ -107,7 +107,7 @@ background:#222222 url(images/minus.png) 85% 55% no-repeat;
 }
 
 #lebrixen-terms-title, #lebrixen-docs-title, #lebrixen-average-rel-title{
-	color: #fece2f;
+	color: #0b58a2;
 	font-size: 1.1em;
 }
 
